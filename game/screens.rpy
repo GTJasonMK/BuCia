@@ -354,9 +354,7 @@ style navigation_button_text:
 ## https://doc.renpy.cn/zh-CN/screen_special.html#main-menu
 
 screen main_menu():
-    """
-    主菜单屏幕 - 使用图片按钮的简洁设计
-    """
+    ## 主菜单屏幕 - 使用图片按钮的简洁设计
 
     tag menu
 

@@ -58,11 +58,9 @@ screen rest_button():
 
 ## 精神值显示UI（叠加在游戏画面左上角）
 screen sanity_display():
-    """
-    精神值指示器
-    根据 persistent.sanity 显示对应的eye图标
-    点击打开设置菜单
-    """
+    ## 精神值指示器
+    ## 根据 persistent.sanity 显示对应的eye图标
+    ## 点击打开设置菜单
     zorder 100
 
     # 仅在非主菜单时显示
