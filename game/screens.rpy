@@ -7,6 +7,9 @@ init offset = -1
 ## 控制Start按钮展开状态的变量
 default show_episodes = False
 
+## 左下文本框提示信息
+default button_hint_text = ""
+
 ## 周目按钮下拉动画
 transform episodes_slide_down:
     on show:
@@ -15,6 +18,41 @@ transform episodes_slide_down:
         easein 0.4 yoffset 0 alpha 1.0
     on hide:
         easeout 0.3 yoffset -30 alpha 0.0
+
+## 周目按钮从右侧滑入动画
+transform slide_in_1:
+    alpha 0.0 xoffset 500
+    ease 0.3 alpha 1.0 xoffset 0
+
+transform slide_in_2:
+    alpha 0.0 xoffset 500
+    pause 0.1
+    ease 0.3 alpha 1.0 xoffset 0
+
+transform slide_in_3:
+    alpha 0.0 xoffset 500
+    pause 0.2
+    ease 0.3 alpha 1.0 xoffset 0
+
+transform slide_in_4:
+    alpha 0.0 xoffset 500
+    pause 0.3
+    ease 0.3 alpha 1.0 xoffset 0
+
+## 主按钮从右侧滑入动画（用于关闭周目选择后）
+transform main_slide_in_1:
+    alpha 0.0 xoffset 500
+    ease 0.3 alpha 1.0 xoffset 0
+
+transform main_slide_in_2:
+    alpha 0.0 xoffset 500
+    pause 0.1
+    ease 0.3 alpha 1.0 xoffset 0
+
+transform main_slide_in_3:
+    alpha 0.0 xoffset 500
+    pause 0.2
+    ease 0.3 alpha 1.0 xoffset 0
 
 
 ################################################################################
@@ -354,7 +392,8 @@ style navigation_button_text:
 ## https://doc.renpy.cn/zh-CN/screen_special.html#main-menu
 
 screen main_menu():
-    ## 主菜单屏幕 - 使用图片按钮的简洁设计
+    ## 主菜单屏幕 - 按原始设计5543×3227缩放到1920×1080
+    ## 缩放比例：x=0.34633, y=0.33471
 
     tag menu
 
@@ -362,188 +401,258 @@ screen main_menu():
     key "K_F1" action Function(show_persistent_status)
     key "K_F2" action Function(force_reset_episodes)
 
-    ## 背景图（自动缩放到1920x1080）
+    ## 背景图（缩放到1920x1080）
     add "main_menu_bg.png":
         size (1920, 1080)
-        fit "cover"
 
-    ## 按钮容器（使用fixed确保绝对定位）
+    ## 标题logo（坐标：12, 262）
+    add "title_logo.png":
+        xpos 4
+        ypos 88
+        zoom 0.346
+
+    ## 角色图（坐标：1617, 186）
+    add "title_character.png":
+        xpos 560
+        ypos 62
+        zoom 0.346
+
+    ## 左下文本框（坐标：208, 1533）- 只在有提示文字时显示
+    if button_hint_text:
+        add "gui/text_frame.png":
+            xpos 72
+            ypos 513
+            zoom 0.346
+
+        ## 左下文本框内的提示文字
+        text button_hint_text:
+            xpos 120
+            ypos 580
+            xmaximum 750
+            size 32
+            color "#ffffff"
+            font "Holy-Union-2.ttf"
+            text_align 0.0
+            line_spacing 8
+
+    ## 右侧按钮区域（x坐标：3610 → 1250）
     fixed:
-        ## Start按钮（始终显示，点击切换展开/收起）
+        ## Start按钮（y坐标：1138 → 381）
         imagebutton:
-            idle "gui/button_start.png"
-            hover Transform("gui/button_start.png", alpha=0.8)
+            idle Transform("gui/button_bar.png", zoom=0.346)
+            hover Transform("gui/button_bar.png", zoom=0.346, alpha=0.85)
             action ToggleVariable("show_episodes")
-            at transform:
-                xpos 465
-                ypos 110
-                zoom 0.35
+            hovered SetVariable("button_hint_text", "Choose an episode to begin your journey in the town of Bucha")
+            unhovered SetVariable("button_hint_text", "")
+            xpos 1250
+            ypos 381
 
         text "Start":
-            xpos 580
-            ypos 100
-            size 75
+            xpos 1584
+            ypos 433
+            size 115
             color "#ffffff"
-            font "lolita.ttf"
+            font "Holy-Union-2.ttf"
             outlines [(2, "#00000080", 0, 0)]
+            xanchor 0.5
+            yanchor 0.5
 
         ## 初始状态：显示Config、Exit、Official Web
         if not show_episodes:
-            ## Config按钮
+            ## Config按钮（y坐标：1533 → 513）
             imagebutton:
-                idle "gui/button_config.png"
-                hover Transform("gui/button_config.png", alpha=0.8)
+                idle Transform("gui/button_bar.png", zoom=0.346)
+                hover Transform("gui/button_bar.png", zoom=0.346, alpha=0.85)
                 action ShowMenu("preferences")
-                at transform:
-                    xpos 465
-                    ypos 225
-                    zoom 0.35
+                hovered SetVariable("button_hint_text", "Adjust game settings, display, audio, and preferences")
+                unhovered SetVariable("button_hint_text", "")
+                xpos 1250
+                ypos 513
+                at main_slide_in_1
 
             text "Config":
-                xpos 530
-                ypos 215
-                size 75
+                xpos 1584
+                ypos 565
+                size 115
                 color "#ffffff"
-                font "lolita.ttf"
+                font "Holy-Union-2.ttf"
                 outlines [(2, "#00000080", 0, 0)]
+                xanchor 0.5
+                yanchor 0.5
+                at main_slide_in_1
 
-            ## Exit按钮
+            ## Official Web按钮（y坐标：1928 → 645）
             imagebutton:
-                idle "gui/button_exit.png"
-                hover Transform("gui/button_exit.png", alpha=0.8)
-                action Quit(confirm=True)
-                at transform:
-                    xpos 441
-                    ypos 335
-                    zoom 0.35
-
-            text "Exit":
-                xpos 530
-                ypos 325
-                size 75
-                color "#ffffff"
-                font "lolita.ttf"
-                outlines [(2, "#00000080", 0, 0)]
-
-            ## Official Web按钮
-            imagebutton:
-                idle "gui/button_web.png"
-                hover Transform("gui/button_web.png", alpha=0.8)
+                idle Transform("gui/button_bar.png", zoom=0.346)
+                hover Transform("gui/button_bar.png", zoom=0.346, alpha=0.85)
                 action OpenURL("https://your-official-website.com")
-                at transform:
-                    xpos 322
-                    ypos 450
-                    zoom 0.35
+                hovered SetVariable("button_hint_text", "Visit our official website for more information and updates")
+                unhovered SetVariable("button_hint_text", "")
+                xpos 1250
+                ypos 645
+                at main_slide_in_2
 
             text "Official Web":
-                xpos 470
-                ypos 440
-                size 75
+                xpos 1584
+                ypos 697
+                size 115
                 color "#ffffff"
-                font "lolita.ttf"
+                font "Holy-Union-2.ttf"
                 outlines [(2, "#00000080", 0, 0)]
+                xanchor 0.5
+                yanchor 0.5
+                at main_slide_in_2
 
-        ## 展开状态：显示周目选择和读取存档
+            ## Exit按钮（y坐标：2323 → 777）
+            imagebutton:
+                idle Transform("gui/button_bar.png", zoom=0.346)
+                hover Transform("gui/button_bar.png", zoom=0.346, alpha=0.85)
+                action Quit(confirm=True)
+                hovered SetVariable("button_hint_text", "Exit the game and return to desktop")
+                unhovered SetVariable("button_hint_text", "")
+                xpos 1250
+                ypos 777
+                at main_slide_in_3
+
+            text "Exit":
+                xpos 1584
+                ypos 829
+                size 115
+                color "#ffffff"
+                font "Holy-Union-2.ttf"
+                outlines [(2, "#00000080", 0, 0)]
+                xanchor 0.5
+                yanchor 0.5
+                at main_slide_in_3
+
+        ## 展开状态：显示周目选择
         if show_episodes:
-            fixed at episodes_slide_down:
-                ## 第一周目
-                imagebutton:
-                    idle Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.3))
-                    hover Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.1), alpha=0.9)
-                    action [SetVariable("show_episodes", False), Start("episode_1")]
-                    sensitive persistent.episode_1_unlocked
-                    at transform:
-                        xpos 500
-                        ypos 210
-                        zoom 0.25
-                        xzoom 1.3
+            ## Episode 1按钮（zoom=0.25，右对齐，间隔80px，无延迟）
+            imagebutton:
+                idle Transform("gui/button_bar.png", zoom=0.25)
+                hover Transform("gui/button_bar.png", zoom=0.25, alpha=0.85)
+                action [SetVariable("show_episodes", False), Start("episode_1")]
+                hovered SetVariable("button_hint_text", "Episode 1: The Beginning\nExperience the first chapter of mysteries in Bucha. Uncover hidden secrets and make crucial choices that will shape your journey.")
+                unhovered SetVariable("button_hint_text", "")
+                sensitive persistent.episode_1_unlocked
+                xpos 1436
+                ypos 513
+                at slide_in_1
 
-                text ("Episode 1" if persistent.episode_1_unlocked else "Episode 1 (Locked)"):
-                    xpos 550
-                    ypos 220
-                    size 28
-                    color ("#ffffff" if persistent.episode_1_unlocked else "#888888")
-                    font "lolita.ttf"
-                    outlines [(2, "#00000080", 0, 0)]
+            # Episode 1 - 左侧状态文字
+            text ("" if persistent.episode_1_unlocked else "(Locked)"):
+                xpos 1450
+                ypos 551
+                size 45
+                color "#ffffff"
+                font "Holy-Union-2.ttf"
+                outlines [(2, "#00000080", 0, 0)]
+                yanchor 0.5
+                at slide_in_1
 
-                ## 第二周目
-                imagebutton:
-                    idle Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.3))
-                    hover Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.1), alpha=0.9)
-                    action [SetVariable("show_episodes", False), Start("episode_2")]
-                    sensitive persistent.episode_2_unlocked
-                    at transform:
-                        xpos 500
-                        ypos 280
-                        zoom 0.25
-                        xzoom 1.3
+            # Episode 1 - 右侧主文字
+            text "Episode 1":
+                xpos 1905
+                ypos 551
+                size 60
+                color ("#ffffff" if persistent.episode_1_unlocked else "#888888")
+                font "Holy-Union-2.ttf"
+                outlines [(2, "#00000080", 0, 0)]
+                xanchor 1.0
+                yanchor 0.5
+                at slide_in_1
 
-                text ("Episode 2" if persistent.episode_2_unlocked else "Episode 2 (Locked)"):
-                    xpos 550
-                    ypos 290
-                    size 28
-                    color ("#ffffff" if persistent.episode_2_unlocked else "#888888")
-                    font "lolita.ttf"
-                    outlines [(2, "#00000080", 0, 0)]
+            ## Episode 2按钮（zoom=0.25，右对齐，间隔80px，延迟0.3s）
+            imagebutton:
+                idle Transform("gui/button_bar.png", zoom=0.25)
+                hover Transform("gui/button_bar.png", zoom=0.25, alpha=0.85)
+                action [SetVariable("show_episodes", False), Start("episode_2")]
+                hovered SetVariable("button_hint_text", "Episode 2: Deeper Into Darkness\nContinue your investigation as the mystery deepens. New challenges await as you delve further into the town's secrets.")
+                unhovered SetVariable("button_hint_text", "")
+                sensitive persistent.episode_2_unlocked
+                xpos 1436
+                ypos 593
+                at slide_in_2
 
-                ## 第三周目
-                imagebutton:
-                    idle Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.3))
-                    hover Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.1), alpha=0.9)
-                    action [SetVariable("show_episodes", False), Start("episode_3")]
-                    sensitive persistent.episode_3_unlocked
-                    at transform:
-                        xpos 500
-                        ypos 350
-                        zoom 0.25
-                        xzoom 1.3
+            # Episode 2 - 左侧状态文字
+            text ("" if persistent.episode_2_unlocked else "(Locked)"):
+                xpos 1450
+                ypos 631
+                size 45
+                color "#ffffff"
+                font "Holy-Union-2.ttf"
+                outlines [(2, "#00000080", 0, 0)]
+                yanchor 0.5
+                at slide_in_2
 
-                text ("Episode 3" if persistent.episode_3_unlocked else "Episode 3 (Locked)"):
-                    xpos 550
-                    ypos 360
-                    size 28
-                    color ("#ffffff" if persistent.episode_3_unlocked else "#888888")
-                    font "lolita.ttf"
-                    outlines [(2, "#00000080", 0, 0)]
+            # Episode 2 - 右侧主文字
+            text "Episode 2":
+                xpos 1905
+                ypos 631
+                size 60
+                color ("#ffffff" if persistent.episode_2_unlocked else "#888888")
+                font "Holy-Union-2.ttf"
+                outlines [(2, "#00000080", 0, 0)]
+                xanchor 1.0
+                yanchor 0.5
+                at slide_in_2
 
-                ## 真相周目
-                imagebutton:
-                    idle Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.3))
-                    hover Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.1), alpha=0.9)
-                    action [SetVariable("show_episodes", False), Start("episode_4")]
-                    sensitive persistent.episode_4_unlocked
-                    at transform:
-                        xpos 500
-                        ypos 430
-                        zoom 0.25
-                        xzoom 1.3
+            ## Episode 3按钮（zoom=0.25，右对齐，间隔80px，延迟0.6s）
+            imagebutton:
+                idle Transform("gui/button_bar.png", zoom=0.25)
+                hover Transform("gui/button_bar.png", zoom=0.25, alpha=0.85)
+                action [SetVariable("show_episodes", False), Start("episode_3")]
+                hovered SetVariable("button_hint_text", "Episode 3: The Final Truth\nFace the ultimate revelation in the concluding chapter. All mysteries converge as you discover the shocking truth behind Bucha.")
+                unhovered SetVariable("button_hint_text", "")
+                sensitive persistent.episode_3_unlocked
+                xpos 1436
+                ypos 673
+                at slide_in_3
 
-                text ("Episode 4" if persistent.episode_4_unlocked else "Episode 4 (Locked)"):
-                    xpos 550
-                    ypos 440
-                    size 28
-                    color ("#ffcc00" if persistent.episode_4_unlocked else "#888888")
-                    font "lolita.ttf"
-                    outlines [(2, "#00000080", 0, 0)]
+            # Episode 3 - 左侧状态文字
+            text ("" if persistent.episode_3_unlocked else "(Locked)"):
+                xpos 1450
+                ypos 711
+                size 45
+                color "#ffffff"
+                font "Holy-Union-2.ttf"
+                outlines [(2, "#00000080", 0, 0)]
+                yanchor 0.5
+                at slide_in_3
 
-                ## 读取存档
-                imagebutton:
-                    idle Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.2))
-                    hover Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(0), alpha=0.9)
-                    action ShowMenu("load")
-                    at transform:
-                        xpos 500
-                        ypos 500
-                        zoom 0.25
-                        xzoom 1.3
+            # Episode 3 - 右侧主文字
+            text "Episode 3":
+                xpos 1905
+                ypos 711
+                size 60
+                color ("#ffffff" if persistent.episode_3_unlocked else "#888888")
+                font "Holy-Union-2.ttf"
+                outlines [(2, "#00000080", 0, 0)]
+                xanchor 1.0
+                yanchor 0.5
+                at slide_in_3
 
-                text "Load Game":
-                    xpos 550
-                    ypos 510
-                    size 28
-                    color "#ffffff"
-                    font "lolita.ttf"
-                    outlines [(2, "#00000080", 0, 0)]
+            ## Load Game按钮（zoom=0.25，右对齐，间隔80px，延迟0.9s）
+            imagebutton:
+                idle Transform("gui/button_bar.png", zoom=0.25)
+                hover Transform("gui/button_bar.png", zoom=0.25, alpha=0.85)
+                action ShowMenu("load")
+                hovered SetVariable("button_hint_text", "Continue your adventure from a previously saved game")
+                unhovered SetVariable("button_hint_text", "")
+                xpos 1436
+                ypos 753
+                at slide_in_4
+
+            text "Load Game":
+                xpos 1677
+                ypos 791
+                size 60
+                color "#ffffff"
+                font "Holy-Union-2.ttf"
+                outlines [(2, "#00000080", 0, 0)]
+                xanchor 0.5
+                yanchor 0.5
+                at slide_in_4
 
 
 style main_menu_frame is empty
