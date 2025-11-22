@@ -1533,4 +1533,4 @@ translate None strings:
     old "unescape: Disables escaping of unicode symbols in unicode strings and print it as is (default)."
     new "unescape：禁止转义 Unicode 字符串中的 Unicode 符号，并按原样打印（默认）。"
 
-define gui.system_font = 'SourceHanSansLite.ttf'
+define gui.system_font = 'fonts/SourceHanSansLite.ttf'

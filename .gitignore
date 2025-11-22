@@ -55,6 +55,7 @@ desktop.ini
 /dist/
 /docs
 /asset
+/UI-LJH-resources
 # Temporary cleanup scripts (keep for local use only)
 clean_all_data.bat
 清理所有数据.bat
