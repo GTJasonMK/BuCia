@@ -49,17 +49,39 @@ Ren'Py 会自动检索到 `BuCia` 项目并显示在列表中，选择后点击 
 
 ```
 game/
-├── data/              # 数据层 - 游戏数据
-│   ├── characters.rpy  # 角色数据库
-│   ├── clues.rpy       # 线索数据库
-│   └── locations.rpy   # 地点数据库
-├── systems/           # 系统层 - 游戏逻辑
-│   ├── time_system.rpy    # 时间系统
-│   └── episode_system.rpy # 周目管理
-└── ui/                # 表现层 - 用户界面
-    ├── time.rpy        # 时间UI
-    ├── locations.rpy   # 地图UI
-    └── clues.rpy       # 线索簿UI
+├── data/                    # 数据层 - 游戏数据
+│   ├── characters/          # 角色相关数据
+│   │   └── database.rpy     # 角色定义和数据库
+│   ├── world/               # 世界设定数据
+│   │   └── locations.rpy    # 地点数据
+│   ├── items/               # 物品相关数据
+│   │   └── clues.rpy        # 线索数据
+│   └── config/              # 配置数据（预留）
+├── systems/                 # 系统层 - 游戏逻辑
+│   ├── core/                # 核心游戏系统
+│   │   ├── episode.rpy      # 周目管理系统
+│   │   └── time.rpy         # 时间系统
+│   ├── gameplay/            # 游戏玩法系统（预留）
+│   ├── character/           # 角色系统（预留）
+│   ├── progress/            # 进度追踪系统（预留）
+│   └── extras/              # 额外功能系统（预留）
+├── ui/                      # 表现层 - 用户界面
+│   ├── time.rpy             # 时间UI
+│   ├── locations.rpy        # 地图UI
+│   └── clues.rpy            # 线索簿UI
+├── screens/                 # UI屏幕定义（模块化）
+│   ├── main_menu.rpy        # 主菜单和周目选择
+│   ├── dialogue.rpy         # 对话、选择、输入屏幕
+│   ├── game_menu.rpy        # 游戏菜单框架
+│   ├── save_load.rpy        # 存档和读档界面
+│   ├── preferences.rpy      # 设置界面
+│   ├── history.rpy          # 历史记录
+│   ├── navigation.rpy       # 导航菜单
+│   └── common.rpy           # 通用UI组件
+└── fonts/                   # 字体资源
+    ├── lolita.ttf           # 标题字体
+    ├── SourceHanSansLite.ttf # 对话字体
+    └── Holy-Union-2.ttf     # UI字体
 ```
 
 ### 周目复用机制
@@ -137,10 +159,22 @@ game/episodes/
 - **使用**：`voice "voice/tsibela/ep1_line001.ogg"`
 
 ### 字体资源
-- **位置**：`game/`（根目录）
+- **位置**：`game/fonts/`
 - **当前字体**：
-  - `lolita.ttf` - 标题字体
-  - `SourceHanSansLite.ttf` - 对话字体（思源黑体）
+  - `Holy-Union-2.ttf` - UI和周目按钮字体
+  - `lolita.ttf` - 界面标题字体
+  - `SourceHanSansLite.ttf` - 对话和正文字体（思源黑体）
+
+**添加新字体：**
+1. 将字体文件放入 `game/fonts/` 目录
+2. 在 `gui.rpy` 中定义字体：
+   ```python
+   define gui.new_font = "fonts/your_font.ttf"
+   ```
+3. 在需要的地方使用：
+   ```renpy
+   text "示例文字" font "fonts/your_font.ttf"
+   ```
 
 ### GUI界面资源
 - **位置**：`game/gui/`
@@ -152,7 +186,7 @@ game/episodes/
 
 ### 添加新角色
 
-**1. 注册角色数据**（`game/data/characters.rpy`）
+**1. 注册角色数据**（`game/data/characters/database.rpy`）
 ```python
 ## 定义角色对象
 define new_character = Character("新角色", color="#ffffff")
@@ -192,7 +226,7 @@ label talk_to_new_character_scene1:
     return
 ```
 
-**4. 添加到地点**（`game/data/locations.rpy`）
+**4. 添加到地点**（`game/data/world/locations.rpy`）
 ```python
 "地点名称": {
     "characters": ["罗琳达", "新角色"],  # 添加新角色
@@ -204,7 +238,7 @@ label talk_to_new_character_scene1:
 
 ### 添加新线索
 
-**1. 注册线索数据**（`game/data/clues.rpy`）
+**1. 注册线索数据**（`game/data/items/clues.rpy`）
 ```python
 clues_database = {
     "new_clue_id": {
@@ -238,7 +272,7 @@ label investigate_location_hotspot:
 
 ### 添加新地点
 
-**1. 注册地点数据**（`game/data/locations.rpy`）
+**1. 注册地点数据**（`game/data/world/locations.rpy`）
 ```python
 locations_database = {
     "新地点ID": {
@@ -370,18 +404,23 @@ label ep2_day1_morning:
     return
 ```
 
-**4. 在主菜单添加按钮**（`game/screens.rpy`）
+**4. 在主菜单添加按钮**（`game/screens/main_menu.rpy`）
 ```renpy
-## 在展开状态中添加
+## 在展开状态中添加周目按钮
 imagebutton:
-    idle Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.3))
-    hover Transform("gui/button_config.png", matrixcolor=BrightnessMatrix(-0.1), alpha=0.9)
+    idle "gui/button_bar.png"
+    hover "gui/button_bar.png"
     action [SetVariable("show_episodes", False), Start("episode_2")]
     sensitive persistent.episode_2_unlocked
+    hovered [SetVariable("button_hint_text", "Episode 2描述"), SetVariable("episode2_hovered", True)]
+    unhovered [SetVariable("button_hint_text", ""), SetVariable("episode2_hovered", False)]
 
-text ("Episode 2" if persistent.episode_2_unlocked else "Episode 2 (Locked)"):
+text "Episode 2":
+    properties TEXT_STYLES["episode_button"]
     color ("#ffffff" if persistent.episode_2_unlocked else "#888888")
 ```
+
+**注意**：周目按钮的颜色通过 persistent 变量控制，解锁为白色，锁定为灰色。
 
 ---
 
@@ -391,7 +430,11 @@ text ("Episode 2" if persistent.episode_2_unlocked else "Episode 2 (Locked)"):
 
 #### 文件命名
 - 全小写，使用下划线分隔
-- 示例：`time_system.rpy`, `episode1_dialogues.rpy`
+- 示例：`time.rpy`, `database.rpy`, `main_menu.rpy`
+
+#### 目录命名
+- 全小写，使用下划线分隔（如需要）
+- 示例：`save_load/`, `characters/`, `core/`
 
 #### Label命名
 ```renpy
@@ -648,6 +691,20 @@ is_truth_episode()                     # 检查真相周目
 
 ---
 
-**文档版本**：v1.0
-**最后更新**：2025-11-18
+**文档版本**：v2.0
+**最后更新**：2025-11-23
 **维护者**：项目开发团队
+
+## 更新日志
+
+### v2.0 (2025-11-23)
+- 重构项目结构：systems/ 和 data/ 目录采用子目录分类
+- 新增 screens/ 目录：将 screens.rpy 模块化拆分为8个文件
+- 新增 fonts/ 目录：统一管理字体资源
+- 修复周目按钮颜色逻辑问题
+- 更新所有文档以反映新的目录结构
+
+### v1.0 (2025-11-18)
+- 初始版本发布
+- 建立三层架构设计
+- 实现周目系统基础功能
