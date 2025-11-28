@@ -32,6 +32,8 @@ style navigation_button_text is gui_button_text
 style navigation_button:
     size_group "navigation"
     properties gui.button_properties("navigation_button")
+    activate_sound "audio/sfx/空灵点击音效.ogg"        #点击的按钮时的音效
+    # hover_sound "audio/boton.mp3"           #悬浮在按钮上时的音效
 
 style navigation_button_text:
     properties gui.text_properties("navigation_button")
