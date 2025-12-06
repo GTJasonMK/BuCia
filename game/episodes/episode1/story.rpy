@@ -34,21 +34,23 @@ label episode1_start:
     najezhida """注意，全知全能之眼的颜色代表着第一视角角色的精神状态，我会根据你的游玩情况实时调整做出提醒，
                 如果眼睛开始向红色转变——"""
 
-        # TODO 调整展示sanity动画
-    show sanity 1 at truecenter
+    ## 展示精神值动态变化效果
+    $ _sanity_backup = persistent.sanity
+    show screen sanity_display
+    $ persistent.sanity = 100
     with Pause(0.4)
-    show sanity 2 at truecenter 
+    $ persistent.sanity = 80
     with Pause(0.4)
-    show sanity 3 at truecenter 
+    $ persistent.sanity = 60
     with Pause(0.4)
-    show sanity 4 at truecenter 
+    $ persistent.sanity = 40
     with Pause(0.4)
-    show sanity 5 at truecenter
+    $ persistent.sanity = 20
     with Pause(0.4)
-    show sanity 6 at truecenter 
+    $ persistent.sanity = 0
     with Pause(0.8)
-
-    hide sanity with dissolve
+    $ persistent.sanity = _sanity_backup if _sanity_backup is not None else 100
+    hide screen sanity_display
 
     najezhida """像这样，说明我判断你接收到的信息会与游戏盘的真实情况有差别，
                 角色的精神正处于岌岌可危的状态，虚假的信息也会影响你的判断。"""

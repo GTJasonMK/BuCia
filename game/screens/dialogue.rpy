@@ -185,22 +185,12 @@ style quick_button_text:
 ##
 ## 该屏幕包含在标题菜单和游戏菜单中，并提供导航到其他菜单，以及启动游戏。
 
-## 获取精神值对应的eye图标
+## 获取精神值图标
+## 注意：精神值显示现在使用动态填充效果（见 ui/time.rpy 的 sanity_display）
+## 此函数保留用于向后兼容或其他用途
 init python:
     def get_sanity_icon():
-        sanity = persistent.sanity if persistent.sanity is not None else 100
-        if sanity >= 84:
-            return "sanity/1.png"
-        elif sanity >= 67:
-            return "sanity/2.png"
-        elif sanity >= 51:
-            return "sanity/3.png"
-        elif sanity >= 34:
-            return "sanity/4.png"
-        elif sanity >= 17:
-            return "sanity/5.png"
-        else:
-            return "sanity/6.png"
+        return "sanity/san_eye.png"
 
     ## ========== 按钮动画系统核心函数 ==========
 
