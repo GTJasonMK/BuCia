@@ -1,16 +1,47 @@
+## 摄像机对话框缩放比例
+define CAMERA_DIALOGUE_SCALE = 0.7036
+define CAMERA_TEXTBOX_HEIGHT = 339
+
 screen say(who, what):
 
-    window:
-        id "window"
+    ## 根据 camera_ui 状态选择对话框样式
+    $ _use_camera_style = getattr(store, 'camera_ui_enabled', True)
 
-        if who is not None:
+    if _use_camera_style:
+        ## 摄像机风格对话框 - 直接定义所有属性
+        window:
+            id "window"
+            xalign 0.5
+            xfill True
+            yalign 1.0
+            ysize CAMERA_TEXTBOX_HEIGHT
+            background Transform("camera_ui/对话框.png", zoom=CAMERA_DIALOGUE_SCALE)
 
-            window:
-                id "namebox"
-                style "namebox"
-                text who id "who"
+            if who is not None:
+                window:
+                    id "namebox"
+                    style "namebox"
+                    text who id "who":
+                        font "fonts/lolita.ttf"
 
-        text what id "what"
+            text what id "what":
+                style "say_dialogue"
+                font "fonts/lolita.ttf"
+                ypos 85
+
+    else:
+        ## 默认对话框样式
+        window:
+            id "window"
+
+            if who is not None:
+
+                window:
+                    id "namebox"
+                    style "namebox"
+                    text who id "who"
+
+            text what id "what"
 
 
     ## 如果有对话框头像，会将其显示在文本之上。请不要在手机界面下显示这个，因为
@@ -63,6 +94,7 @@ style say_dialogue:
     ypos gui.dialogue_ypos
 
     adjust_spacing False
+
 
 ## 输入屏幕 ########################################################################
 ##
@@ -155,8 +187,14 @@ screen quick_menu():
             textbutton _("设置") action ShowMenu('preferences')
 
 
-## 此代码确保只要用户没有主动隐藏界面，就会在游戏中显示 quick_menu 和 sanity_display 屏幕。
+## 此代码确保只要用户没有主动隐藏界面，就会在游戏中显示相关屏幕。
+## default_background: 默认背景（最底层，zorder -100）
+## camera_ui: 摄像机风格UI覆盖层（最高优先级，zorder 200）
+## quick_menu: 快捷菜单
+## sanity_display: 精神值显示
 init python:
+    config.overlay_screens.append("default_background")
+    config.overlay_screens.append("camera_ui")
     config.overlay_screens.append("quick_menu")
     config.overlay_screens.append("sanity_display")
 

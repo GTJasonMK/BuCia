@@ -124,7 +124,7 @@ init python:
         },
         "main_button": {
             # 主按钮文字样式 (Start, Config, Official Web, Exit)
-            "size": 115,
+            "size": 85,
             "color": "#ffffff",
             "font": "fonts/Holy-Union-2.ttf",
             "outlines": [(2, "#00000080", 0, 0)]

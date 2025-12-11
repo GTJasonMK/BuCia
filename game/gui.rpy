@@ -238,7 +238,8 @@ define gui.navigation_xpos = 60
 define gui.skip_ypos = 15
 
 ## 通知界面的垂直位置。
-define gui.notify_ypos = 68
+## 调整到眼睛图标下方，避免重叠
+define gui.notify_ypos = 140
 
 ## 菜单选项之间的间距。
 define gui.choice_spacing = 33

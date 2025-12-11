@@ -11,10 +11,11 @@ label episode1_start:
     # 设置当前周目
     $ start_episode(1)
 
+    ## 默认背景由 default_background screen 自动提供
+    ## 如需切换到其他背景，使用: scene 背景名 with fade
+
     "本故事所发生的一切都是幻想剧"
     "不以任何现实元素作为创作来源。"
-
-    scene bg room with fade
 
     "第一周目：陷阱与迷雾"
 
