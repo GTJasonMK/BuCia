@@ -10,6 +10,8 @@ init python:
             "description": "小镇中最豪华的居所，联邦政府社区管理负责人的住处。",
             "background": "bg/rolinda_house.jpg",
             "bgm": "bgm_investigation.ogg",
+            "map_pos": (700, 280),
+            "map_icon": "building",
             "hotspots": {
                 "书桌": {
                     "description": "整洁的办公桌，上面摆放着一些文件。",
@@ -41,6 +43,8 @@ init python:
             "description": "小镇唯一的医疗设施，兼具药房功能。",
             "background": "bg/yedina_clinic.jpg",
             "bgm": "bgm_investigation.ogg",
+            "map_pos": (1150, 520),
+            "map_icon": "building",
             "hotspots": {
                 "药柜": {
                     "description": "放满各种药品的柜子，有些标签模糊。",
@@ -72,6 +76,8 @@ init python:
             "description": "小镇边缘的简陋房屋，Day 3凌晨被火灾焚毁。",
             "background": "bg/andrea_house.jpg",
             "bgm": "bgm_dark.ogg",
+            "map_pos": (250, 450),
+            "map_icon": "house",
             "hotspots": {
                 "烧毁的床铺": {
                     "description": "火灾后的残骸，能看出曾经的简陋。",
@@ -106,6 +112,8 @@ init python:
             "description": "小镇的东正教教堂，莫洛拉瓦神父工作的地方。",
             "background": "bg/church.jpg",
             "bgm": "bgm_church.ogg",
+            "map_pos": (420, 220),
+            "map_icon": "church",
             "hotspots": {
                 "祈祷室": {
                     "description": "安静的祈祷空间，可以在这里冥想。",
@@ -138,6 +146,8 @@ init python:
             "description": "特莉娜的办公场所，处理小镇日常事务。",
             "background": "bg/community_center.jpg",
             "bgm": "bgm_investigation.ogg",
+            "map_pos": (1050, 380),
+            "map_icon": "building",
             "hotspots": {
                 "档案柜": {
                     "description": "存放社区档案的文件柜。",
@@ -169,6 +179,8 @@ init python:
             "description": "退休警员的住所，整洁而朴素。",
             "background": "bg/badebiete_house.jpg",
             "bgm": "bgm_investigation.ogg",
+            "map_pos": (520, 620),
+            "map_icon": "house",
             "hotspots": {
                 "书架": {
                     "description": "放满警务相关书籍的书架。",
@@ -200,6 +212,8 @@ init python:
             "description": "堆满电力设备和工具的工作间。",
             "background": "bg/hafu_workshop.jpg",
             "bgm": "bgm_investigation.ogg",
+            "map_pos": (1380, 320),
+            "map_icon": "workshop",
             "hotspots": {
                 "工具台": {
                     "description": "各种电工工具整齐摆放。",
@@ -230,6 +244,8 @@ init python:
             "description": "简单的居所，靠近地下管道入口。",
             "background": "bg/bolai_house.jpg",
             "bgm": "bgm_investigation.ogg",
+            "map_pos": (320, 700),
+            "map_icon": "house",
             "hotspots": {
                 "管道图纸": {
                     "description": "小镇地下管道的设计图。",
@@ -256,6 +272,8 @@ init python:
             "description": "租金低廉的小公寓，陈设简单。",
             "background": "bg/ileina_apartment.jpg",
             "bgm": "bgm_investigation.ogg",
+            "map_pos": (1320, 650),
+            "map_icon": "house",
             "hotspots": {
                 "窗户": {
                     "description": "面向小镇广场的窗户，视野很好。",
@@ -282,6 +300,8 @@ init python:
             "description": "小镇的中心区域，居民们的聚集地。",
             "background": "bg/town_square.jpg",
             "bgm": "bgm_town.ogg",
+            "map_pos": (850, 480),
+            "map_icon": "square",
             "hotspots": {
                 "长椅": {
                     "description": "广场上的长椅，可以观察人来人往。",
@@ -399,6 +419,81 @@ init python:
             if is_location_unlocked(loc_name):
                 unlocked.append(loc_name)
         return unlocked
+
+    ## ========================================
+    ## 地图系统API
+    ## ========================================
+
+    def get_current_location():
+        """获取当前所在地点"""
+        return current_location
+
+    def set_current_location(location_name):
+        """设置当前所在地点"""
+        global current_location
+        if location_name in locations_database or location_name is None:
+            current_location = location_name
+            return True
+        return False
+
+    def get_location_map_pos(location_name):
+        """获取地点的地图坐标"""
+        location = get_location_info(location_name)
+        if location:
+            return location.get("map_pos", None)
+        return None
+
+    def get_all_map_locations():
+        """获取所有有地图坐标的地点"""
+        result = []
+        for loc_name, loc_data in locations_database.items():
+            if loc_data.get("map_pos"):
+                result.append({
+                    "name": loc_name,
+                    "display_name": loc_data.get("name", loc_name),
+                    "pos": loc_data["map_pos"],
+                    "icon": loc_data.get("map_icon", "default"),
+                    "unlocked": is_location_unlocked(loc_name),
+                    "available": is_location_available(loc_name),
+                    "visited": loc_data.get("visited", False)
+                })
+        return result
+
+    def travel_to_location(location_name):
+        """
+        前往指定地点（消耗行动点）
+
+        Returns:
+            bool: 是否成功前往
+        """
+        if not is_location_unlocked(location_name):
+            renpy.notify("该地点尚未解锁")
+            return False
+
+        if not is_location_available(location_name):
+            renpy.notify("当前时段无法前往该地点")
+            return False
+
+        if not has_action_points():
+            renpy.notify("行动点不足")
+            return False
+
+        # 消耗行动点
+        use_action_point()
+        # 设置当前位置
+        set_current_location(location_name)
+        # 标记已访问
+        set_location_visited(location_name)
+
+        return True
+
+    def get_visited_locations():
+        """获取所有已访问的地点"""
+        visited = []
+        for loc_name, loc_data in locations_database.items():
+            if loc_data.get("visited", False):
+                visited.append(loc_name)
+        return visited
 
 ## 地图和地点探索UI已移至 game/ui/locations.rpy
 ## 保持数据层和UI层分离

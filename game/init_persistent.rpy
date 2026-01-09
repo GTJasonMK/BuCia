@@ -69,6 +69,18 @@ init -1 python:
         persistent.safe_password_found = False
 
     # ========================================
+    # 笔记本系统 - 角色档案和记录
+    # ========================================
+
+    # 已遇见的角色列表（角色名）
+    if getattr(persistent, 'met_characters', None) is None:
+        persistent.met_characters = []
+
+    # 笔记本记录列表（记录ID）
+    if getattr(persistent, 'notebook_records', None) is None:
+        persistent.notebook_records = []
+
+    # ========================================
     # 开发者工具函数
     # ========================================
 

@@ -84,9 +84,8 @@ screen sanity_display():
     ## 点击打开设置菜单
     zorder 100
 
-    ## 仅在非主菜单时显示
-    ## 当摄像机UI启用时，使用摄像机UI配套的位置
-    if not main_menu:
+    ## 仅在非主菜单且摄像机UI启用时显示
+    if not main_menu and camera_ui_enabled:
         ## 计算尺寸参数（基于统一缩放）
         $ sanity = persistent.sanity if persistent.sanity is not None else 100
         $ fill_ratio = sanity / 100.0

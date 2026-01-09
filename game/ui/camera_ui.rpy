@@ -237,6 +237,12 @@ screen camera_ui():
     ## 快捷键：A 键切换自动播放
     key "a" action Preference("auto-forward", "toggle")
 
+    ## 快捷键：N 键打开/关闭笔记本
+    key "n" action ToggleScreen("notebook")
+
+    ## 快捷键：M 键打开/关闭地图
+    key "m" action ToggleScreen("visual_map")
+
     ## 主菜单时不显示
     if not main_menu and camera_ui_enabled:
         ## 自动播放控制区需要特殊处理的元素

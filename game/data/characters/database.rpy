@@ -313,3 +313,91 @@ init python:
             renpy.log(f"警告：尝试检查不存在的角色见面状态 - '{char_name}'")
             return False
         return not character_database[char_name].get("first_meet", False)
+
+    ## ========================================
+    ## 笔记本系统集成API
+    ## ========================================
+
+    def meet_character(char_name):
+        """
+        记录与角色相遇（添加到笔记本人物页）
+
+        Args:
+            char_name: 角色名称
+
+        Returns:
+            bool: 是否成功添加（首次相遇返回True）
+        """
+        if char_name not in character_database:
+            renpy.log(f"错误：尝试记录与不存在的角色相遇 - '{char_name}'")
+            return False
+
+        if char_name not in persistent.met_characters:
+            persistent.met_characters.append(char_name)
+            character_database[char_name]["first_meet"] = True
+            renpy.notify("遇见了 " + char_name)
+            return True
+        return False
+
+    def has_met_character(char_name):
+        """
+        检查是否已遇见某角色
+
+        Args:
+            char_name: 角色名称
+
+        Returns:
+            bool: 是否已遇见
+        """
+        return char_name in persistent.met_characters
+
+    def get_met_characters():
+        """
+        获取所有已遇见的角色数据
+
+        Returns:
+            list: 角色数据列表
+        """
+        characters = []
+        for char_name in persistent.met_characters:
+            char_data = character_database.get(char_name)
+            if char_data:
+                characters.append(char_data)
+        return characters
+
+    def get_character_data(char_name):
+        """
+        获取角色完整数据
+
+        Args:
+            char_name: 角色名称
+
+        Returns:
+            dict or None: 角色数据
+        """
+        return character_database.get(char_name, None)
+
+    def get_all_character_names():
+        """
+        获取所有角色名称列表
+
+        Returns:
+            list: 角色名称列表
+        """
+        return list(character_database.keys())
+
+    def get_met_character_count():
+        """
+        获取已遇见角色数量
+
+        Returns:
+            int: 已遇见角色数量
+        """
+        return len(persistent.met_characters)
+
+    def clear_met_characters():
+        """
+        清除所有已遇见角色记录（仅用于开发测试）
+        """
+        persistent.met_characters = []
+        renpy.notify("已遇见角色记录已清除")
