@@ -81,6 +81,18 @@ init -1 python:
         persistent.notebook_records = []
 
     # ========================================
+    # 地点系统 - 已访问的地点
+    # ========================================
+
+    # 已访问地点的名称列表
+    if getattr(persistent, 'visited_locations', None) is None:
+        persistent.visited_locations = []
+
+    # 已解锁地点的名称列表（用于弹窗通知）
+    if getattr(persistent, 'unlocked_locations', None) is None:
+        persistent.unlocked_locations = []
+
+    # ========================================
     # 开发者工具函数
     # ========================================
 
@@ -98,6 +110,10 @@ init -1 python:
         persistent.sanity = 100
         persistent.bolai_confronted = False
         persistent.safe_password_found = False
+        persistent.met_characters = []
+        persistent.notebook_records = []
+        persistent.visited_locations = []
+        persistent.unlocked_locations = []
         renpy.notify("所有persistent变量已重置")
 
     def unlock_all_episodes():

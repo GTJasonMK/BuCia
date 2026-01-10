@@ -1,5 +1,8 @@
 ## 地点系统 - 布恰小镇地图
 
+## 地图移动目标变量
+default map_target_location = None
+
 ## 地点数据库
 init python:
     locations_database = {
@@ -400,10 +403,16 @@ init python:
         available_times = location.get("available_times", [])
         return current_time in available_times
 
-    ## 标记地点为已访问
+    ## 标记地点为已访问（持久化存储）
     def set_location_visited(location_name):
         if location_name in locations_database:
-            locations_database[location_name]["visited"] = True
+            ## 使用持久化存储
+            if location_name not in persistent.visited_locations:
+                persistent.visited_locations.append(location_name)
+
+    ## 检查地点是否已访问
+    def is_location_visited(location_name):
+        return location_name in persistent.visited_locations
 
     ## 获取地点的角色列表
     def get_location_characters(location_name):
@@ -455,7 +464,7 @@ init python:
                     "icon": loc_data.get("map_icon", "default"),
                     "unlocked": is_location_unlocked(loc_name),
                     "available": is_location_available(loc_name),
-                    "visited": loc_data.get("visited", False)
+                    "visited": is_location_visited(loc_name)  ## 使用持久化检查
                 })
         return result
 
@@ -488,12 +497,175 @@ init python:
         return True
 
     def get_visited_locations():
-        """获取所有已访问的地点"""
-        visited = []
-        for loc_name, loc_data in locations_database.items():
-            if loc_data.get("visited", False):
-                visited.append(loc_name)
-        return visited
+        """获取所有已访问的地点（从持久化存储读取）"""
+        return persistent.visited_locations[:]  ## 返回副本避免直接修改
+
+    ## ========================================
+    ## 地点解锁API（带弹窗通知）
+    ## ========================================
+
+    def unlock_location(location_name):
+        """
+        解锁指定地点并显示弹窗通知
+
+        Args:
+            location_name: 地点名称
+
+        Returns:
+            bool: True=新解锁, False=已解锁或地点不存在
+        """
+        if location_name not in locations_database:
+            renpy.log("错误：尝试解锁不存在的地点 - '{}'".format(location_name))
+            return False
+
+        ## 检查是否已经解锁过（使用持久化存储）
+        if location_name in persistent.unlocked_locations:
+            return False  ## 已经解锁过
+
+        ## 设置地点为解锁状态
+        locations_database[location_name]["unlocked"] = True
+
+        ## 添加到持久化解锁列表
+        persistent.unlocked_locations.append(location_name)
+
+        ## 显示弹窗通知
+        display_name = locations_database[location_name].get("name", location_name)
+        if 'popup_location' in dir():
+            popup_location(display_name)
+        else:
+            renpy.notify("新地点已解锁：" + display_name)
+
+        return True
+
+    def is_location_first_unlock(location_name):
+        """
+        检查地点是否已被解锁过（持久化）
+
+        Args:
+            location_name: 地点名称
+
+        Returns:
+            bool: True=已解锁过
+        """
+        return location_name in persistent.unlocked_locations
+
+    def get_unlocked_location_count():
+        """
+        获取已解锁地点数量
+
+        Returns:
+            int: 已解锁地点数量
+        """
+        return len(persistent.unlocked_locations)
+
+    ## ========================================
+    ## 地图移动API（带场景跳转）
+    ## ========================================
+
+    def get_location_label(location_name):
+        """
+        获取地点对应的visit label名称
+
+        Args:
+            location_name: 地点名称
+
+        Returns:
+            str: label名称（如 "visit_rolinda_house"），地点不存在返回None
+        """
+        loc_data = locations_database.get(location_name)
+        if loc_data:
+            label_suffix = loc_data.get("label_suffix", "")
+            if label_suffix:
+                return "visit_" + label_suffix
+        return None
+
+    def do_travel_to_location(location_name):
+        """
+        前往指定地点并跳转到场景（从地图UI调用）
+
+        这个函数会：
+        1. 调用 travel_to_location() 检查条件并消耗行动点
+        2. 如果成功，关闭笔记本界面
+        3. 跳转到对应的 visit_* 场景
+
+        Args:
+            location_name: 地点名称
+
+        Returns:
+            无返回值（成功时会跳转场景）
+        """
+        ## 调用 travel_to_location 检查条件并消耗行动点
+        if not travel_to_location(location_name):
+            ## 失败时 travel_to_location 已经显示了提示
+            return
+
+        ## 获取目标 label
+        target_label = get_location_label(location_name)
+        if not target_label:
+            renpy.notify("错误：找不到地点场景")
+            return
+
+        ## 检查 label 是否存在
+        if not renpy.has_label(target_label):
+            renpy.notify("该地点场景尚未实现")
+            return
+
+        ## 关闭笔记本界面
+        renpy.hide_screen("notebook")
+
+        ## 跳转到地点场景
+        renpy.jump(target_label)
+
+    def prepare_map_travel(location_name):
+        """
+        准备地图移动（设置目标地点变量）
+        配合 Jump("process_map_travel") 使用
+
+        Args:
+            location_name: 目标地点名称
+        """
+        store.map_target_location = location_name
 
 ## 地图和地点探索UI已移至 game/ui/locations.rpy
 ## 保持数据层和UI层分离
+
+## ============================================================================
+## 地图移动处理 Label
+## ============================================================================
+
+label process_map_travel:
+    ## 处理从地图UI发起的位置移动
+    ## 由 prepare_map_travel() + Jump("process_map_travel") 触发
+
+    ## 检查目标地点是否设置
+    if map_target_location is None:
+        $ renpy.notify("错误：未指定目标地点")
+        return
+
+    ## 调用 travel_to_location 检查条件并消耗行动点
+    $ travel_success = travel_to_location(map_target_location)
+
+    if not travel_success:
+        ## 失败时 travel_to_location 已经显示了提示
+        $ map_target_location = None
+        return
+
+    ## 获取目标 label
+    $ target_label = get_location_label(map_target_location)
+
+    if target_label is None:
+        $ renpy.notify("错误：找不到地点场景")
+        $ map_target_location = None
+        return
+
+    ## 检查 label 是否存在
+    if not renpy.has_label(target_label):
+        $ renpy.notify("该地点场景尚未实现")
+        $ map_target_location = None
+        return
+
+    ## 清理变量
+    $ map_target_location = None
+
+    ## 跳转到目标场景
+    jump expression target_label

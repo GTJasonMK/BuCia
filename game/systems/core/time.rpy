@@ -52,6 +52,14 @@ init python:
     def has_action_points():
         return action_points > 0
 
+    ## 获取当前行动点数
+    def get_action_points():
+        return action_points
+
+    ## 获取最大行动点数
+    def get_max_action_points():
+        return max_action_points
+
     ## 重置时间（用于新周目开始）
     def reset_time():
         global current_day, current_time, action_points

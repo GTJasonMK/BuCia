@@ -138,7 +138,8 @@ init python:
             ## 返回所有记录
             return get_all_records() if 'get_all_records' in dir() else []
         elif tab == NOTEBOOK_TAB_MAP:
-            ## 地图暂时返回空（后续实现）
+            ## 地图标签页不使用此函数获取数据
+            ## 地图内容由 notebook_map_content() 直接调用 get_all_map_locations() 渲染
             return []
         return []
 
@@ -684,9 +685,11 @@ screen notebook_map_content():
                         hover_background Solid("#5a9c5e")
                         xpadding 25
                         ypadding 8
+                        ## 使用 prepare_map_travel + Jump 处理移动和场景跳转
                         action [
+                            Function(prepare_map_travel, notebook_selected_item["name"]),
                             Hide("notebook"),
-                            Function(travel_to_location, notebook_selected_item["name"])
+                            Jump("process_map_travel")
                         ]
 
 ## ============================================================================

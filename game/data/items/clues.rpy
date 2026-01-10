@@ -325,9 +325,12 @@ init python:
         # 添加到已发现列表
         persistent.discovered_clues.append(clue_id)
 
-        # 显示通知
+        # 显示弹窗通知
         clue_name = clues_database[clue_id]["name"]
-        renpy.notify(f"发现新线索：{clue_name}")
+        if 'popup_clue' in dir():
+            popup_clue(clue_name)
+        else:
+            renpy.notify(f"发现新线索：{clue_name}")
 
         return True  # 新发现
 

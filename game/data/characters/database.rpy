@@ -280,10 +280,11 @@ init python:
         renpy.log(f"角色 '{char_name}' 已标记为死亡")
         return True
 
-    ## 标记角色初次见面
+    ## 标记角色初次见面（推荐使用 meet_character）
     def set_character_met(char_name):
         """
         标记与角色初次见面
+        内部调用 meet_character 以保持一致性
 
         Args:
             char_name: 角色名称
@@ -291,12 +292,8 @@ init python:
         Returns:
             bool: 是否成功标记
         """
-        if char_name not in character_database:
-            renpy.log(f"错误：尝试标记与不存在的角色见面 - '{char_name}'")
-            return False
-
-        character_database[char_name]["first_meet"] = True
-        return True
+        ## 调用 meet_character 来处理持久化和弹窗
+        return meet_character(char_name)
 
     ## 检查是否初次见面
     def is_first_meet(char_name):
@@ -335,7 +332,11 @@ init python:
         if char_name not in persistent.met_characters:
             persistent.met_characters.append(char_name)
             character_database[char_name]["first_meet"] = True
-            renpy.notify("遇见了 " + char_name)
+            ## 显示弹窗通知
+            if 'popup_character' in dir():
+                popup_character(char_name)
+            else:
+                renpy.notify("遇见了 " + char_name)
             return True
         return False
 
