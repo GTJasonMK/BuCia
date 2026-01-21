@@ -53,8 +53,8 @@ label talk_to_yedina_scene1:
             yedina "质量有保证，你不用担心。"
             $ modify_character_trust("叶蒂娜", 5)
 
-        "询问安德里娅的情况" if is_day_after(3):
-            yedina "安德里娅...是个悲剧。"
+        "询问安德莉娅的情况" if is_day_after(3):
+            yedina "安德莉娅...是个悲剧。"
             yedina "我完成了尸检，死因是烟雾吸入导致窒息。"
             # 叶蒂娜似乎欲言又止
             $ modify_character_trust("叶蒂娜", 10)
@@ -203,17 +203,17 @@ label talk_to_bolai_scene1:
             return
 
 
-## 伊雷娜 - 场景1：日常生活
+## 伊蕾娜 - 场景1：日常生活
 label talk_to_ileina_scene1:
     """
-    与伊雷娜交谈
+    与伊蕾娜交谈
     """
 
     show ileina neutral at center with dissolve
 
-    if is_first_meet("伊雷娜"):
-        $ set_character_met("伊雷娜")
-        ileina "你好...我是伊雷娜。"
+    if is_first_meet("伊蕾娜"):
+        $ set_character_met("伊蕾娜")
+        ileina "你好...我是伊蕾娜。"
         ileina "你是新来的调查员吗？"
     else:
         ileina "有什么事吗？"
@@ -224,14 +224,14 @@ label talk_to_ileina_scene1:
         "询问日常生活":
             ileina "生活很平淡..."
             ileina "每天都在想办法度日。"
-            $ modify_character_trust("伊雷娜", 5)
+            $ modify_character_trust("伊蕾娜", 5)
             jump talk_ileina_menu1
 
         "询问火灾当晚看到了什么" if is_day_after(3):
             ileina "那天晚上..."
             ileina "我从窗户看到了一些奇怪的东西。"
             ileina "但我不确定自己看到的是什么。"
-            $ modify_character_trust("伊雷娜", 10)
+            $ modify_character_trust("伊蕾娜", 10)
             jump talk_ileina_menu1
 
         "告辞":

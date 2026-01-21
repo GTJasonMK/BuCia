@@ -4,7 +4,7 @@ screen help():
 
     default device = "keyboard"
 
-    use game_menu(_("帮助"), scroll="viewport"):
+    use game_menu(_("帮助"), scroll="viewport", show_navigation=False):
 
         style_prefix "help"
 

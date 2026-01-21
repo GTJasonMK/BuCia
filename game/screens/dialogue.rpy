@@ -173,18 +173,21 @@ screen quick_menu():
 
     if quick_menu:
 
-        hbox:
+        vbox:
             style_prefix "quick"
             style "quick_menu"
 
-            textbutton _("回退") action Rollback()
-            textbutton _("历史") action ShowMenu('history')
-            textbutton _("快进") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("自动") action Preference("auto-forward", "toggle")
-            textbutton _("保存") action ShowMenu('save')
-            textbutton _("快存") action QuickSave()
-            textbutton _("快读") action QuickLoad()
-            textbutton _("设置") action ShowMenu('preferences')
+            hbox:
+                spacing gui.quick_button_spacing
+                textbutton _("回退") action Rollback()
+                textbutton _("快进") action Skip() alternate Skip(fast=True, confirm=True)
+                textbutton _("自动") action Preference("auto-forward", "toggle")
+
+            hbox:
+                spacing gui.quick_button_spacing
+                textbutton _("历史") action ShowMenu('history')
+                textbutton _("保存") action ShowMenu('save')
+                textbutton _("设置") action ShowMenu('preferences')
 
 
 ## 此代码确保只要用户没有主动隐藏界面，就会在游戏中显示相关屏幕。
@@ -299,5 +302,3 @@ init python:
 
         trans.yoffset = new_offset
         return 0.02  # 每0.02秒更新一次
-
-

@@ -2,16 +2,16 @@
 
 ## 定义角色（用于对话）
 define narrator = Character(None, what_color="#ffffff")
-define tsibela = Character("茨贝拉", color="#ffffff", image="tsibela")
-define rolinda = Character("罗琳达", color="#cc0000", image="rolinda")
-define yedina = Character("叶蒂娜", color="#66cc66", image="yedina")
-define andrea = Character("安德里娅", color="#8888ff", image="andrea")
-define telina = Character("特莉娜", color="#ffaa00", image="telina")
-define molorava = Character("莫洛拉瓦", color="#aa88ff", image="molorava")
-define badebiete = Character("巴德别特", color="#888888", image="badebiete")
-define hafu = Character("哈夫", color="#ffcc66", image="hafu")
-define bolai = Character("博莱斯", color="#996633", image="bolai")
-define ileina = Character("伊雷娜", color="#ff88aa", image="ileina")
+define tsibela = Character("茨贝拉", color="#ffffff", image="tsibela", callback=make_character_callback("tsibela"))
+define rolinda = Character("罗琳达", color="#cc0000", image="rolinda", callback=make_character_callback("rolinda"))
+define yedina = Character("叶蒂娜", color="#66cc66", image="yedina", callback=make_character_callback("yedina"))
+define andrea = Character("安德莉娅", color="#8888ff", image="andrea", callback=make_character_callback("andrea"))
+define telina = Character("特莉娜", color="#ffaa00", image="telina", callback=make_character_callback("telina"))
+define molorava = Character("莫洛拉瓦", color="#aa88ff", image="molorava", callback=make_character_callback("molorava"))
+define badebiete = Character("巴德别特", color="#888888", image="badebiete", callback=make_character_callback("badebiete"))
+define hafu = Character("哈夫", color="#ffcc66", image="hafu", callback=make_character_callback("hafu"))
+define bolai = Character("博莱斯", color="#996633", image="bolai", callback=make_character_callback("bolai"))
+define ileina = Character("伊蕾娜", color="#ff88aa", image="ileina", callback=make_character_callback("ileina"))
 define najezhida = Character("娜杰日达", color="#00ccff", image="najezhida")
 define azov = Character("审判亚速", color="#ff0000", image="azov")
 
@@ -28,7 +28,7 @@ init python:
             "color": "#ffffff",
             "bio": "曾作为顿巴斯民兵，以失忆状态出现于布恰镇。身上只有刻有姓名的军牌。",
             "secrets": ["顿涅茨克人民军第114旅", "北顿涅茨克战役幸存者", "真正的凶手（三周目揭示）"],
-            "background": "隶属于顿涅茨克人民军第114旅，活跃于马里乌波尔地区。后被派遣至北顿涅茨克-利西昌斯克战役，以突击班组班长身份负责袭扰阻滞。班组转移过程中收编了安德里娅，以班组全灭代价完成任务后被俘。",
+            "background": "隶属于顿涅茨克人民军第114旅，活跃于马里乌波尔地区。后被派遣至北顿涅茨克-利西昌斯克战役，以突击班组班长身份负责袭扰阻滞。班组转移过程中收编了安德莉娅，以班组全灭代价完成任务后被俘。",
             "first_meet": True
         },
         "罗琳达": {
@@ -54,11 +54,11 @@ init python:
             "color": "#66cc66",
             "bio": "布查小镇原住民，药厂派遣的科研职员。对LSD项目认知被限制在'社区健康监测'范畴。",
             "secrets": ["知道药物来源", "被要求隐瞒尸检报告细节", "私下溯源调查"],
-            "background": "药厂特派职员，协助罗琳达工作。为罗琳达处理慢性胃病，承担小镇基础医疗。安德里娅死后负责尸检，被要求隐瞒药物残留信息。",
+            "background": "药厂特派职员，协助罗琳达工作。为罗琳达处理慢性胃病，承担小镇基础医疗。安德莉娅死后负责尸检，被要求隐瞒药物残留信息。",
             "first_meet": False
         },
-        "安德里娅": {
-            "full_name": "安德里娅",
+        "安德莉娅": {
+            "full_name": "安德莉娅",
             "role": "第一受害者",
             "faction": "受害者",
             "trust": 0,
@@ -92,7 +92,7 @@ init python:
             "sprite": "molorava",
             "color": "#aa88ff",
             "bio": "曾在战线缓冲区教会担任神职人员。害怕被清算，逃离原城市隐居于布查小镇。",
-            "secrets": ["隐瞒顿巴斯经历", "害怕亚速营清算", "误以为安德里娅是亚速分子"],
+            "secrets": ["隐瞒顿巴斯经历", "害怕亚速营清算", "误以为安德莉娅是亚速分子"],
             "background": "战争期间教堂地窖改造成避难所，害怕承担'分离主义支持者'罪名。假借探病逃离，在布查小镇居住，日常乘城郊巴士上下班。",
             "first_meet": False
         },
@@ -135,8 +135,8 @@ init python:
             "background": "因收入微薄难以维持市区生活，被调至城郊管道翻新项目。完成布查小镇给水管网改造后，被低廉租金吸引定居。",
             "first_meet": False
         },
-        "伊雷娜": {
-            "full_name": "伊雷娜",
+        "伊蕾娜": {
+            "full_name": "伊蕾娜",
             "role": "少女",
             "faction": "脆弱证人",
             "trust": 25,
@@ -179,7 +179,7 @@ init python:
     ## 角色关系网络（影响对话和线索获取）
     character_relations = {
         "茨贝拉": {
-            "安德里娅": "战友",
+            "安德莉娅": "战友",
             "罗琳达": "侦探权授予者",
             "巴德别特": "协助调查"
         },
@@ -188,7 +188,7 @@ init python:
             "特莉娜": "利益交换",
             "审判亚速": "控制者"
         },
-        "安德里娅": {
+        "安德莉娅": {
             "茨贝拉": "战友",
             "莫洛拉瓦": "误会（被当作亚速）"
         }
@@ -304,12 +304,13 @@ init python:
             char_name: 角色名称
 
         Returns:
-            bool: True=初次见面(first_meet=False), False=已经见过(first_meet=True)，角色不存在时返回False
+            bool: True=初次见面（未在 persistent.met_characters 中），False=已经见过，角色不存在时返回False
         """
         if char_name not in character_database:
             renpy.log(f"警告：尝试检查不存在的角色见面状态 - '{char_name}'")
             return False
-        return not character_database[char_name].get("first_meet", False)
+        met_characters = getattr(persistent, "met_characters", [])
+        return char_name not in met_characters
 
     ## ========================================
     ## 笔记本系统集成API

@@ -5,6 +5,7 @@
 default popup_queue = []  ## 弹窗队列
 default popup_showing = False  ## 是否正在显示弹窗
 default popup_current = None  ## 当前显示的弹窗数据
+default popup_sequence = 0  ## 弹窗序列号（用于避免定时器错关）
 
 ## 弹窗类型图标映射
 define POPUP_ICONS = {
@@ -71,23 +72,28 @@ init python:
         ## 取出队列中的第一个弹窗
         store.popup_current = store.popup_queue.pop(0)
         store.popup_showing = True
+        store.popup_sequence += 1
+        store.popup_current["id"] = store.popup_sequence
 
         ## 显示弹窗屏幕
         renpy.show_screen("popup_notification")
 
         ## 设置定时器，自动关闭弹窗
         duration = store.popup_current.get("duration", POPUP_DURATION)
-        renpy.invoke_in_thread(_popup_timer, duration)
+        renpy.invoke_in_thread(_popup_timer, store.popup_current["id"], duration)
 
-    def _popup_timer(duration):
+    def _popup_timer(popup_id, duration):
         """弹窗定时器（在后台线程运行）"""
         import time
         time.sleep(duration)
         ## 回到主线程关闭弹窗
-        renpy.invoke_in_main_thread(_close_current_popup)
+        renpy.invoke_in_main_thread(_close_current_popup, popup_id)
 
-    def _close_current_popup():
+    def _close_current_popup(popup_id=None):
         """关闭当前弹窗并显示下一个"""
+        if popup_id is not None:
+            if not store.popup_current or store.popup_current.get("id") != popup_id:
+                return
         if renpy.get_screen("popup_notification"):
             renpy.hide_screen("popup_notification")
 
@@ -190,7 +196,7 @@ init python:
         """
         import time as _time
         show_popup("发现新线索", "打火机", "clue")
-        show_popup("新地点已解锁", "安德里娅住所", "location")
+        show_popup("新地点已解锁", "安德莉娅住所", "location")
         show_popup("遇见新角色", "罗琳达", "character")
         show_popup("事件发生", "火灾发生", "event")
         show_popup("获得物品", "钥匙", "item")

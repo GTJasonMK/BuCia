@@ -5,7 +5,7 @@ screen history():
     ## 避免预缓存此屏幕，因为它可能非常大。
     predict False
 
-    use game_menu(_("历史"), scroll=("vpgrid" if gui.history_height else "viewport"), yinitial=1.0, spacing=gui.history_spacing):
+    use game_menu(_("历史"), scroll=("vpgrid" if gui.history_height else "viewport"), yinitial=1.0, spacing=gui.history_spacing, show_navigation=False):
 
         style_prefix "history"
 
@@ -84,4 +84,3 @@ style history_label_text:
 ##
 ## 提供有关键盘和鼠标映射信息的屏幕。它使用其它屏幕（keyboard_help、mouse_help
 ## 和 gamepad_help）来显示实际的帮助内容。
-

@@ -23,6 +23,12 @@ init python:
         # 重置地点访问状态(可选)
         for loc_name in locations_database:
             locations_database[loc_name]["visited"] = False
+        # 同步重置持久化访问记录，避免周目间残留
+        persistent.visited_locations = []
+        # 重置地点解锁状态，避免周目间解锁残留
+        if 'reset_locations_unlock_state' in dir():
+            reset_locations_unlock_state()
+        store.current_location = None
 
         renpy.notify(f"开始第{episode_num}周目")
 

@@ -158,6 +158,7 @@ label episode1_day1:
 
     """就在这时，一个温和的女声在她身后响起。"""
 
+    show telina neutral at center with dissolve
     telina "你好，请问你是外来的吗？"
 
     tsibela "我…… 我不知道。"
@@ -173,6 +174,8 @@ label episode1_day1:
             tsibela "我叫茨贝拉。"
 
     telina "布尔查克镇很少有外来人，你大概是迷路了吧。这天气这么冷，你先跟我来暖和一下，喝点热水，有什么事我们慢慢说。"
+
+    hide telina with dissolve
 
     # 开放地图探索
     call screen map_screen
@@ -195,7 +198,7 @@ label episode1_day2:
     return
 
 
-## Day 3 - 安德里娅火灾事件
+## Day 3 - 安德莉娅火灾事件
 label episode1_day3:
     """
     第三天 - 关键事件日

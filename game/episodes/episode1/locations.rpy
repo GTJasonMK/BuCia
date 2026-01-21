@@ -78,35 +78,35 @@ label visit_yedina_clinic:
 ## 待剧情完成后再开发详细内容
 
 label visit_andrea_house:
-    """安德里娅的住所 - Day3后可访问（火灾现场）"""
+    """安德莉娅的住所 - Day3后可访问（火灾现场）"""
 
     scene bg room with dissolve
     play music "bgm_dark.ogg" fadein 1.0
 
     if current_day < 3:
-        "安德里娅的住所目前无法进入。"
+        "安德莉娅的住所目前无法进入。"
         return
 
-    "你来到了安德里娅曾经居住的地方。"
+    "你来到了安德莉娅曾经居住的地方。"
     "一场大火已经将这里变成了废墟。"
     "空气中仍然弥漫着焦糊的气味。"
 
     menu visit_andrea_house_menu:
         "你想调查什么？"
 
-        "调查烧毁的床铺" if is_hotspot_unlocked("安德里娅住所", "烧毁的床铺"):
+        "调查烧毁的床铺" if is_hotspot_unlocked("安德莉娅住所", "烧毁的床铺"):
             "床铺已经完全烧毁，只剩下扭曲的金属框架。"
             "从残骸来看，火势是从床铺附近开始的。"
             $ discover_clue("火灾现场照片")
             jump visit_andrea_house_menu
 
-        "调查窗户残骸" if is_hotspot_unlocked("安德里娅住所", "窗户残骸"):
+        "调查窗户残骸" if is_hotspot_unlocked("安德莉娅住所", "窗户残骸"):
             "窗框已经完全烧毁。"
             "奇怪的是，窗户似乎是从外面被打破的。"
             $ discover_clue("窗户痕迹")
             jump visit_andrea_house_menu
 
-        "调查门锁" if is_hotspot_unlocked("安德里娅住所", "门锁"):
+        "调查门锁" if is_hotspot_unlocked("安德莉娅住所", "门锁"):
             "门锁有明显的撬动痕迹。"
             "这说明有人在火灾前强行进入了房间。"
             $ discover_clue("破门痕迹")
@@ -258,12 +258,12 @@ label visit_bolai_house:
             return
 
 label visit_ileina_apartment:
-    """伊雷娜的公寓"""
+    """伊蕾娜的公寓"""
 
     scene bg room with dissolve
     play music "bgm_investigation.ogg" fadein 1.0
 
-    "你来到了伊雷娜的小公寓。"
+    "你来到了伊蕾娜的小公寓。"
     "陈设简单，但收拾得很整洁。"
 
     menu visit_ileina_apartment_menu:
@@ -275,13 +275,13 @@ label visit_ileina_apartment:
             $ discover_clue("目击视角")
             jump visit_ileina_apartment_menu
 
-        "查看日记" if is_hotspot_unlocked("伊雷娜公寓", "日记"):
-            "伊雷娜的日记中记录了她的日常生活。"
+        "查看日记" if is_hotspot_unlocked("伊蕾娜公寓", "日记"):
+            "伊蕾娜的日记中记录了她的日常生活。"
             "有一些关于火灾当晚的记载特别引人注目。"
-            $ discover_clue("伊雷娜日记")
+            $ discover_clue("伊蕾娜日记")
             jump visit_ileina_apartment_menu
 
-        "与伊雷娜交谈" if is_character_alive("伊雷娜"):
+        "与伊蕾娜交谈" if is_character_alive("伊蕾娜"):
             call talk_to_ileina_scene1 from _call_talk_to_ileina_scene1
             jump visit_ileina_apartment_menu
 

@@ -5,7 +5,7 @@
 label event_fire:
     """
     Day 3凌晨自动触发
-    安德里娅的房屋发生火灾
+    安德莉娅的房屋发生火灾
     """
 
     scene bg black with fade
@@ -16,7 +16,7 @@ label event_fire:
 
     play sound "sfx_fire.ogg"
 
-    "安德里娅的房屋燃起熊熊大火！"
+    "安德莉娅的房屋燃起熊熊大火！"
 
     scene bg town_square with dissolve
 
@@ -25,19 +25,19 @@ label event_fire:
     show yedina sad at left
     show rolinda serious at right
 
-    rolinda "是安德里娅的房子...快叫人灭火！"
+    rolinda "是安德莉娅的房子...快叫人灭火！"
 
     "等火势扑灭时，一切都太迟了..."
 
-    yedina "安德里娅...她没能逃出来。"
+    yedina "安德莉娅...她没能逃出来。"
 
     scene bg black with fade
 
     "第一起死亡事件发生了。"
     "调查开始..."
 
-    # 解锁安德里娅住所
-    $ locations_database["安德里娅住所"]["unlocked"] = True
+    # 解锁安德莉娅住所
+    $ locations_database["安德莉娅住所"]["unlocked"] = True
 
     return
 

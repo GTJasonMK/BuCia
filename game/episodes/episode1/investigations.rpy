@@ -68,7 +68,7 @@ label investigate_yedina_clinic_cabinet:
     return
 
 
-## 安德里娅住所 - 烧毁的床铺
+## 安德莉娅住所 - 烧毁的床铺
 label investigate_andrea_house_bed:
     """
     调查火灾后的床铺残骸

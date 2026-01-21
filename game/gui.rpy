@@ -86,8 +86,8 @@ define gui.title_text_size = 75
 ## 标题和游戏菜单 #####################################################################
 
 ## 标题菜单和游戏菜单使用的图像。
-define gui.main_menu_background = "main_menu_bg.jpg"
-define gui.game_menu_background = "main_menu_bg.jpg"
+define gui.main_menu_background = "ui/menu_paper.png"
+define gui.game_menu_background = "ui/menu_paper.png"
 
 
 ## 对话 ##########################################################################
@@ -180,6 +180,7 @@ define gui.quick_button_borders = Borders(15, 6, 15, 0)
 define gui.quick_button_text_size = 21
 define gui.quick_button_text_idle_color = gui.idle_small_color
 define gui.quick_button_text_selected_color = gui.accent_color
+define gui.quick_button_spacing = 12
 
 ## 您还可以通过添加正确命名的变量来添加自己的定制。例如，您可以将以下几行取消注
 ## 释来设置导航按钮的宽度。
@@ -400,6 +401,7 @@ init python:
     def touch():
 
         gui.quick_button_borders = Borders(60, 21, 60, 0)
+        gui.quick_button_spacing = 20
 
     ## 该变量更改各个 GUI 元素的尺寸和间距来确保它们在手机上更容易被辨识。
     @gui.variant
@@ -432,6 +434,7 @@ init python:
         gui.history_text_width = 1035
 
         gui.quick_button_text_size = 30
+        gui.quick_button_spacing = 24
 
         ## 文件按钮布局。
         gui.file_slot_cols = 2

@@ -2,9 +2,10 @@ screen preferences():
 
     tag menu
 
-    use game_menu(_("设置"), scroll="viewport"):
+    use game_menu(_("设置"), scroll="viewport", show_navigation=False):
 
         vbox:
+            xalign 0.5
 
             hbox:
                 box_wrap True
@@ -156,4 +157,3 @@ style slider_vbox:
 ## 存在 _history_list 中的对话历史记录。
 ##
 ## https://doc.renpy.cn/zh-CN/history.html
-

@@ -1,93 +1,56 @@
 ## 地点系统 UI界面
-## 从 data/locations.rpy 移动至此，遵循UI层分离原则
+## 从 data/world/locations.rpy 移动至此，遵循UI层分离原则
 
 ## 地图选择UI
 screen map_screen():
     tag menu
+    ## 使用视觉化地图作为唯一入口
+    use visual_map("normal", close_action=Return())
 
-    ## 背景
-    add "bg/map_overview.jpg"
+init python:
+    def discover_hotspot_clues(location_name, hotspot_name):
+        """发现热点关联线索"""
+        hotspot = get_hotspot_info(location_name, hotspot_name) if 'get_hotspot_info' in dir() else None
+        if not hotspot:
+            renpy.notify("该热点尚未配置")
+            return
+        clues = hotspot.get("clues", [])
+        if not clues:
+            renpy.notify("没有发现线索")
+            return
+        found_any = False
+        if 'discover_clue' in dir():
+            for clue_id in clues:
+                if discover_clue(clue_id):
+                    found_any = True
+        if not found_any:
+            renpy.notify("没有新线索")
 
-    ## 标题
-    frame:
-        xalign 0.5
-        yalign 0.05
-        background Frame(Solid("#00000080"), 10, 10)
-        padding (30, 15)
-
-        text "布恰小镇地图" size 40 color "#ffffff"
-
-    ## 时间和行动点显示
-    use time_display
-
-    ## 地点列表
-    vbox:
-        xalign 0.5
-        yalign 0.5
-        spacing 10
-
-        # 动态获取并排序地点列表
-        python:
-            sorted_locations = sorted(
-                locations_database.keys(),
-                key=lambda x: locations_database[x].get("display_order", 999)
-            )
-
-        for location_name in sorted_locations:
-            $ loc_info = get_location_info(location_name)
-            $ unlocked = is_location_unlocked(location_name)
-            $ available = is_location_available(location_name)
-            $ visited = loc_info.get("visited", False) if loc_info else False
-            $ label_suffix = loc_info.get("label_suffix", location_name) if loc_info else location_name
-
-            button:
-                action [
-                    If(unlocked and available and has_action_points(),
-                       [Function(use_action_point),
-                        Function(set_location_visited, location_name),
-                        Jump("visit_" + label_suffix)],
-                       None)
-                ]
-                background Frame(Solid("#00000080"), 10, 10)
-                hover_background Frame(Solid("#330000b0" if (unlocked and available) else "#00000080"), 10, 10)
-                padding (30, 10)
-                sensitive (unlocked and available and has_action_points())
-
-                hbox:
-                    spacing 10
-
-                    # 地点名称
-                    text location_name:
-                        size 28
-                        color ("#ffffff" if (unlocked and available) else "#666666")
-
-                    # 访问标记
-                    if visited:
-                        text "{size=20}[[已访问]{/size}" color "#66ff66"
-
-                    # 不可用提示
-                    if unlocked and not available:
-                        text "{size=20}[[当前时段不可访问]{/size}" color "#888888"
-                    elif not unlocked:
-                        text "{size=20}[[未解锁]{/size}" color "#666666"
-
-    ## 返回按钮
-    textbutton "返回":
-        xalign 0.1
-        yalign 0.9
-        background Frame(Solid("#00000080"), 10, 10)
-        hover_background Frame(Solid("#1a1a1ab0"), 10, 10)
-        padding (30, 10)
-        text_size 24
-        text_color "#ffffff"
-        action Return()
+    def resolve_hotspot_action(location_name, hotspot_name):
+        """根据热点配置返回对应动作"""
+        hotspot = get_hotspot_info(location_name, hotspot_name) if 'get_hotspot_info' in dir() else None
+        if not hotspot:
+            return Function(renpy.notify, "该热点尚未配置")
+        hotspot_label = hotspot.get("label")
+        if hotspot_label and renpy.has_label(hotspot_label):
+            return Jump(hotspot_label)
+        special_action = hotspot.get("special_action")
+        if special_action:
+            if 'run_hotspot_special_action' in dir():
+                return Function(run_hotspot_special_action, special_action)
+            return Function(renpy.notify, "该热点特殊动作未实现")
+        if hotspot.get("clues"):
+            return Function(discover_hotspot_clues, location_name, hotspot_name)
+        return Function(renpy.notify, "该热点尚未实现")
 
 ## 地点探索UI
 screen location_explore(location_name):
     tag location
 
     $ loc_info = get_location_info(location_name)
-    $ bg_image = loc_info.get("background", "bg/default.jpg") if loc_info else "bg/default.jpg"
+    $ bg_image = loc_info.get("background", "bg/default_bg.jpg") if loc_info else "bg/default_bg.jpg"
+    if not renpy.loadable(bg_image):
+        $ bg_image = "bg/default_bg.jpg"
     $ description = loc_info.get("description", "") if loc_info else ""
     $ hotspots = loc_info.get("hotspots", {}) if loc_info else {}
     $ characters = loc_info.get("characters", []) if loc_info else []
@@ -121,6 +84,7 @@ screen location_explore(location_name):
 
         for hotspot_name, hotspot_data in hotspots.items():
             $ unlocked = is_hotspot_unlocked(location_name, hotspot_name)
+            $ hotspot_action = resolve_hotspot_action(location_name, hotspot_name)
 
             textbutton hotspot_name:
                 text_size 22
@@ -128,7 +92,7 @@ screen location_explore(location_name):
                 text_hover_color ("#ff3333" if unlocked else "#666666")
                 action [
                     If(unlocked,
-                       Jump("investigate_" + location_name.replace("·", "_") + "_" + hotspot_name),
+                       hotspot_action,
                        None)
                 ]
                 background Frame(Solid("#00000080"), 10, 10)
@@ -147,13 +111,15 @@ screen location_explore(location_name):
 
             for char_name in characters:
                 $ alive = is_character_alive(char_name)
+                $ talk_label = get_character_talk_label(char_name)
+                $ talk_action = Jump(talk_label) if talk_label and renpy.has_label(talk_label) else Function(renpy.notify, "该角色对话未配置")
 
                 if alive:
                     textbutton char_name:
                         text_size 22
                         text_idle_color "#ffffff"
                         text_hover_color "#ff3333"
-                        action Jump("talk_to_" + char_name)
+                        action talk_action
                         background Frame(Solid("#00000080"), 10, 10)
                         hover_background Frame(Solid("#330000b0"), 10, 10)
                         padding (20, 8)
@@ -167,4 +133,4 @@ screen location_explore(location_name):
         padding (30, 10)
         text_size 24
         text_color "#ffffff"
-        action Jump("map_screen")
+        action Return()

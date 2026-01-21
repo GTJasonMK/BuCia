@@ -16,7 +16,9 @@ screen file_slots(title):
 
     default page_name_value = FilePageNameInputValue(pattern=_("第 {} 页"), auto=_("自动存档"), quick=_("快速存档"))
 
-    use game_menu(title):
+    use game_menu(title, show_navigation=False):
+        ## 固定为第 1 页存档
+        on "show" action FilePage(1)
 
         fixed:
 
@@ -75,21 +77,7 @@ screen file_slots(title):
 
                     spacing gui.page_spacing
 
-                    textbutton _("<") action FilePagePrevious()
-                    key "save_page_prev" action FilePagePrevious()
-
-                    if config.has_autosave:
-                        textbutton _("{#auto_page}A") action FilePage("auto")
-
-                    if config.has_quicksave:
-                        textbutton _("{#quick_page}Q") action FilePage("quick")
-
-                    ## 精简存档页数：仅保留3页普通存档（每页6个，共18个）
-                    for page in range(1, 4):
-                        textbutton "[page]" action FilePage(page)
-
-                    textbutton _(">") action FilePageNext()
-                    key "save_page_next" action FilePageNext()
+                    textbutton "1" action FilePage(1)
 
                 if config.has_sync:
                     if CurrentScreenName() == "save":
@@ -140,4 +128,3 @@ style slot_button_text:
 ## 设置屏幕允许用户配置游戏，使其更适合自己。
 ##
 ## https://doc.renpy.cn/zh-CN/screen_special.html#preferences
-

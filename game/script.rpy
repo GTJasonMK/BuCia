@@ -4,7 +4,7 @@
 ## persistent变量初始化已移至 game/init_persistent.rpy
 ## 所有跨存档的变量在那里统一管理
 
-## 角色定义已移至 game/data/characters.rpy
+## 角色定义已移至 game/data/characters/database.rpy
 ## 此处不再重复定义
 
 ## 游戏从这里开始

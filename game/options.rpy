@@ -68,13 +68,13 @@ define config.has_voice = True
 ## 为了精简存档系统，禁用自动存档功能，仅保留快速存档和普通存档。
 
 define config.has_autosave = False  # 禁用自动存档
-define config.has_quicksave = True  # 保留快速存档（Shift+S快存，Shift+L快读）
+define config.has_quicksave = False  # 禁用快速存档
 
 ## 存档系统精简说明：
-## - 快速存档：6个（保留，方便快速存读）
-## - 普通存档：3页 × 6个 = 18个
+## - 快速存档：已禁用
+## - 普通存档：仅保留1页（6个）
 ## - 自动存档：已禁用
-## - 总计：24个存档位
+## - 总计：6个存档位
 
 
 ## 为了让用户在音效或语音轨道上播放测试音频，请取消对下面一行的注释并设置播放的

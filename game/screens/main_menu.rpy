@@ -320,17 +320,17 @@ screen main_menu():
     key "K_F2" action Function(force_reset_episodes)
 
     ## 背景图（缩放到1920x1080）
-    add "main_menu_bg.png":
+    add "ui/main_menu_bg.png":
         size (1920, 1080)
 
     ## 标题logo（坐标：12, 262）
-    add "title_logo.png":
+    add "ui/title_logo.png":
         xpos 4
         ypos 88
         zoom 0.346
 
     ## 角色图（坐标：1617, 186）
-    add "title_character.png":
+    add "ui/title_character.png":
         xpos 560
         ypos 62
         zoom 0.346
@@ -579,4 +579,3 @@ style main_menu_version:
 ##
 ## scroll 参数可以是 None，也可以是 viewport 或 vpgrid。此屏幕旨在与一个或多个子
 ## 屏幕同时使用，这些子屏幕将被嵌入（放置）在其中。
-

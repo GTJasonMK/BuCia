@@ -217,6 +217,8 @@ define DEFAULT_BACKGROUND = "bg/default_bg.jpg"
 ## 使用负 zorder 确保显示在所有其他内容之下
 
 screen default_background():
+    ## 放在 master 图层，避免遮挡角色立绘
+    layer "master"
     ## 最底层，在所有其他 screen 之下
     zorder -100
 

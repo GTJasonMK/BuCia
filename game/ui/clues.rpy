@@ -1,5 +1,5 @@
 ## 线索系统 UI界面
-## 从 data/clues.rpy 移动至此，遵循UI层分离原则
+## 从 data/items/clues.rpy 移动至此，遵循UI层分离原则
 
 ## 线索簿UI
 screen clue_book():
@@ -97,7 +97,7 @@ screen clue_book():
                         spacing 20
 
                         ## 线索图标
-                        if clue.get("image"):
+                        if clue.get("image") and renpy.loadable(clue.get("image")):
                             add clue.get("image") size (80, 80)
                         else:
                             frame:
@@ -168,7 +168,7 @@ screen clue_detail(clue):
                 text "{size=24}[" + clue.get("type", "未分类") + "]{/size}" color "#ffcc00"
 
             ## 线索图片
-            if clue.get("image"):
+            if clue.get("image") and renpy.loadable(clue.get("image")):
                 add Transform(clue.get("image"), xalign=0.5, fit="contain", xysize=(600, 300))
 
             ## 详细描述

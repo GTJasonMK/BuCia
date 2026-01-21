@@ -184,7 +184,7 @@ label test_popup:
     $ popup_clue("火灾现场照片")
     "测试线索弹窗"
 
-    $ popup_location("安德里娅住所")
+    $ popup_location("安德莉娅住所")
     "测试地点弹窗"
 
     $ popup_character("罗琳达")

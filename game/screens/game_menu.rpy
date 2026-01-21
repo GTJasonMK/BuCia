@@ -1,4 +1,4 @@
-screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
+screen game_menu(title, scroll=None, yinitial=0.0, spacing=0, show_navigation=True):
 
     style_prefix "game_menu"
 
@@ -10,14 +10,55 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
     frame:
         style "game_menu_outer_frame"
 
-        hbox:
+        if show_navigation:
+            hbox:
 
-            ## 导航部分的预留空间。
-            frame:
-                style "game_menu_navigation_frame"
+                ## 导航部分的预留空间。
+                frame:
+                    style "game_menu_navigation_frame"
 
+                frame:
+                    style "game_menu_content_frame"
+
+                    if scroll == "viewport":
+
+                        viewport:
+                            yinitial yinitial
+                            scrollbars "vertical"
+                            mousewheel True
+                            draggable True
+                            pagekeys True
+
+                            side_yfill True
+
+                            vbox:
+                                spacing spacing
+
+                                transclude
+
+                    elif scroll == "vpgrid":
+
+                        vpgrid:
+                            cols 1
+                            yinitial yinitial
+
+                            scrollbars "vertical"
+                            mousewheel True
+                            draggable True
+                            pagekeys True
+
+                            side_yfill True
+
+                            spacing spacing
+
+                            transclude
+
+                    else:
+
+                        transclude
+        else:
             frame:
-                style "game_menu_content_frame"
+                style "game_menu_content_frame_full"
 
                 if scroll == "viewport":
 
@@ -56,12 +97,17 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
 
                     transclude
 
-    use navigation
+    if show_navigation:
+        use navigation
 
-    textbutton _("返回"):
-        style "return_button"
-
-        action Return()
+    if show_navigation:
+        textbutton _("返回"):
+            style "return_button"
+            action Return()
+    else:
+        textbutton _("返回"):
+            style "return_button_full"
+            action Return()
 
     label title
 
@@ -81,12 +127,14 @@ style game_menu_label_text is gui_label_text
 
 style return_button is navigation_button
 style return_button_text is navigation_button_text
+style return_button_full is navigation_button
+style return_button_full_text is navigation_button_text
 
 style game_menu_outer_frame:
-    bottom_padding 45
-    top_padding 180
+    bottom_padding 60
+    top_padding 120
 
-    background "gui/overlay/game_menu.png"
+    background None
 
 style game_menu_navigation_frame:
     xsize 420
@@ -95,6 +143,12 @@ style game_menu_navigation_frame:
 style game_menu_content_frame:
     left_margin 60
     right_margin 30
+    top_margin 15
+
+style game_menu_content_frame_full:
+    xfill True
+    left_margin 60
+    right_margin 60
     top_margin 15
 
 style game_menu_viewport:
@@ -107,18 +161,25 @@ style game_menu_side:
     spacing 15
 
 style game_menu_label:
-    xpos 75
-    ysize 180
+    xalign 0.5
+    ysize 140
 
 style game_menu_label_text:
-    size 75
+    size 60
     color gui.accent_color
     yalign 0.5
+    xalign 0.5
 
 style return_button:
     xpos gui.navigation_xpos
     yalign 1.0
     yoffset -45
+
+style return_button_full:
+    xalign 1.0
+    yalign 0.0
+    xoffset -40
+    yoffset 20
 
 
 ## 关于屏幕 ########################################################################
@@ -134,7 +195,7 @@ screen about():
 
     ## 此 use 语句将 game_menu 屏幕包含到了这个屏幕内。子级 vbox 将包含在
     ## game_menu 屏幕的 viewport 内。
-    use game_menu(_("关于"), scroll="viewport"):
+    use game_menu(_("关于"), scroll="viewport", show_navigation=False):
 
         style_prefix "about"
 
@@ -165,4 +226,3 @@ style about_label_text:
 ##
 ## https://doc.renpy.cn/zh-CN/screen_special.html#save https://doc.renpy.cn/zh-
 ## CN/screen_special.html#load
-

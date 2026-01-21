@@ -22,17 +22,17 @@ init python:
         "marker_pink": "map/粉色碎片.png",
         "marker_blue": "map/蓝色碎片.png",
         "marker_current": "map/现在.png",
-        "marker_current_label": "map/现在 标签.png",
+        "marker_current_label": "map/现在标签.png",
         "marker_location": "map/我的位置.png",
-        "marker_location_label": "map/我的位置 标签.png",
+        "marker_location_label": "map/我的位置标签.png",
         "marker_residence": "map/住址.png",
-        "marker_residence_label": "map/住址 标签.png",
+        "marker_residence_label": "map/住址标签.png",
 
         ## 控制按钮
         "btn_return": "map/返回.png",
-        "btn_return_label": "map/返回 标签.png",
+        "btn_return_label": "map/返回标签.png",
         "btn_clear": "map/清除.png",
-        "btn_clear_label": "map/清除 标签.png"
+        "btn_clear_label": "map/清除标签.png"
     }
 
     ## 地图层级位置（基于坐标.txt）
@@ -54,7 +54,7 @@ default map_mode = "normal"
 ## 地图主屏幕
 ## ============================================================================
 
-screen visual_map(mode="normal"):
+screen visual_map(mode="normal", close_action=Hide("visual_map")):
     tag menu
     modal True
 
@@ -65,8 +65,8 @@ screen visual_map(mode="normal"):
     on "hide" action SetVariable("camera_ui_enabled", True)
 
     ## 快捷键
-    key "m" action Hide("visual_map")
-    key "K_ESCAPE" action Hide("visual_map")
+    key "m" action close_action
+    key "K_ESCAPE" action close_action
 
     ## ========== 地图背景层 ==========
     fixed:
@@ -219,11 +219,7 @@ screen visual_map(mode="normal"):
                                 hover_background Solid("#5a9c5e")
                                 xpadding 25
                                 ypadding 10
-                                action [
-                                    Hide("visual_map"),
-                                    Function(travel_to_location, map_selected_location["name"]),
-                                    Jump("visit_" + loc_info.get("label_suffix", ""))
-                                ]
+                                action Function(do_travel_to_location, map_selected_location["name"])
                         else:
                             textbutton "无法前往":
                                 text_size 22
@@ -250,7 +246,7 @@ screen visual_map(mode="normal"):
             pos (int(792 * MAP_SCALE), int(900 * MAP_SCALE))
             idle Transform(MAP_IMAGES["btn_return"], zoom=MAP_SCALE)
             hover Transform(MAP_IMAGES["btn_return"], zoom=MAP_SCALE * 1.1)
-            action Hide("visual_map")
+            action close_action
 
         ## 返回标签
         add MAP_IMAGES["btn_return_label"]:

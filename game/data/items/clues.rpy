@@ -10,23 +10,23 @@ init python:
             "type": "物证",
             "description": "在火灾现场附近发现的打火机。",
             "detail": "一个普通的金属打火机，表面有使用痕迹。打火机底部刻有字母'M'。这可能是纵火者留下的关键证据。",
-            "location": "安德里娅住所",
+            "location": "安德莉娅住所",
             "day_found": 3,
-            "relates_to": ["莫洛拉瓦", "安德里娅"],
+            "relates_to": ["莫洛拉瓦", "安德莉娅"],
             "contradicts": ["莫洛拉瓦不吸烟证词"],
             "image": "clue/lighter.png",
             "importance": "high"
         },
 
-        "安德里娅尸检报告": {
+        "安德莉娅尸检报告": {
             "id": "autopsy_report",
-            "name": "安德里娅尸检报告",
+            "name": "安德莉娅尸检报告",
             "type": "档案",
             "description": "叶蒂娜完成的尸检报告。",
             "detail": "死因：烟雾吸入导致窒息死亡。死亡时间：Day 3凌晨2:30-3:00之间。体内检测出异常药物残留，但报告中未详细说明。",
             "location": "叶蒂娜诊所",
             "day_found": 3,
-            "relates_to": ["安德里娅", "叶蒂娜"],
+            "relates_to": ["安德莉娅", "叶蒂娜"],
             "contradicts": [],
             "image": "clue/autopsy_report.png",
             "importance": "critical"
@@ -38,10 +38,10 @@ init python:
             "type": "物证",
             "description": "火灾后的现场照片。",
             "detail": "房屋内部严重烧毁，起火点似乎在窗户附近。窗户玻璃从外侧破碎，暗示有人从外部扔入燃烧物。",
-            "location": "安德里娅住所",
+            "location": "安德莉娅住所",
             "day_found": 3,
-            "relates_to": ["安德里娅"],
-            "contradicts": ["安德里娅自杀说"],
+            "relates_to": ["安德莉娅"],
+            "contradicts": ["安德莉娅自杀说"],
             "image": "clue/fire_scene.png",
             "importance": "high"
         },
@@ -50,11 +50,11 @@ init python:
             "id": "door_marks",
             "name": "破门痕迹",
             "type": "物证",
-            "description": "安德里娅住所门锁的异常痕迹。",
+            "description": "安德莉娅住所门锁的异常痕迹。",
             "detail": "门锁有被撬动的痕迹，但不明显。似乎有人试图从外部打开门锁，但最终使用了其他方法进入。",
-            "location": "安德里娅住所",
+            "location": "安德莉娅住所",
             "day_found": 3,
-            "relates_to": ["安德里娅"],
+            "relates_to": ["安德莉娅"],
             "contradicts": [],
             "image": "clue/door_marks.png",
             "importance": "medium"
@@ -66,9 +66,9 @@ init python:
             "type": "物证",
             "description": "火灾现场窗户的破碎痕迹。",
             "detail": "窗户玻璃碎片散落在房间内侧，说明玻璃是从外向内破碎的。这与有人从外部投掷燃烧物的推测一致。",
-            "location": "安德里娅住所",
+            "location": "安德莉娅住所",
             "day_found": 3,
-            "relates_to": ["安德里娅"],
+            "relates_to": ["安德莉娅"],
             "contradicts": ["内部起火说"],
             "image": "clue/window_marks.png",
             "importance": "high"
@@ -121,10 +121,10 @@ init python:
             "name": "居民档案",
             "type": "档案",
             "description": "社区中心的居民档案。",
-            "detail": "记录了小镇所有居民的基本信息。安德里娅的档案标注为'特殊监测对象'，茨贝拉的档案则标注为'实验对象-主要'。",
+            "detail": "记录了小镇所有居民的基本信息。安德莉娅的档案标注为'特殊监测对象'，茨贝拉的档案则标注为'实验对象-主要'。",
             "location": "社区中心",
             "day_found": 1,
-            "relates_to": ["特莉娜", "安德里娅", "茨贝拉"],
+            "relates_to": ["特莉娜", "安德莉娅", "茨贝拉"],
             "contradicts": [],
             "image": "clue/resident_files.png",
             "importance": "critical"
@@ -177,10 +177,10 @@ init python:
             "name": "实验对象名单",
             "type": "档案",
             "description": "实验对象的详细名单。",
-            "detail": "巴德别特保存的机密名单。记录了数十名'实验对象'的姓名和下落。安德里娅和茨贝拉都在名单上，标注为'战俘来源'。",
+            "detail": "巴德别特保存的机密名单。记录了数十名'实验对象'的姓名和下落。安德莉娅和茨贝拉都在名单上，标注为'战俘来源'。",
             "location": "巴德别特住所",
             "day_found": 0,  # 需要高信任度
-            "relates_to": ["巴德别特", "安德里娅", "茨贝拉"],
+            "relates_to": ["巴德别特", "安德莉娅", "茨贝拉"],
             "contradicts": [],
             "image": "clue/subject_list.png",
             "importance": "critical"
@@ -191,10 +191,10 @@ init python:
             "name": "电力线路图",
             "type": "档案",
             "description": "小镇的电力线路图。",
-            "detail": "详细标注了小镇的电力系统布局。安德里娅住所的电力线路在Day 3凌晨被人为切断。",
+            "detail": "详细标注了小镇的电力系统布局。安德莉娅住所的电力线路在Day 3凌晨被人为切断。",
             "location": "哈夫工作室",
             "day_found": 3,
-            "relates_to": ["哈夫", "安德里娅"],
+            "relates_to": ["哈夫", "安德莉娅"],
             "contradicts": [],
             "image": "clue/power_map.png",
             "importance": "high"
@@ -205,10 +205,10 @@ init python:
             "name": "停电记录",
             "type": "档案",
             "description": "最近的停电维修记录。",
-            "detail": "Day 3凌晨2:00，安德里娅住所片区发生'线路故障'。哈夫的记录显示这是一次'例行维护'，但时间非常可疑。",
+            "detail": "Day 3凌晨2:00，安德莉娅住所片区发生'线路故障'。哈夫的记录显示这是一次'例行维护'，但时间非常可疑。",
             "location": "哈夫工作室",
             "day_found": 3,
-            "relates_to": ["哈夫", "安德里娅"],
+            "relates_to": ["哈夫", "安德莉娅"],
             "contradicts": ["例行维护说"],
             "image": "clue/blackout_record.png",
             "importance": "critical"
@@ -242,15 +242,15 @@ init python:
             "importance": "high"
         },
 
-        "伊雷娜日记": {
+        "伊蕾娜日记": {
             "id": "ileina_diary",
-            "name": "伊雷娜日记",
+            "name": "伊蕾娜日记",
             "type": "证词",
-            "description": "伊雷娜的私人日记。",
-            "detail": "日记中记录了伊雷娜对小镇的观察。她多次提到'那个女人（罗琳达）很可怕'，以及'我必须听她的话，否则...'",
-            "location": "伊雷娜公寓",
+            "description": "伊蕾娜的私人日记。",
+            "detail": "日记中记录了伊蕾娜对小镇的观察。她多次提到'那个女人（罗琳达）很可怕'，以及'我必须听她的话，否则...'",
+            "location": "伊蕾娜公寓",
             "day_found": 0,  # 需要高信任度
-            "relates_to": ["伊雷娜", "罗琳达"],
+            "relates_to": ["伊蕾娜", "罗琳达"],
             "contradicts": [],
             "image": "clue/ileina_diary.png",
             "importance": "high"
@@ -260,11 +260,11 @@ init python:
             "id": "witness_view",
             "name": "目击视角",
             "type": "证词",
-            "description": "从伊雷娜公寓窗户看到的视角。",
-            "detail": "伊雷娜的窗户正对小镇广场，可以看到大部分居民的活动。她可能目击了关键事件，但需要信任才会说出真相。",
-            "location": "伊雷娜公寓",
+            "description": "从伊蕾娜公寓窗户看到的视角。",
+            "detail": "伊蕾娜的窗户正对小镇广场，可以看到大部分居民的活动。她可能目击了关键事件，但需要信任才会说出真相。",
+            "location": "伊蕾娜公寓",
             "day_found": 1,
-            "relates_to": ["伊雷娜"],
+            "relates_to": ["伊蕾娜"],
             "contradicts": [],
             "image": "clue/witness_view.png",
             "importance": "high"
@@ -301,6 +301,23 @@ init python:
 
     ## 已发现的线索列表（初始化已移至init_persistent.rpy）
 
+    def resolve_clue_key(clue_id):
+        """
+        解析线索键名（支持中文名称或英文ID）
+
+        Args:
+            clue_id: 线索ID（中文名称或英文ID）
+
+        Returns:
+            str or None: 线索键名
+        """
+        if clue_id in clues_database:
+            return clue_id
+        for key, clue in clues_database.items():
+            if clue.get("id") == clue_id:
+                return key
+        return None
+
     ## 发现线索
     def discover_clue(clue_id):
         """
@@ -314,19 +331,20 @@ init python:
             False: 已发现过或ID无效
         """
         # 检查线索ID是否存在
-        if clue_id not in clues_database:
+        clue_key = resolve_clue_key(clue_id)
+        if not clue_key:
             renpy.log(f"警告：尝试发现不存在的线索ID '{clue_id}'")
             return False
 
         # 检查是否已发现过
-        if clue_id in persistent.discovered_clues:
+        if clue_key in persistent.discovered_clues:
             return False  # 已发现过
 
         # 添加到已发现列表
-        persistent.discovered_clues.append(clue_id)
+        persistent.discovered_clues.append(clue_key)
 
         # 显示弹窗通知
-        clue_name = clues_database[clue_id]["name"]
+        clue_name = clues_database[clue_key]["name"]
         if 'popup_clue' in dir():
             popup_clue(clue_name)
         else:
@@ -336,12 +354,16 @@ init python:
 
     ## 检查线索是否已发现
     def is_clue_discovered(clue_id):
-        return clue_id in persistent.discovered_clues
+        clue_key = resolve_clue_key(clue_id)
+        if not clue_key:
+            return False
+        return clue_key in persistent.discovered_clues
 
     ## 获取线索信息
     def get_clue_info(clue_id):
-        if clue_id in clues_database:
-            return clues_database[clue_id]
+        clue_key = resolve_clue_key(clue_id)
+        if clue_key:
+            return clues_database[clue_key]
         return None
 
     ## 获取所有已发现的线索

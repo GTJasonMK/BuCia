@@ -23,6 +23,10 @@ init python:
     def advance_time():
         global current_time, current_day, action_points
 
+        if current_time not in time_periods:
+            renpy.log("警告：当前时段非法 - '{}'，已重置为 morning".format(current_time))
+            current_time = "morning"
+
         current_index = time_periods.index(current_time)
 
         # 如果是夜晚，推进到第二天早晨
@@ -38,6 +42,8 @@ init python:
 
     ## 获取当前时间显示文本
     def get_time_display():
+        if current_time not in time_names:
+            return "Day {0} - 未知时段".format(current_day)
         return "Day {0} - {1}".format(current_day, time_names[current_time])
 
     ## 消耗行动点
@@ -70,8 +76,12 @@ init python:
     ## 跳转到指定天数和时段
     def jump_to_time(day, time):
         global current_day, current_time, action_points
-        current_day = day
-        current_time = time
+        current_day = max(1, day)
+        if time not in time_periods:
+            renpy.log("警告：跳转到非法时段 - '{}'，已重置为 morning".format(time))
+            current_time = "morning"
+        else:
+            current_time = time
         action_points = max_action_points
 
     ## 检查是否是特定天数和时段
@@ -84,6 +94,10 @@ init python:
 
     ## 检查是否在指定时段之后
     def is_time_after(time):
+        if current_time not in time_periods:
+            return False
+        if time not in time_periods:
+            return False
         current_index = time_periods.index(current_time)
         target_index = time_periods.index(time)
         return current_index >= target_index
@@ -93,7 +107,7 @@ init python:
     ## 节点1：第1天 - 主角醒来
     EVENT_DAY1_START = (1, "morning")
 
-    ## 节点2：第3天凌晨 - 安德里娅死亡
+    ## 节点2：第3天凌晨 - 安德莉娅死亡
     EVENT_DAY3_FIRE = (3, "morning")
 
     ## 节点3：第4天夜晚 - 巴德别特失踪

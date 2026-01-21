@@ -18,17 +18,20 @@ init python:
             "hotspots": {
                 "书桌": {
                     "description": "整洁的办公桌，上面摆放着一些文件。",
+                    "label": "investigate_rolinda_house_desk",
                     "clues": ["政府文件"],
                     "unlocked": True
                 },
                 "保险柜": {
                     "description": "墙角的小型保险柜，需要密码。",
+                    "label": "investigate_rolinda_house_safe",
                     "clues": ["药厂资料"],
                     "unlocked": False,
                     "unlock_condition": "password_found"
                 },
                 "窗户": {
                     "description": "可以看到小镇广场的窗户。",
+                    "label": None,
                     "clues": [],
                     "unlocked": True
                 }
@@ -51,17 +54,20 @@ init python:
             "hotspots": {
                 "药柜": {
                     "description": "放满各种药品的柜子，有些标签模糊。",
+                    "label": "investigate_yedina_clinic_cabinet",
                     "clues": ["药品清单"],
                     "unlocked": True
                 },
                 "检查床": {
                     "description": "用于检查病人的病床。",
+                    "label": None,
                     "clues": [],
                     "unlocked": True
                 },
                 "办公桌": {
                     "description": "叶蒂娜的工作台，散落着一些医疗记录。",
-                    "clues": ["安德里娅尸检报告"],
+                    "label": None,
+                    "clues": ["安德莉娅尸检报告"],
                     "unlocked": False,
                     "unlock_condition": "day3_after"
                 }
@@ -72,8 +78,8 @@ init python:
             "visited": False
         },
 
-        "安德里娅住所": {
-            "name": "安德里娅的住所",
+        "安德莉娅住所": {
+            "name": "安德莉娅的住所",
             "display_order": 3,
             "label_suffix": "andrea_house",
             "description": "小镇边缘的简陋房屋，Day 3凌晨被火灾焚毁。",
@@ -84,18 +90,21 @@ init python:
             "hotspots": {
                 "烧毁的床铺": {
                     "description": "火灾后的残骸，能看出曾经的简陋。",
+                    "label": "investigate_andrea_house_bed",
                     "clues": ["火灾现场照片"],
                     "unlocked": False,
                     "unlock_condition": "day3_after"
                 },
                 "窗户残骸": {
                     "description": "窗框已经完全烧毁。",
+                    "label": None,
                     "clues": ["窗户痕迹"],
                     "unlocked": False,
                     "unlock_condition": "day3_after"
                 },
                 "门锁": {
                     "description": "门锁似乎有被撬动的痕迹。",
+                    "label": None,
                     "clues": ["破门痕迹"],
                     "unlocked": False,
                     "unlock_condition": "day3_after"
@@ -268,8 +277,8 @@ init python:
             "visited": False
         },
 
-        "伊雷娜公寓": {
-            "name": "伊雷娜的公寓",
+        "伊蕾娜公寓": {
+            "name": "伊蕾娜的公寓",
             "display_order": 9,
             "label_suffix": "ileina_apartment",
             "description": "租金低廉的小公寓，陈设简单。",
@@ -284,13 +293,13 @@ init python:
                     "unlocked": True
                 },
                 "日记": {
-                    "description": "伊雷娜的私人日记。",
-                    "clues": ["伊雷娜日记"],
+                    "description": "伊蕾娜的私人日记。",
+                    "clues": ["伊蕾娜日记"],
                     "unlocked": False,
                     "unlock_condition": "ileina_trust_high"
                 }
             },
-            "characters": ["伊雷娜"],
+            "characters": ["伊蕾娜"],
             "available_times": ["afternoon", "evening", "night"],
             "unlocked": True,
             "visited": False
@@ -329,6 +338,11 @@ init python:
         }
     }
 
+    ## 地点默认解锁状态快照（用于周目重置）
+    default_location_unlocks = {}
+    for loc_name, loc_data in locations_database.items():
+        default_location_unlocks[loc_name] = loc_data.get("unlocked", False)
+
     ## 当前所在地点
     current_location = None
 
@@ -337,6 +351,13 @@ init python:
         if location_name in locations_database:
             return locations_database[location_name]
         return None
+
+    ## 重置地点解锁状态（周目初始化用）
+    def reset_locations_unlock_state():
+        for loc_name, default_unlocked in default_location_unlocks.items():
+            if loc_name in locations_database:
+                locations_database[loc_name]["unlocked"] = default_unlocked
+        persistent.unlocked_locations = []
 
     ## 检查地点是否解锁
     def is_location_unlocked(location_name):
@@ -355,23 +376,23 @@ init python:
 
         return False
 
+    ## 解锁条件映射表（新增条件只需添加映射）
+    unlock_condition_checks = {
+        "day3_after": lambda: current_day >= 3,
+        "molorava_trust_high": lambda: get_character_trust("莫洛拉瓦") >= 60,
+        "telina_trust_high": lambda: get_character_trust("特莉娜") >= 60,
+        "badebiete_trust_high": lambda: get_character_trust("巴德别特") >= 60,
+        "ileina_trust_high": lambda: get_character_trust("伊蕾娜") >= 60,
+        "bolai_confronted": lambda: persistent.bolai_confronted if hasattr(persistent, 'bolai_confronted') else False,
+        "password_found": lambda: persistent.safe_password_found if hasattr(persistent, 'safe_password_found') else False
+    }
+
     ## 检查解锁条件
     def check_unlock_condition(condition):
-        if condition == "day3_after":
-            return current_day >= 3
-        elif condition == "molorava_trust_high":
-            return get_character_trust("莫洛拉瓦") >= 60
-        elif condition == "telina_trust_high":
-            return get_character_trust("特莉娜") >= 60
-        elif condition == "badebiete_trust_high":
-            return get_character_trust("巴德别特") >= 60
-        elif condition == "ileina_trust_high":
-            return get_character_trust("伊雷娜") >= 60
-        elif condition == "bolai_confronted":
-            return persistent.bolai_confronted if hasattr(persistent, 'bolai_confronted') else False
-        elif condition == "password_found":
-            return persistent.safe_password_found if hasattr(persistent, 'safe_password_found') else False
-        return False
+        checker = unlock_condition_checks.get(condition)
+        if not checker:
+            return False
+        return checker()
 
     ## 检查热点是否解锁
     def is_hotspot_unlocked(location_name, hotspot_name):
@@ -420,6 +441,57 @@ init python:
         if not location:
             return []
         return location.get("characters", [])
+
+    ## 角色对话标签映射
+    character_talk_labels = {
+        "罗琳达": "talk_to_rolinda_scene1",
+        "叶蒂娜": "talk_to_yedina_scene1",
+        "巴德别特": "talk_to_badebiete_scene1",
+        "特莉娜": "talk_to_telina_scene1",
+        "哈夫": "talk_to_hafu_scene1",
+        "博莱斯": "talk_to_bolai_scene1",
+        "伊蕾娜": "talk_to_ileina_scene1"
+    }
+
+    def get_character_talk_label(char_name):
+        """获取角色对话label，未配置返回None"""
+        return character_talk_labels.get(char_name)
+
+    def get_hotspot_label(location_name, hotspot_name):
+        """获取热点label，未配置返回None"""
+        location = get_location_info(location_name)
+        if not location:
+            return None
+        hotspot = location.get("hotspots", {}).get(hotspot_name, None)
+        if not hotspot:
+            return None
+        return hotspot.get("label")
+
+    def get_hotspot_info(location_name, hotspot_name):
+        """获取热点完整数据，未配置返回None"""
+        location = get_location_info(location_name)
+        if not location:
+            return None
+        return location.get("hotspots", {}).get(hotspot_name, None)
+
+    def run_hotspot_special_action(action_name):
+        """
+        执行热点特殊动作
+
+        Args:
+            action_name: 特殊动作名称
+
+        Returns:
+            bool: 是否成功执行
+        """
+        if action_name == "restore_sanity":
+            if 'set_sanity' in dir():
+                set_sanity(100)
+            else:
+                persistent.sanity = 100
+                renpy.notify("精神值已恢复")
+            return True
+        return False
 
     ## 获取所有已解锁的地点列表
     def get_unlocked_locations():
@@ -594,24 +666,26 @@ init python:
         Returns:
             无返回值（成功时会跳转场景）
         """
-        ## 调用 travel_to_location 检查条件并消耗行动点
-        if not travel_to_location(location_name):
-            ## 失败时 travel_to_location 已经显示了提示
-            return
-
-        ## 获取目标 label
+        ## 先确认地点场景可用，避免消耗行动点后无处可去
         target_label = get_location_label(location_name)
         if not target_label:
             renpy.notify("错误：找不到地点场景")
             return
 
-        ## 检查 label 是否存在
         if not renpy.has_label(target_label):
             renpy.notify("该地点场景尚未实现")
             return
 
-        ## 关闭笔记本界面
+        ## 调用 travel_to_location 检查条件并消耗行动点
+        if not travel_to_location(location_name):
+            ## 失败时 travel_to_location 已经显示了提示
+            return
+
+        ## 关闭相关界面并清理选择状态
+        store.map_selected_location = None
         renpy.hide_screen("notebook")
+        renpy.hide_screen("visual_map")
+        renpy.hide_screen("map_screen")
 
         ## 跳转到地点场景
         renpy.jump(target_label)
@@ -642,14 +716,6 @@ label process_map_travel:
         $ renpy.notify("错误：未指定目标地点")
         return
 
-    ## 调用 travel_to_location 检查条件并消耗行动点
-    $ travel_success = travel_to_location(map_target_location)
-
-    if not travel_success:
-        ## 失败时 travel_to_location 已经显示了提示
-        $ map_target_location = None
-        return
-
     ## 获取目标 label
     $ target_label = get_location_label(map_target_location)
 
@@ -661,6 +727,14 @@ label process_map_travel:
     ## 检查 label 是否存在
     if not renpy.has_label(target_label):
         $ renpy.notify("该地点场景尚未实现")
+        $ map_target_location = None
+        return
+
+    ## 调用 travel_to_location 检查条件并消耗行动点
+    $ travel_success = travel_to_location(map_target_location)
+
+    if not travel_success:
+        ## 失败时 travel_to_location 已经显示了提示
         $ map_target_location = None
         return
 

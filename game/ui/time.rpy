@@ -1,5 +1,5 @@
 ## 时间系统 UI界面
-## 从 systems/time_system.rpy 移动至此，遵循UI层分离原则
+## 从 systems/core/time.rpy 移动至此，遵循UI层分离原则
 
 ## 时间显示UI（叠加在游戏画面上）
 ## 位置在 REC 指示灯下方
@@ -55,7 +55,7 @@ screen rest_button():
             padding (20, 10)
             text_size 20
             text_color "#ffffff"
-            action [Function(advance_time), Jump("day_start")]
+            action [Function(advance_time), Call("common_time_advance")]
 
 ## 精神值显示UI（叠加在游戏画面左上角）
 ## 实现动态填充效果：红色圆球覆盖眼球，根据精神值从底部向上填充
