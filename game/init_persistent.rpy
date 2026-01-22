@@ -92,42 +92,6 @@ init -1 python:
     if getattr(persistent, 'unlocked_locations', None) is None:
         persistent.unlocked_locations = []
 
-    # ========================================
-    # 开发者工具函数
-    # ========================================
-
-    def reset_all_persistent():
-        """
-        重置所有persistent变量到初始状态
-        仅用于开发和测试
-        """
-        persistent.episode_1_unlocked = True
-        persistent.episode_2_unlocked = False
-        persistent.episode_3_unlocked = False
-        persistent.episode_4_unlocked = False
-        persistent.episodes_5_8_unlocked = False
-        persistent.discovered_clues = []
-        persistent.sanity = 100
-        persistent.bolai_confronted = False
-        persistent.safe_password_found = False
-        persistent.met_characters = []
-        persistent.notebook_records = []
-        persistent.visited_locations = []
-        persistent.unlocked_locations = []
-        renpy.notify("所有persistent变量已重置")
-
-    def unlock_all_episodes():
-        """
-        解锁所有周目
-        仅用于开发和测试
-        """
-        persistent.episode_1_unlocked = True
-        persistent.episode_2_unlocked = True
-        persistent.episode_3_unlocked = True
-        persistent.episode_4_unlocked = True
-        persistent.episodes_5_8_unlocked = True
-        renpy.notify("所有周目已解锁")
-
     def set_sanity(value):
         """
         设置精神值
@@ -138,18 +102,6 @@ init -1 python:
         """
         persistent.sanity = max(0, min(100, value))
         renpy.notify("精神值已设置为: {}".format(persistent.sanity))
-
-    def test_sanity_levels():
-        """
-        循环测试所有精神值档位的图标显示
-        仅用于开发和测试
-        """
-        levels = [100, 75, 58, 42, 25, 8]
-        names = ["正常", "轻度幻觉", "中度幻觉", "重度幻觉", "极度混乱", "崩溃边缘"]
-
-        for i, level in enumerate(levels):
-            persistent.sanity = level
-            renpy.notify("精神值: {} - {}".format(level, names[i]))
 
     def show_persistent_status():
         """

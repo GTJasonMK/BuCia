@@ -11,6 +11,9 @@ label episode1_start:
     # 设置当前周目
     $ start_episode(1)
 
+    ## 开局耳机提示
+    call screen headphone_tip
+
     ## 默认背景由 default_background screen 自动提供
     ## 如需切换到其他背景，使用: scene 背景名 with fade
 

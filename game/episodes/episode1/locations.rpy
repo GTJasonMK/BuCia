@@ -115,7 +115,6 @@ label visit_andrea_house:
         "离开":
             return
 
-## 注意：visit_church 已在 shared/locations/church.rpy 中定义
 
 label visit_community_center:
     """社区管理中心"""

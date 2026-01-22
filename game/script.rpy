@@ -68,66 +68,6 @@ label episodes_5_8:
 
     return
 
-## 开发者测试场景 - 精神值图标测试
-label sanity_test:
-    """
-    精神值图标显示测试
-    用于验证不同精神值档位的图标显示效果
-
-    使用方法：
-    1. 在主菜单按 Shift+O 打开控制台
-    2. 输入: renpy.call_in_new_context("sanity_test")
-    或
-    3. 在游戏中直接 jump sanity_test
-    """
-
-    scene bg room with dissolve
-
-    show screen time_display
-    show screen sanity_display
-
-    "精神值图标测试场景"
-    "左上角显示的eye图标会根据精神值变化而改变。"
-    "当前精神值: [persistent.sanity]"
-
-    menu:
-        "请选择要测试的精神值档位："
-
-        "100 - 正常状态（图标1）":
-            $ persistent.sanity = 100
-            "精神值已设置为100 - 正常状态"
-
-        "75 - 轻度幻觉（图标2）":
-            $ persistent.sanity = 75
-            "精神值已设置为75 - 轻度幻觉"
-
-        "58 - 中度幻觉（图标3）":
-            $ persistent.sanity = 58
-            "精神值已设置为58 - 中度幻觉"
-
-        "42 - 重度幻觉（图标4）":
-            $ persistent.sanity = 42
-            "精神值已设置为42 - 重度幻觉"
-
-        "25 - 极度混乱（图标5）":
-            $ persistent.sanity = 25
-            "精神值已设置为25 - 极度混乱"
-
-        "8 - 崩溃边缘（图标6）":
-            $ persistent.sanity = 8
-            "精神值已设置为8 - 崩溃边缘"
-
-        "退出测试":
-            $ persistent.sanity = 100
-            "精神值已恢复为100"
-            return
-
-    "观察左上角的eye图标，它应该已经改变。"
-    "鼠标悬停在图标上可以看到当前精神值。"
-    "点击图标可以打开设置菜单。"
-
-    jump sanity_test
-
 ## 周目占位符（待开发）
 label episode2_placeholder:
     scene bg room with dissolve
