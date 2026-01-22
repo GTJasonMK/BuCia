@@ -11,6 +11,7 @@ label talk_to_rolinda_scene1:
 
     if is_first_meet("罗琳达"):
         $ set_character_met("罗琳达")
+        $ apply_impression_event("ep1_meet_rolinda")
         rolinda "你好，欢迎来到布恰小镇。"
         rolinda "我是罗琳达，负责这里的社区管理工作。"
     else:
@@ -29,6 +30,7 @@ label talk_to_rolinda_scene1:
             rolinda "那是联邦政府的福利项目。"
             rolinda "为了帮助战后居民恢复健康..."
             # 罗琳达似乎有所隐瞒
+            $ apply_impression_event("ep1_supplement_doubt")
             jump talk_rolinda_menu1
 
         "结束对话":
@@ -46,6 +48,7 @@ label talk_to_yedina_scene1:
     show yedina neutral at center with dissolve
 
     yedina "你好，需要什么医疗帮助吗？"
+    $ apply_impression_event("ep1_meet_yedina")
 
     menu talk_yedina_menu1:
         "询问药品来源":
@@ -58,6 +61,7 @@ label talk_to_yedina_scene1:
             yedina "我完成了尸检，死因是烟雾吸入导致窒息。"
             # 叶蒂娜似乎欲言又止
             $ modify_character_trust("叶蒂娜", 10)
+            $ apply_impression_event("ep1_autopsy_doubt")
 
         "告辞":
             hide yedina with dissolve

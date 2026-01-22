@@ -395,13 +395,21 @@ screen notebook_characters_content():
         if i < len(items):
             ## 显示角色头像
             $ char = items[i]
+            $ char_name = char.get("full_name", char.get("name", "???"))
             button:
                 pos slot_pos
                 action SetVariable("notebook_selected_item", char)
                 ## 角色头像或默认显示
                 add Solid(char.get("color", "#888888")):
                     size (250, 277)
-                text char.get("full_name", "???"):
+                $ impression_text = get_impression_display(char_name) if 'get_impression_display' in dir() else "未知"
+                text "印象：" + impression_text:
+                    xalign 0.5
+                    yalign 0.78
+                    size 18
+                    color "#ffffff"
+                    outlines [(2, "#000000", 0, 0)]
+                text char_name:
                     xalign 0.5
                     yalign 0.9
                     size 24
@@ -738,7 +746,8 @@ screen notebook_detail_panel(item, item_type):
 
             elif item_type == "character":
                 ## 角色详情
-                text item.get("full_name", "???"):
+                $ char_name = item.get("full_name", "???")
+                text char_name:
                     size 36
                     color item.get("color", "#4a3728")
                     font "fonts/lolita.ttf"
@@ -747,6 +756,12 @@ screen notebook_detail_panel(item, item_type):
                 text item.get("role", ""):
                     size 24
                     color "#666666"
+                    font "fonts/lolita.ttf"
+                    xalign 0.5
+
+                text "印象: [get_impression_display(char_name) if 'get_impression_display' in dir() else '未知']":
+                    size 22
+                    color "#4a3728"
                     font "fonts/lolita.ttf"
                     xalign 0.5
 

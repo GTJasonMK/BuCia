@@ -333,6 +333,9 @@ init python:
         if char_name not in persistent.met_characters:
             persistent.met_characters.append(char_name)
             character_database[char_name]["first_meet"] = True
+            ## 更新角色认知（初次见面）
+            if 'set_impression' in dir():
+                set_impression(char_name, "met", reason="meet", silent=True)
             ## 显示弹窗通知
             if 'popup_character' in dir():
                 popup_character(char_name)

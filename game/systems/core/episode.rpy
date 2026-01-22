@@ -17,6 +17,10 @@ init python:
 
         current_episode = episode_num
 
+        # 重置角色认知状态
+        if 'reset_impressions' in dir():
+            reset_impressions(episode_num, silent=True)
+
         # 重置时间系统
         reset_time()
 
