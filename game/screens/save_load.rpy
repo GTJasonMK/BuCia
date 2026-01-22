@@ -9,118 +9,130 @@ screen load():
 
     tag menu
 
-    use file_slots(_("读取游戏"))
+    use file_slots(_("读取"))
 
 
 screen file_slots(title):
 
-    default page_name_value = FilePageNameInputValue(pattern=_("第 {} 页"), auto=_("自动存档"), quick=_("快速存档"))
+    default page_name_value = FilePageNameInputValue(pattern=_("第 {} 页"))
 
-    use game_menu(title, show_navigation=False):
-        ## 固定为第 1 页存档
-        on "show" action FilePage(1)
+    use game_menu("", show_navigation=False, show_return=False, show_label=False, show_header=True, header_title=title):
+        ## 存档位网格（3x2）
+        grid gui.file_slot_cols gui.file_slot_rows:
+            xalign 0.5
+            yalign 0.50
+            spacing 45
 
-        fixed:
+            for i in range(gui.file_slot_cols * gui.file_slot_rows):
 
-            ## 此代码确保输入控件在任意按钮执行前可以获取 enter 事件。
-            order_reverse True
+                $ slot = i + 1
 
-            ## 页面名称，可以通过单击按钮进行编辑。
-            button:
-                style "page_label"
+                button:
+                    xsize 520
+                    ysize 280
+                    action FileAction(slot)
+                    key "save_delete" action FileDelete(slot)
 
-                key_events True
-                xalign 0.5
-                action page_name_value.Toggle()
+                    background Frame(Solid("#6f6f6f"), 10, 10)
+                    hover_background Frame(Solid("#7a7a7a"), 10, 10)
 
-                input:
-                    style "page_label_text"
-                    value page_name_value
+                    fixed:
+                        xsize 520
+                        ysize 280
 
-            ## 存档位网格。
-            grid gui.file_slot_cols gui.file_slot_rows:
-                style_prefix "slot"
-
-                xalign 0.5
-                yalign 0.5
-
-                spacing gui.slot_spacing
-
-                for i in range(gui.file_slot_cols * gui.file_slot_rows):
-
-                    $ slot = i + 1
-
-                    button:
-                        action FileAction(slot)
-
-                        has vbox
-
-                        add FileScreenshot(slot) xalign 0.5
+                        add FileScreenshot(slot):
+                            xalign 0.5
+                            yalign 0.0
+                            xsize 520
+                            ysize 230
 
                         text FileTime(slot, format=_("{#file_time}%Y-%m-%d %H:%M"), empty=_("空存档位")):
-                            style "slot_time_text"
+                            xalign 0.5
+                            yalign 1.0
+                            yoffset -8
+                            size 20
+                            color "#4d4d4d"
 
-                        text FileSaveName(slot):
-                            style "slot_name_text"
+        ## 翻页按钮
+        hbox:
+            xalign 0.5
+            yalign 0.93
+            spacing 18
 
-                        key "save_delete" action FileDelete(slot)
+            textbutton "<":
+                style "save_page_button"
+                action [FilePagePrevious(), With(dissolve)]
 
-            ## 用于访问其他页面的按钮。
-            vbox:
-                style_prefix "page"
-
-                xalign 0.5
-                yalign 1.0
-
-                hbox:
+            for i in range(1, 10):
+                $ _page_id = str(i)
+                vbox:
+                    spacing 0
                     xalign 0.5
 
-                    spacing gui.page_spacing
+                    textbutton str(i):
+                        style "save_page_button"
+                        text_style "save_page_button_text"
+                        action [FilePage(_page_id), With(dissolve)]
 
-                    textbutton "1" action FilePage(1)
-
-                if config.has_sync:
-                    if CurrentScreenName() == "save":
-                        textbutton _("上传同步"):
-                            action UploadSync()
+                    if FilePageName() == _page_id:
+                        frame:
                             xalign 0.5
-                    else:
-                        textbutton _("下载同步"):
-                            action DownloadSync()
-                            xalign 0.5
+                            yoffset -4
+                            background Solid("#000000")
+                            xsize 12
+                            ysize 2
+
+            textbutton ">":
+                style "save_page_button"
+                action [FilePageNext(), With(dissolve)]
+
+        if config.has_sync and CurrentScreenName() != "save":
+            textbutton _("下载同步"):
+                xalign 0.5
+                yalign 0.97
+                style "save_sync_button"
+                action DownloadSync()
+        elif config.has_sync and CurrentScreenName() == "save":
+            textbutton _("上传同步"):
+                xalign 0.5
+                yalign 0.97
+                style "save_sync_button"
+                action UploadSync()
 
 
-style page_label is gui_label
-style page_label_text is gui_label_text
-style page_button is gui_button
-style page_button_text is gui_button_text
+style save_page_button is gui_button
+style save_page_button_text is gui_button_text
+style save_sync_button is gui_button
+style save_sync_button_text is gui_button_text
 
-style slot_button is gui_button
-style slot_button_text is gui_button_text
-style slot_time_text is slot_button_text
-style slot_name_text is slot_button_text
+style save_page_button:
+    background None
+    xpadding 6
+    ypadding 2
 
-style page_label:
-    xpadding 75
-    ypadding 5
-    xalign 0.5
-
-style page_label_text:
+style save_page_button_text:
+    size 22
+    color "#222222"
+    hover_color "#000000"
+    outlines [(1, "#ffffff", 0, 0)]
     textalign 0.5
-    layout "subtitle"
-    hover_color gui.hover_color
 
-style page_button:
-    properties gui.button_properties("page_button")
+style save_page_indicator_text is gui_text
 
-style page_button_text:
-    properties gui.text_properties("page_button")
+style save_page_indicator_text:
+    size 22
+    color "#000000"
+    xalign 0.5
+    outlines [(1, "#ffffff", 0, 0)]
 
-style slot_button:
-    properties gui.button_properties("slot_button")
+style save_sync_button:
+    background None
+    xpadding 10
+    ypadding 4
 
-style slot_button_text:
-    properties gui.text_properties("slot_button")
+style save_sync_button_text:
+    size 22
+    color "#222222"
 
 
 ## 设置屏幕 ########################################################################

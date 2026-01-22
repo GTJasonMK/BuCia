@@ -2,82 +2,94 @@ screen preferences():
 
     tag menu
 
-    use game_menu(_("设置"), scroll="viewport", show_navigation=False):
+    use game_menu(_("设置"), show_navigation=False, show_return=False, show_label=False, show_header=True):
 
-        vbox:
-            xalign 0.5
+        frame:
+            style "preferences_panel"
+            xalign 0.47
+            yalign 0.52
 
-            hbox:
-                box_wrap True
+            vbox:
+                xfill True
+                yfill True
+                spacing 22
 
-                if renpy.variant("pc") or renpy.variant("web"):
+                hbox:
+                    xalign 0.5
+                    spacing 140
+
+                    if renpy.variant("pc") or renpy.variant("web"):
+
+                        vbox:
+                            style_prefix "radio"
+                            xsize 520
+                            spacing 10
+                            label _("显示")
+                            textbutton _("窗口") action Preference("display", "window")
+                            textbutton _("全屏") action Preference("display", "fullscreen")
 
                     vbox:
-                        style_prefix "radio"
-                        label _("显示")
-                        textbutton _("窗口") action Preference("display", "window")
-                        textbutton _("全屏") action Preference("display", "fullscreen")
+                        style_prefix "check"
+                        xsize 520
+                        spacing 10
+                        label _("快进")
+                        textbutton _("未读文本") action Preference("skip", "toggle")
+                        textbutton _("选项后继续") action Preference("after choices", "toggle")
+                        textbutton _("忽略转场") action InvertSelected(Preference("transitions", "toggle"))
 
-                vbox:
-                    style_prefix "check"
-                    label _("快进")
-                    textbutton _("未读文本") action Preference("skip", "toggle")
-                    textbutton _("选项后继续") action Preference("after choices", "toggle")
-                    textbutton _("忽略转场") action InvertSelected(Preference("transitions", "toggle"))
+                hbox:
+                    style_prefix "slider"
+                    xalign 0.5
+                    spacing 140
 
-                ## 可在此处添加 radio_pref 或 check_pref 类型的额外 vbox，以添加
-                ## 额外的创建者定义的偏好设置。
+                    vbox:
+                        xsize 580
+                        spacing 14
 
-            null height (4 * gui.pref_spacing)
+                        label _("文字速度")
 
-            hbox:
-                style_prefix "slider"
-                box_wrap True
+                        bar value Preference("text speed")
 
-                vbox:
+                        label _("自动前进时间")
 
-                    label _("文字速度")
+                        bar value Preference("auto-forward time")
 
-                    bar value Preference("text speed")
+                    vbox:
+                        xsize 580
+                        spacing 14
 
-                    label _("自动前进时间")
+                        if config.has_music:
+                            label _("音乐音量")
 
-                    bar value Preference("auto-forward time")
+                            hbox:
+                                bar value Preference("music volume")
 
-                vbox:
+                        if config.has_sound:
 
-                    if config.has_music:
-                        label _("音乐音量")
+                            label _("音效音量")
 
-                        hbox:
-                            bar value Preference("music volume")
+                            hbox:
+                                bar value Preference("sound volume")
 
-                    if config.has_sound:
-
-                        label _("音效音量")
-
-                        hbox:
-                            bar value Preference("sound volume")
-
-                            if config.sample_sound:
-                                textbutton _("测试") action Play("sound", config.sample_sound)
+                                if config.sample_sound:
+                                    textbutton _("测试") action Play("sound", config.sample_sound)
 
 
-                    if config.has_voice:
-                        label _("语音音量")
+                        if config.has_voice:
+                            label _("语音音量")
 
-                        hbox:
-                            bar value Preference("voice volume")
+                            hbox:
+                                bar value Preference("voice volume")
 
-                            if config.sample_voice:
-                                textbutton _("测试") action Play("voice", config.sample_voice)
+                                if config.sample_voice:
+                                    textbutton _("测试") action Play("voice", config.sample_voice)
 
-                    if config.has_music or config.has_sound or config.has_voice:
-                        null height gui.pref_spacing
+                        if config.has_music or config.has_sound or config.has_voice:
+                            null height gui.pref_spacing
 
-                        textbutton _("全部静音"):
-                            action Preference("all mute", "toggle")
-                            style "mute_all_button"
+                            textbutton _("全部静音"):
+                                action Preference("all mute", "toggle")
+                                style "mute_all_button"
 
 
 style pref_label is gui_label
@@ -106,12 +118,16 @@ style slider_pref_vbox is pref_vbox
 style mute_all_button is check_button
 style mute_all_button_text is check_button_text
 
+style preferences_panel is frame
+
 style pref_label:
     top_margin gui.pref_spacing
     bottom_margin 3
 
 style pref_label_text:
     yalign 1.0
+    size 28
+    color "#1f1f1f"
 
 style pref_vbox:
     xsize 338
@@ -137,7 +153,10 @@ style check_button_text:
     properties gui.text_properties("check_button")
 
 style slider_slider:
-    xsize 525
+    xsize 560
+    ysize 22
+    base_bar Solid("#4f4f4f")
+    thumb Solid("#111111")
 
 style slider_button:
     properties gui.button_properties("slider_button")
@@ -149,6 +168,25 @@ style slider_button_text:
 
 style slider_vbox:
     xsize 675
+
+style preferences_panel:
+    xsize 1420
+    ysize 760
+    xpadding 60
+    ypadding 40
+    background Solid("#d6d6d6")
+
+style radio_button_text:
+    size 22
+    color "#222222"
+
+style check_button_text:
+    size 22
+    color "#222222"
+
+style slider_label_text:
+    size 26
+    color "#1f1f1f"
 
 
 ## 历史屏幕 ########################################################################

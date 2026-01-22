@@ -1,11 +1,14 @@
-screen game_menu(title, scroll=None, yinitial=0.0, spacing=0, show_navigation=True):
+screen game_menu(title, scroll=None, yinitial=0.0, spacing=0, show_navigation=True, show_return=True, show_label=True, show_header=False, header_title=None, background_override=None):
 
     style_prefix "game_menu"
 
     if main_menu:
         add gui.main_menu_background
     else:
-        add gui.game_menu_background
+        if background_override:
+            add background_override
+        else:
+            add gui.game_menu_background
 
     frame:
         style "game_menu_outer_frame"
@@ -100,16 +103,29 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0, show_navigation=Tr
     if show_navigation:
         use navigation
 
-    if show_navigation:
-        textbutton _("返回"):
-            style "return_button"
-            action Return()
-    else:
-        textbutton _("返回"):
-            style "return_button_full"
-            action Return()
+    if show_return:
+        if show_navigation:
+            textbutton _("返回"):
+                style "return_button"
+                action Return()
+        else:
+            textbutton _("返回"):
+                style "return_button_full"
+                action Return()
 
-    label title
+    if show_label and title:
+        label title
+
+    if show_header:
+        $ _header_title = header_title if header_title is not None else title
+        if _header_title:
+            text _header_title:
+                style "menu_header_title"
+        imagebutton:
+            style "menu_header_close"
+            idle im.FactorScale("images/notebook/关闭UI（未选中）.png", 1.2)
+            hover im.FactorScale("images/notebook/关闭UI（未选中）.png", 1.2)
+            action Return()
 
     if main_menu:
         key "game_menu" action ShowMenu("main_menu")
@@ -181,6 +197,40 @@ style return_button_full:
     xoffset -40
     yoffset 20
 
+style menu_header_title is gui_text
+style menu_header_close is gui_button
+style menu_header_close_text is gui_button_text
+
+style menu_header_title:
+    xalign 0.03
+    yalign 0.03
+    xoffset -4
+    yoffset -8
+    size 46
+    color "#111111"
+
+style menu_header_close:
+    xalign 0.98
+    yalign 0.03
+    xoffset 8
+    yoffset -6
+    background None
+    xpadding 6
+    ypadding 2
+
+style menu_header_close_text:
+    size 28
+    color "#111111"
+
+style menu_center_panel is frame
+
+style menu_center_panel:
+    xsize 1420
+    ysize 760
+    xpadding 60
+    ypadding 40
+    background Solid("#d6d6d6")
+
 
 ## 关于屏幕 ########################################################################
 ##
@@ -195,7 +245,7 @@ screen about():
 
     ## 此 use 语句将 game_menu 屏幕包含到了这个屏幕内。子级 vbox 将包含在
     ## game_menu 屏幕的 viewport 内。
-    use game_menu(_("关于"), scroll="viewport", show_navigation=False):
+    use game_menu(_("关于"), scroll="viewport", show_navigation=False, show_return=False, show_label=False, show_header=True):
 
         style_prefix "about"
 
