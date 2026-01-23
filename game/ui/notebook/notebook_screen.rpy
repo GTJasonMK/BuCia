@@ -130,13 +130,13 @@ init python:
         """获取指定标签页的项目列表"""
         if tab == NOTEBOOK_TAB_EVIDENCE:
             ## 返回已发现的线索
-            return get_discovered_clues() if 'get_discovered_clues' in dir() else []
+            return renpy.store.get_discovered_clues() if hasattr(renpy.store, "get_discovered_clues") else []
         elif tab == NOTEBOOK_TAB_CHARACTERS:
             ## 返回已遇见的角色
-            return get_met_characters() if 'get_met_characters' in dir() else []
+            return renpy.store.get_met_characters() if hasattr(renpy.store, "get_met_characters") else []
         elif tab == NOTEBOOK_TAB_RECORDS:
             ## 返回所有记录
-            return get_all_records() if 'get_all_records' in dir() else []
+            return renpy.store.get_all_records() if hasattr(renpy.store, "get_all_records") else []
         elif tab == NOTEBOOK_TAB_MAP:
             ## 地图标签页不使用此函数获取数据
             ## 地图内容由 notebook_map_content() 直接调用 get_all_map_locations() 渲染
@@ -402,7 +402,7 @@ screen notebook_characters_content():
                 ## 角色头像或默认显示
                 add Solid(char.get("color", "#888888")):
                     size (250, 277)
-                $ impression_text = get_impression_display(char_name) if 'get_impression_display' in dir() else "未知"
+                $ impression_text = renpy.store.get_impression_display(char_name) if hasattr(renpy.store, "get_impression_display") else "未知"
                 text "印象：" + impression_text:
                     xalign 0.5
                     yalign 0.78
@@ -538,7 +538,7 @@ screen notebook_map_content():
         pos (1245, 782)
 
     ## ========== 动态地点标记 ==========
-    $ all_locations = get_all_map_locations() if 'get_all_map_locations' in dir() else []
+    $ all_locations = renpy.store.get_all_map_locations() if hasattr(renpy.store, "get_all_map_locations") else []
     for loc in all_locations:
         $ loc_pos = loc["pos"]
         $ is_visited = loc["visited"]
@@ -673,7 +673,7 @@ screen notebook_map_content():
                 null height 5
 
                 ## 描述
-                $ loc_info = get_location_info(notebook_selected_item["name"]) if 'get_location_info' in dir() else None
+                $ loc_info = renpy.store.get_location_info(notebook_selected_item["name"]) if hasattr(renpy.store, "get_location_info") else None
                 if loc_info:
                     text loc_info.get("description", ""):
                         size 18
@@ -759,7 +759,7 @@ screen notebook_detail_panel(item, item_type):
                     font "fonts/lolita.ttf"
                     xalign 0.5
 
-                text "印象: [get_impression_display(char_name) if 'get_impression_display' in dir() else '未知']":
+                text "印象: [renpy.store.get_impression_display(char_name) if hasattr(renpy.store, 'get_impression_display') else '未知']":
                     size 22
                     color "#4a3728"
                     font "fonts/lolita.ttf"

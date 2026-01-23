@@ -21,8 +21,18 @@ screen say(who, what):
                 window:
                     id "namebox"
                     style "namebox"
-                    text who id "who":
-                        font "fonts/lolita.ttf"
+                    $ _who_text = renpy.filter_text_tags(who, allow=[])
+                    $ _resolved_name = resolve_character_name(_who_text)
+                    $ _impression_label = get_impression_display(_who_text)
+                    $ _impression_text = f"（{_impression_label}）"
+                    $ _show_impression = _resolved_name != "茨贝拉"
+                    hbox:
+                        spacing 8
+                        text who id "who":
+                            font "fonts/lolita.ttf"
+                        if _show_impression:
+                            text _impression_text style "say_impression":
+                                font "fonts/lolita.ttf"
 
             text what id "what":
                 style "say_dialogue"
@@ -39,7 +49,16 @@ screen say(who, what):
                 window:
                     id "namebox"
                     style "namebox"
-                    text who id "who"
+                    $ _who_text = renpy.filter_text_tags(who, allow=[])
+                    $ _resolved_name = resolve_character_name(_who_text)
+                    $ _impression_label = get_impression_display(_who_text)
+                    $ _impression_text = f"（{_impression_label}）"
+                    $ _show_impression = _resolved_name != "茨贝拉"
+                    hbox:
+                        spacing 8
+                        text who id "who"
+                        if _show_impression:
+                            text _impression_text style "say_impression"
 
             text what id "what"
 
@@ -58,6 +77,7 @@ style window is default
 style say_label is default
 style say_dialogue is default
 style say_thought is say_dialogue
+style say_impression is say_label
 
 style namebox is default
 style namebox_label is say_label
@@ -84,6 +104,12 @@ style namebox:
 style say_label:
     properties gui.text_properties("name", accent=True)
     xalign gui.name_xalign
+    yalign 0.5
+
+style say_impression:
+    size int(gui.name_text_size * 0.7)
+    color "#dddddd"
+    xalign 0.0
     yalign 0.5
 
 style say_dialogue:

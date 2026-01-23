@@ -277,7 +277,7 @@ screen visual_map(mode="normal", close_action=Hide("visual_map")):
                     text "行动点:":
                         size 22
                         color "#d4c4a8"
-                    $ ap = get_action_points() if 'get_action_points' in dir() else 3
+                    $ ap = renpy.store.get_action_points() if hasattr(renpy.store, "get_action_points") else 3
                     text "[ap]":
                         size 22
                         color "#8bc34a"

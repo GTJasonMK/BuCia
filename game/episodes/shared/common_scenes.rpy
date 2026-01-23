@@ -65,7 +65,7 @@ label common_teaparty_transition:
     scene bg teaparty with dissolve
     play music "bgm_mysterious.ogg" fadein 1.0
 
-    show najezhida neutral at center
+    show najezhida neutral at character_center
 
     najezhida "又一次失败了呢。"
     najezhida "你离真相还很远..."

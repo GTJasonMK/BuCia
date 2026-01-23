@@ -15,6 +15,7 @@ define POPUP_ICONS = {
     "event": "event",         ## 剧情事件
     "item": "item",           ## 物品获得
     "trust": "trust",         ## 信任度变化
+    "impression": "impression", ## 角色印象变化
     "warning": "warning",     ## 警告提示
     "info": "info"            ## 一般信息
 }
@@ -27,6 +28,7 @@ define POPUP_COLORS = {
     "event": "#ff8a65",       ## 橙色 - 事件
     "item": "#ba68c8",        ## 紫色 - 物品
     "trust": "#f48fb1",       ## 粉色 - 信任度
+    "impression": "#ffd54f",  ## 黄色 - 印象变化
     "warning": "#ef5350",     ## 红色 - 警告
     "info": "#ffffff"         ## 白色 - 信息
 }
@@ -146,6 +148,10 @@ init python:
             show_popup("信任度提升", "{} +{}".format(char_name, change), "trust")
         elif change < 0:
             show_popup("信任度下降", "{} {}".format(char_name, change), "trust")
+
+    def popup_impression(char_name, state_text):
+        """角色印象变化弹窗"""
+        show_popup("印象变化", "{}：{}".format(char_name, state_text), "impression")
 
     def popup_warning(message):
         """警告弹窗"""

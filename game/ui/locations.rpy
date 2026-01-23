@@ -10,7 +10,7 @@ screen map_screen():
 init python:
     def discover_hotspot_clues(location_name, hotspot_name):
         """发现热点关联线索"""
-        hotspot = get_hotspot_info(location_name, hotspot_name) if 'get_hotspot_info' in dir() else None
+        hotspot = renpy.store.get_hotspot_info(location_name, hotspot_name) if hasattr(renpy.store, "get_hotspot_info") else None
         if not hotspot:
             renpy.notify("该热点尚未配置")
             return
@@ -19,16 +19,16 @@ init python:
             renpy.notify("没有发现线索")
             return
         found_any = False
-        if 'discover_clue' in dir():
+        if hasattr(renpy.store, "discover_clue"):
             for clue_id in clues:
-                if discover_clue(clue_id):
+                if renpy.store.discover_clue(clue_id):
                     found_any = True
         if not found_any:
             renpy.notify("没有新线索")
 
     def resolve_hotspot_action(location_name, hotspot_name):
         """根据热点配置返回对应动作"""
-        hotspot = get_hotspot_info(location_name, hotspot_name) if 'get_hotspot_info' in dir() else None
+        hotspot = renpy.store.get_hotspot_info(location_name, hotspot_name) if hasattr(renpy.store, "get_hotspot_info") else None
         if not hotspot:
             return Function(renpy.notify, "该热点尚未配置")
         hotspot_label = hotspot.get("label")
@@ -36,8 +36,8 @@ init python:
             return Jump(hotspot_label)
         special_action = hotspot.get("special_action")
         if special_action:
-            if 'run_hotspot_special_action' in dir():
-                return Function(run_hotspot_special_action, special_action)
+            if hasattr(renpy.store, "run_hotspot_special_action"):
+                return Function(renpy.store.run_hotspot_special_action, special_action)
             return Function(renpy.notify, "该热点特殊动作未实现")
         if hotspot.get("clues"):
             return Function(discover_hotspot_clues, location_name, hotspot_name)

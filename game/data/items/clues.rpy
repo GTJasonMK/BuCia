@@ -345,8 +345,8 @@ init python:
 
         # 显示弹窗通知
         clue_name = clues_database[clue_key]["name"]
-        if 'popup_clue' in dir():
-            popup_clue(clue_name)
+        if hasattr(renpy.store, "popup_clue"):
+            renpy.store.popup_clue(clue_name)
         else:
             renpy.notify(f"发现新线索：{clue_name}")
 

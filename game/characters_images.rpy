@@ -23,9 +23,9 @@ init -2:
     ## 统一缩放到 20%，接近 1080p 下常规立绘高度（约 1000px）
     $ _character_sprite_scale = 0.2
 
-    ## 统一角色显示位置（底部居中）
+    ## 统一角色显示位置（对话框左侧）
     transform character_center:
-        xalign 0.5
+        xalign 0.2
         yalign 1.0
         xanchor 0.5
         yanchor 1.0
@@ -140,6 +140,13 @@ init -2 python:
         生成绑定到指定角色的回调函数。
         """
         def _cb(event, interact=True, **kwargs):
+            if event in ("begin", "show"):
+                if hasattr(renpy.store, "meet_character"):
+                    _resolved_name = tag
+                    if hasattr(renpy.store, "resolve_character_name"):
+                        _resolved_name = renpy.store.resolve_character_name(tag)
+                    if 'character_database' in globals() and _resolved_name in character_database:
+                        renpy.store.meet_character(_resolved_name)
             if not getattr(store, "auto_sprite_enabled", True):
                 return
             if getattr(store, "auto_sprite_suppress_next", False):

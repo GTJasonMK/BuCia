@@ -75,13 +75,13 @@ init python:
         重置当前周目的角色印象
         """
         if episode_num is None:
-            if 'get_current_episode' in dir():
-                episode_num = get_current_episode()
+            if hasattr(renpy.store, "get_current_episode"):
+                episode_num = renpy.store.get_current_episode()
             else:
                 episode_num = 1
 
-        if 'get_all_character_names' in dir():
-            names = get_all_character_names()
+        if hasattr(renpy.store, "get_all_character_names"):
+            names = renpy.store.get_all_character_names()
         elif 'character_database' in globals():
             names = list(character_database.keys())
         else:
@@ -103,15 +103,25 @@ init python:
 
         resolved = resolve_character_name(char_name)
         if resolved in store.character_impressions:
-            return store.character_impressions[resolved]
+            state = store.character_impressions[resolved]
+            if state == "unknown":
+                met_list = getattr(persistent, "met_characters", [])
+                if resolved in met_list:
+                    return "met"
+            return state
 
         if episode_num is None:
-            if 'get_current_episode' in dir():
-                episode_num = get_current_episode()
+            if hasattr(renpy.store, "get_current_episode"):
+                episode_num = renpy.store.get_current_episode()
             else:
                 episode_num = 1
 
-        return _get_impression_default(episode_num, resolved)
+        state = _get_impression_default(episode_num, resolved)
+        if state == "unknown":
+            met_list = getattr(persistent, "met_characters", [])
+            if resolved in met_list:
+                return "met"
+        return state
 
     def get_impression_display(char_name, episode_num=None):
         """
@@ -134,12 +144,21 @@ init python:
             renpy.log(f"错误：尝试设置不存在角色印象 - '{char_name}'")
             return False
 
+        ## 初识状态同步解锁角色
+        if state_id == "met" and reason != "meet":
+            if hasattr(renpy.store, "meet_character"):
+                renpy.store.meet_character(resolved)
+
         old_state = store.character_impressions.get(resolved)
         store.character_impressions[resolved] = state_id
 
         if (not silent) and (old_state != state_id):
-            msg = f"{resolved}印象变为：{impression_display.get(state_id, state_id)}"
-            renpy.notify(msg)
+            state_text = impression_display.get(state_id, state_id)
+            if hasattr(renpy.store, "popup_impression"):
+                renpy.store.popup_impression(resolved, state_text)
+            else:
+                msg = f"{resolved}印象变为：{state_text}"
+                renpy.notify(msg)
         return True
 
     def apply_impression_event(event_id, silent=False):

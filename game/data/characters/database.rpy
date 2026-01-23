@@ -12,8 +12,8 @@ define badebiete = Character("巴德别特", color="#888888", image="badebiete",
 define hafu = Character("哈夫", color="#ffcc66", image="hafu", callback=make_character_callback("hafu"))
 define bolai = Character("博莱斯", color="#996633", image="bolai", callback=make_character_callback("bolai"))
 define ileina = Character("伊蕾娜", color="#ff88aa", image="ileina", callback=make_character_callback("ileina"))
-define najezhida = Character("娜杰日达", color="#00ccff", image="najezhida")
-define azov = Character("审判亚速", color="#ff0000", image="azov")
+define najezhida = Character("娜杰日达", color="#00ccff", image="najezhida", callback=make_character_callback("najezhida"))
+define azov = Character("审判亚速", color="#ff0000", image="azov", callback=make_character_callback("azov"))
 
 ## 角色数据库（存储角色信息）
 init python:
@@ -329,19 +329,27 @@ init python:
         if char_name not in character_database:
             renpy.log(f"错误：尝试记录与不存在的角色相遇 - '{char_name}'")
             return False
+        ## 主角不计入“遇见”逻辑
+        if char_name == "茨贝拉":
+            return False
 
         if char_name not in persistent.met_characters:
             persistent.met_characters.append(char_name)
             character_database[char_name]["first_meet"] = True
             ## 更新角色认知（初次见面）
-            if 'set_impression' in dir():
-                set_impression(char_name, "met", reason="meet", silent=True)
+            if hasattr(renpy.store, "set_impression"):
+                renpy.store.set_impression(char_name, "met", reason="meet", silent=True)
             ## 显示弹窗通知
-            if 'popup_character' in dir():
-                popup_character(char_name)
+            if hasattr(renpy.store, "popup_character"):
+                renpy.store.popup_character(char_name)
             else:
                 renpy.notify("遇见了 " + char_name)
             return True
+        ## 已经在持久化记录中，但当前周目印象仍未知时同步为初识
+        if hasattr(renpy.store, "get_impression"):
+            if renpy.store.get_impression(char_name) == "unknown":
+                if hasattr(renpy.store, "set_impression"):
+                    renpy.store.set_impression(char_name, "met", reason="meet", silent=True)
         return False
 
     def has_met_character(char_name):

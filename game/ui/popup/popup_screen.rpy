@@ -14,7 +14,7 @@ image popup_bg = "popup/popup_bg.png"
 ## 弹窗进入动画（从上方滑入 + 淡入）
 transform popup_enter:
     alpha 0.0
-    yoffset -50
+    yoffset -200
     easein 0.3 alpha 1.0 yoffset 0
 
 ## 弹窗退出动画（向上滑出 + 淡出）
@@ -107,18 +107,23 @@ screen popup_simple(message, popup_type="info"):
 
     frame:
         at popup_enter
-        xalign 0.5
-        yalign 0.1
-        xpadding 40
-        ypadding 20
-        background Solid("#000000cc")
+        anchor (0.5, 0.0)
+        xpos 960
+        ypos 80
+        background "popup_bg"
+        xsize 1148
+        ysize 399
+        xpadding 80
+        ypadding 60
 
         $ msg_color = POPUP_COLORS.get(popup_type, "#ffffff")
 
         text message:
-            size 28
+            xalign 0.5
+            size 36
             color msg_color
             font "fonts/lolita.ttf"
+            outlines [(1, "#000000", 0, 0)]
 
 ## ============================================================================
 ## 成就/解锁弹窗（带图标）
@@ -173,28 +178,3 @@ screen popup_unlock(title, content, icon_type="info"):
                         font "fonts/lolita.ttf"
                         outlines [(1, "#000000", 0, 0)]
 
-## ============================================================================
-## 测试用标签
-## ============================================================================
-
-label test_popup:
-    ## 测试弹窗系统
-    "准备测试弹窗系统..."
-
-    $ popup_clue("火灾现场照片")
-    "测试线索弹窗"
-
-    $ popup_location("安德莉娅住所")
-    "测试地点弹窗"
-
-    $ popup_character("罗琳达")
-    "测试角色弹窗"
-
-    $ popup_event("火灾发生")
-    "测试事件弹窗"
-
-    $ popup_trust("罗琳达", 10)
-    "测试信任度弹窗"
-
-    "弹窗测试完成！"
-    return

@@ -3,6 +3,8 @@
 
 ## 当前周目追踪变量
 default current_episode = 1  # 当前正在进行的周目(1-4)
+## 开始第一周目时是否重置已遇见角色（用于清空 persistent 影响）
+default reset_met_characters_on_start = True
 
 ## Episode系统函数
 init python:
@@ -18,8 +20,12 @@ init python:
         current_episode = episode_num
 
         # 重置角色认知状态
-        if 'reset_impressions' in dir():
-            reset_impressions(episode_num, silent=True)
+        if hasattr(renpy.store, "reset_impressions"):
+            renpy.store.reset_impressions(episode_num, silent=True)
+
+        # 可选：开始第一周目时清空已遇见角色
+        if episode_num == 1 and reset_met_characters_on_start:
+            persistent.met_characters = []
 
         # 重置时间系统
         reset_time()
@@ -30,8 +36,8 @@ init python:
         # 同步重置持久化访问记录，避免周目间残留
         persistent.visited_locations = []
         # 重置地点解锁状态，避免周目间解锁残留
-        if 'reset_locations_unlock_state' in dir():
-            reset_locations_unlock_state()
+        if hasattr(renpy.store, "reset_locations_unlock_state"):
+            renpy.store.reset_locations_unlock_state()
         store.current_location = None
 
         renpy.notify(f"开始第{episode_num}周目")

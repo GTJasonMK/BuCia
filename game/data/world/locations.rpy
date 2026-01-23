@@ -485,8 +485,8 @@ init python:
             bool: 是否成功执行
         """
         if action_name == "restore_sanity":
-            if 'set_sanity' in dir():
-                set_sanity(100)
+            if hasattr(renpy.store, "set_sanity"):
+                renpy.store.set_sanity(100)
             else:
                 persistent.sanity = 100
                 renpy.notify("精神值已恢复")
@@ -602,8 +602,8 @@ init python:
 
         ## 显示弹窗通知
         display_name = locations_database[location_name].get("name", location_name)
-        if 'popup_location' in dir():
-            popup_location(display_name)
+        if hasattr(renpy.store, "popup_location"):
+            renpy.store.popup_location(display_name)
         else:
             renpy.notify("新地点已解锁：" + display_name)
 
