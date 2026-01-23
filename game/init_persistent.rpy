@@ -92,6 +92,10 @@ init -1 python:
     if getattr(persistent, 'unlocked_locations', None) is None:
         persistent.unlocked_locations = []
 
+    # 地点提示弹窗已显示列表（避免重复提示）
+    if getattr(persistent, 'location_popup_shown', None) is None:
+        persistent.location_popup_shown = []
+
     def set_sanity(value):
         """
         设置精神值

@@ -430,6 +430,8 @@ init python:
             ## 使用持久化存储
             if location_name not in persistent.visited_locations:
                 persistent.visited_locations.append(location_name)
+                ## 首次到达时弹出提示
+                _popup_location_once(location_name)
 
     ## 检查地点是否已访问
     def is_location_visited(location_name):
@@ -600,14 +602,23 @@ init python:
         ## 添加到持久化解锁列表
         persistent.unlocked_locations.append(location_name)
 
-        ## 显示弹窗通知
+        ## 显示弹窗通知（避免重复）
+        _popup_location_once(location_name)
+
+        return True
+
+    def _popup_location_once(location_name):
+        """地点提示仅显示一次"""
+        if location_name not in locations_database:
+            return
+        if location_name in persistent.location_popup_shown:
+            return
+        persistent.location_popup_shown.append(location_name)
         display_name = locations_database[location_name].get("name", location_name)
         if hasattr(renpy.store, "popup_location"):
             renpy.store.popup_location(display_name)
         else:
             renpy.notify("新地点已解锁：" + display_name)
-
-        return True
 
     def is_location_first_unlock(location_name):
         """

@@ -1,0 +1,7 @@
+{
+  "api_key": "sk-OhLP4scvYICv3117Rv9Lu2DLRuWXILBcR4tPKA3OUnYnDv3v",
+  "base_url": "https://phapi.furina.junmatec.cn/v1",
+  "model": "TIG-3.6-VL-Lite",
+  "timeout_seconds": 60
+}
+
