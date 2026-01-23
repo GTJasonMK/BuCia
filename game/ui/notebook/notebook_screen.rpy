@@ -506,184 +506,155 @@ screen notebook_records_content():
 ## ============================================================================
 
 screen notebook_map_content():
-    ## 全屏地图显示（覆盖笔记本背景，使用原始1920x1080尺寸）
-    ## 所有坐标严格按照坐标.txt文件
+    ## 全屏地图显示（与主地图同一套图层、坐标与缩放）
+    $ map_scale = MAP_SCALE
 
-    ## ========== 图层17: 背景 (0, 0) ==========
-    add "map/背景.png":
-        pos (0, 0)
+    ## ========== 地图背景层 ==========
+    fixed:
+        add MAP_IMAGES["background"]:
+            pos (0, 0)
+            zoom map_scale
 
-    ## ========== 图层16: 泥地 (237, 77) ==========
-    add "map/泥地.png":
-        pos (237, 77)
+        add MAP_IMAGES["dirt"]:
+            pos (int(MAP_LAYER_POSITIONS["dirt"][0] * map_scale), int(MAP_LAYER_POSITIONS["dirt"][1] * map_scale))
+            zoom map_scale
 
-    ## ========== 图层15: 填充 (36, 4) ==========
-    add "map/填充.png":
-        pos (36, 4)
+        add MAP_IMAGES["fill"]:
+            pos (int(MAP_LAYER_POSITIONS["fill"][0] * map_scale), int(MAP_LAYER_POSITIONS["fill"][1] * map_scale))
+            zoom map_scale
 
-    ## ========== 图层14: 路 (147, 43) ==========
-    add "map/路.png":
-        pos (147, 43)
+        add MAP_IMAGES["road"]:
+            pos (int(MAP_LAYER_POSITIONS["road"][0] * map_scale), int(MAP_LAYER_POSITIONS["road"][1] * map_scale))
+            zoom map_scale
 
-    ## ========== 图层13: 描边 (39, 2) ==========
-    add "map/描边.png":
-        pos (39, 2)
+        add MAP_IMAGES["outline"]:
+            pos (int(MAP_LAYER_POSITIONS["outline"][0] * map_scale), int(MAP_LAYER_POSITIONS["outline"][1] * map_scale))
+            zoom map_scale
 
-    ## ========== 图层1: 粉色碎片 (985, 171) ==========
-    add "map/粉色碎片.png":
-        pos (985, 171)
+    ## ========== 地点标记 ==========
+    fixed:
+        $ all_locations = renpy.store.get_all_map_locations() if hasattr(renpy.store, "get_all_map_locations") else []
 
-    ## ========== 图层2: 蓝色碎片 (1245, 782) ==========
-    add "map/蓝色碎片.png":
-        pos (1245, 782)
+        for loc in all_locations:
+            $ loc_pos = loc["pos"]
+            $ is_current = (renpy.store.get_current_location() if hasattr(renpy.store, "get_current_location") else None) == loc["name"]
+            $ is_revealed = loc["name"] in getattr(persistent, "unlocked_locations", [])
 
-    ## ========== 动态地点标记 ==========
-    $ all_locations = renpy.store.get_all_map_locations() if hasattr(renpy.store, "get_all_map_locations") else []
-    for loc in all_locations:
-        $ loc_pos = loc["pos"]
-        $ is_visited = loc["visited"]
-        $ is_unlocked = loc["unlocked"]
-        if is_visited or is_unlocked:
-            if is_unlocked and loc.get("available", True):
-                imagebutton:
-                    pos loc_pos
-                    idle "map/粉色碎片.png"
-                    hover Transform("map/粉色碎片.png", zoom=1.1)
-                    action SetVariable("notebook_selected_item", loc)
+            $ map_x = int(loc_pos[0] * map_scale)
+            $ map_y = int(loc_pos[1] * map_scale)
+
+            if is_current:
+                fixed:
+                    pos (map_x - 20, map_y - 20)
+                    add MAP_IMAGES["marker_current"]:
+                        zoom map_scale * 1.2
+                    add MAP_IMAGES["marker_current_label"]:
+                        pos (40, -30)
+                        zoom map_scale * 0.8
             else:
                 imagebutton:
-                    pos loc_pos
-                    idle "map/蓝色碎片.png"
-                    hover Transform("map/蓝色碎片.png", zoom=1.1)
+                    pos (map_x - 15, map_y - 15)
+                    idle Transform(MAP_IMAGES["marker_pink"] if is_revealed else MAP_IMAGES["marker_blue"], zoom=map_scale)
+                    hover Transform(MAP_IMAGES["marker_pink"] if is_revealed else MAP_IMAGES["marker_blue"], zoom=map_scale * 1.2)
                     action SetVariable("notebook_selected_item", loc)
+                    hovered [
+                        SetVariable("map_hover_label", loc["display_name"]),
+                        SetVariable("map_hover_pos", loc["pos"])
+                    ]
+                    unhovered [
+                        SetVariable("map_hover_label", ""),
+                        SetVariable("map_hover_pos", None)
+                    ]
 
-    ## ========== 图层3: 我的位置 (1535, 189) ==========
-    add "map/我的位置.png":
-        pos (1535, 189)
+    ## ========== 当前位置标记 ==========
+    if hasattr(renpy.store, "get_current_location"):
+        $ current_loc = renpy.store.get_current_location()
+        $ current_pos = renpy.store.get_location_map_pos(current_loc) if hasattr(renpy.store, "get_location_map_pos") else None
+        if current_pos:
+            fixed:
+                pos (int(current_pos[0] * map_scale) - 25, int(current_pos[1] * map_scale) - 50)
+                add MAP_IMAGES["marker_location"]:
+                    zoom map_scale
+                add MAP_IMAGES["marker_location_label"]:
+                    pos (30, -25)
+                    zoom map_scale * 0.7
 
-    ## ========== 图层4: 我的位置标签 (1494, 160) ==========
-    add "map/我的位置标签.png":
-        pos (1494, 160)
-    text "我的位置":
-        pos (1574, 205)
-        size 28
-        color "#4a3728"
-        font "fonts/lolita.ttf"
+    ## ========== 悬浮地点标签 ==========
+    if map_hover_label and map_hover_pos:
+        $ hover_pos = map_hover_pos
+        $ hover_x = int(hover_pos[0] * map_scale)
+        $ hover_y = int(hover_pos[1] * map_scale)
+        frame:
+            xanchor 0.5
+            yanchor 1.0
+            xpos hover_x
+            ypos hover_y - int(30 * map_scale)
+            background Solid("#1a1510cc")
+            xpadding 12
+            ypadding 6
 
-    ## ========== 图层5: 住址 (1663, 433) ==========
-    add "map/住址.png":
-        pos (1663, 433)
+            text map_hover_label:
+                size 20
+                color "#f5e6c8"
+                font "fonts/lolita.ttf"
 
-    ## ========== 图层6: 住址标签 (1572, 392) ==========
-    add "map/住址标签.png":
-        pos (1572, 392)
-    text "住址":
-        pos (1692, 437)
-        size 28
-        color "#4a3728"
-        font "fonts/lolita.ttf"
-
-    ## ========== 图层7: 清除 (1648, 632) ==========
-    imagebutton:
-        pos (1648, 632)
-        idle "map/清除.png"
-        hover Transform("map/清除.png", zoom=1.05)
-        action SetVariable("notebook_selected_item", None)
-
-    ## ========== 图层8: 清除标签 (1572, 604) ==========
-    add "map/清除标签.png":
-        pos (1572, 604)
-    text "清除":
-        pos (1692, 649)
-        size 28
-        color "#4a3728"
-        font "fonts/lolita.ttf"
-
-    ## ========== 图层9: 返回 (792, 337) ==========
-    imagebutton:
-        pos (792, 337)
-        idle "map/返回.png"
-        hover Transform("map/返回.png", zoom=1.05)
-        action Hide("notebook")
-
-    ## ========== 图层10: 返回标签 (1572, 808) ==========
-    add "map/返回标签.png":
-        pos (1572, 808)
-    text "返回":
-        pos (1692, 853)
-        size 28
-        color "#4a3728"
-        font "fonts/lolita.ttf"
-
-    ## ========== 图层11: 现在 (753, 434) ==========
-    add "map/现在.png":
-        pos (753, 434)
-
-    ## ========== 图层12: 现在标签 (724, 331) ==========
-    add "map/现在标签.png":
-        pos (724, 331)
-    text "现在":
-        pos (820, 450)
-        size 32
-        color "#4a3728"
-        font "fonts/lolita.ttf"
-
-    ## ========== 返回笔记本按钮（右上角） ==========
-    textbutton "返回笔记本":
-        pos (1750, 20)
-        text_size 18
-        text_color "#ffffff"
-        background Solid("#2a221880")
-        hover_background Solid("#4a3728c0")
-        xpadding 15
-        ypadding 8
-        action Function(switch_notebook_tab, NOTEBOOK_TAB_EVIDENCE)
-
-    ## ========== 结果显示面板（选中地点时显示） ==========
+    ## ========== 选中地点信息 ==========
     if notebook_selected_item and isinstance(notebook_selected_item, dict) and "display_name" in notebook_selected_item:
         frame:
-            pos (1100, 300)
+            xalign 1.0
+            yalign 0.0
+            xoffset -20
+            yoffset 20
             xsize 380
-            ysize 300
-            background "map/结果.png"
-            xpadding 30
-            ypadding 25
+            ypadding 20
+            xpadding 20
+            background Solid("#2a2218e0")
 
             vbox:
                 spacing 12
 
-                ## 地点名称
                 text notebook_selected_item.get("display_name", "???"):
                     size 28
-                    color "#4a3728"
+                    color "#f5e6c8"
                     font "fonts/lolita.ttf"
 
-                ## 状态标签
                 hbox:
-                    spacing 10
-                    if notebook_selected_item.get("visited"):
-                        text "已访问":
-                            size 18
-                            color "#8bc34a"
+                    spacing 15
                     if notebook_selected_item.get("unlocked"):
                         text "已解锁":
                             size 18
-                            color "#64b5f6"
+                            color "#8bc34a"
+                    else:
+                        text "未解锁":
+                            size 18
+                            color "#f44336"
 
-                null height 5
+                    if notebook_selected_item.get("available"):
+                        text "可前往":
+                            size 18
+                            color "#8bc34a"
+                    else:
+                        text "当前时段不可":
+                            size 18
+                            color "#ff9800"
 
-                ## 描述
+                    if notebook_selected_item.get("visited"):
+                        text "已访问":
+                            size 18
+                            color "#9e9e9e"
+
+                null height 10
+
                 $ loc_info = renpy.store.get_location_info(notebook_selected_item["name"]) if hasattr(renpy.store, "get_location_info") else None
                 if loc_info:
                     text loc_info.get("description", ""):
                         size 18
-                        color "#5a4a38"
+                        color "#d4c4a8"
                         font "fonts/lolita.ttf"
-                        xmaximum 320
+                        xmaximum 340
 
-                null height 10
+                null height 15
 
-                ## 前往按钮
                 if notebook_selected_item.get("unlocked") and notebook_selected_item.get("available", True):
                     textbutton "前往此处":
                         xalign 0.5
@@ -693,12 +664,33 @@ screen notebook_map_content():
                         hover_background Solid("#5a9c5e")
                         xpadding 25
                         ypadding 8
-                        ## 使用 prepare_map_travel + Jump 处理移动和场景跳转
                         action [
                             Function(prepare_map_travel, notebook_selected_item["name"]),
                             Hide("notebook"),
                             Jump("process_map_travel")
                         ]
+                else:
+                    textbutton "关闭":
+                        xalign 0.5
+                        text_size 20
+                        text_color "#ffffff"
+                        background Solid("#5a4a3a")
+                        hover_background Solid("#7a6a5a")
+                        xpadding 25
+                        ypadding 8
+                        action SetVariable("notebook_selected_item", None)
+
+    ## ========== 返回笔记本 ==========
+    fixed:
+        imagebutton:
+            pos (int(792 * map_scale), int(900 * map_scale))
+            idle Transform(MAP_IMAGES["btn_return"], zoom=map_scale)
+            hover Transform(MAP_IMAGES["btn_return"], zoom=map_scale * 1.1)
+            action Function(switch_notebook_tab, NOTEBOOK_TAB_EVIDENCE)
+
+        add MAP_IMAGES["btn_return_label"]:
+            pos (int(724 * map_scale), int(870 * map_scale))
+            zoom map_scale * 0.8
 
 ## ============================================================================
 ## 详情面板

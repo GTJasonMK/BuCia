@@ -5,8 +5,8 @@
 ## 配置参数
 ## ============================================================================
 
-## 地图缩放比例（素材设计尺寸到游戏尺寸）
-define MAP_SCALE = 0.7036
+## 地图缩放比例（素材已为1920x1080，保持全屏显示）
+define MAP_SCALE = 1.0
 
 ## 地图素材路径
 init python:
@@ -46,6 +46,9 @@ init python:
 
 ## 当前选中的地点（用于显示详情）
 default map_selected_location = None
+## 当前悬停地点（用于显示标签）
+default map_hover_label = ""
+default map_hover_pos = None
 
 ## 地图模式：normal（正常导航）或 view（仅查看，用于笔记本）
 default map_mode = "normal"
@@ -106,6 +109,7 @@ screen visual_map(mode="normal", close_action=Hide("visual_map")):
             $ is_available = loc["available"]
             $ is_visited = loc["visited"]
             $ is_current = (get_current_location() == loc_name)
+            $ is_revealed = loc_name in getattr(persistent, "unlocked_locations", [])
 
             ## 计算缩放后的位置
             $ scaled_x = int(loc_pos[0] * MAP_SCALE)
@@ -126,9 +130,17 @@ screen visual_map(mode="normal", close_action=Hide("visual_map")):
                 ## 其他地点
                 imagebutton:
                     pos (scaled_x - 15, scaled_y - 15)
-                    idle Transform(MAP_IMAGES["marker_pink"] if (is_unlocked and is_available) else MAP_IMAGES["marker_blue"], zoom=MAP_SCALE)
-                    hover Transform(MAP_IMAGES["marker_pink"] if (is_unlocked and is_available) else MAP_IMAGES["marker_blue"], zoom=MAP_SCALE * 1.2)
+                    idle Transform(MAP_IMAGES["marker_pink"] if is_revealed else MAP_IMAGES["marker_blue"], zoom=MAP_SCALE)
+                    hover Transform(MAP_IMAGES["marker_pink"] if is_revealed else MAP_IMAGES["marker_blue"], zoom=MAP_SCALE * 1.2)
                     action SetVariable("map_selected_location", loc)
+                    hovered [
+                        SetVariable("map_hover_label", loc["display_name"]),
+                        SetVariable("map_hover_pos", loc["pos"])
+                    ]
+                    unhovered [
+                        SetVariable("map_hover_label", ""),
+                        SetVariable("map_hover_pos", None)
+                    ]
                     sensitive True
 
     ## ========== 当前位置标记 ==========
@@ -143,6 +155,25 @@ screen visual_map(mode="normal", close_action=Hide("visual_map")):
                 add MAP_IMAGES["marker_location_label"]:
                     pos (30, -25)
                     zoom MAP_SCALE * 0.7
+
+    ## ========== 悬浮地点标签 ==========
+    if map_hover_label and map_hover_pos:
+        $ hover_pos = map_hover_pos
+        $ hover_x = int(hover_pos[0] * MAP_SCALE)
+        $ hover_y = int(hover_pos[1] * MAP_SCALE)
+        frame:
+            xanchor 0.5
+            yanchor 1.0
+            xpos hover_x
+            ypos hover_y - int(30 * MAP_SCALE)
+            background Solid("#1a1510cc")
+            xpadding 12
+            ypadding 6
+
+            text map_hover_label:
+                size 20
+                color "#f5e6c8"
+                font "fonts/lolita.ttf"
 
     ## ========== 地点信息面板 ==========
     if map_selected_location:
@@ -303,7 +334,7 @@ screen visual_map(mode="normal", close_action=Hide("visual_map")):
                 spacing 8
                 add MAP_IMAGES["marker_pink"]:
                     zoom MAP_SCALE * 0.6
-                text "可前往":
+                text "已解锁":
                     size 16
                     color "#d4c4a8"
                     yalign 0.5
@@ -312,9 +343,9 @@ screen visual_map(mode="normal", close_action=Hide("visual_map")):
                 spacing 8
                 add MAP_IMAGES["marker_blue"]:
                     zoom MAP_SCALE * 0.6
-                text "暂不可用":
+                text "未解锁":
                     size 16
-                    color "#888888"
+                    color "#d4c4a8"
                     yalign 0.5
 
             hbox:
@@ -335,20 +366,28 @@ screen notebook_map_view():
     $ mini_scale = 0.45
 
     fixed:
-        xsize 700
-        ysize 500
+        xsize int(1920 * mini_scale)
+        ysize int(1080 * mini_scale)
 
-        ## 简化的地图背景
+        ## 地图背景层（与主地图一致）
+        add MAP_IMAGES["background"]:
+            pos (0, 0)
+            zoom mini_scale
+
+        add MAP_IMAGES["dirt"]:
+            pos (int(MAP_LAYER_POSITIONS["dirt"][0] * mini_scale), int(MAP_LAYER_POSITIONS["dirt"][1] * mini_scale))
+            zoom mini_scale
+
         add MAP_IMAGES["fill"]:
-            pos (int(100 * mini_scale), int(30 * mini_scale))
+            pos (int(MAP_LAYER_POSITIONS["fill"][0] * mini_scale), int(MAP_LAYER_POSITIONS["fill"][1] * mini_scale))
             zoom mini_scale
 
         add MAP_IMAGES["road"]:
-            pos (int(60 * mini_scale), int(15 * mini_scale))
+            pos (int(MAP_LAYER_POSITIONS["road"][0] * mini_scale), int(MAP_LAYER_POSITIONS["road"][1] * mini_scale))
             zoom mini_scale
 
         add MAP_IMAGES["outline"]:
-            pos (int(15 * mini_scale), int(0 * mini_scale))
+            pos (int(MAP_LAYER_POSITIONS["outline"][0] * mini_scale), int(MAP_LAYER_POSITIONS["outline"][1] * mini_scale))
             zoom mini_scale
 
         ## 地点标记
@@ -356,22 +395,49 @@ screen notebook_map_view():
 
         for loc in all_locations:
             $ loc_pos = loc["pos"]
-            $ is_visited = loc["visited"]
             $ is_current = (get_current_location() == loc["name"])
+            $ is_revealed = loc["name"] in getattr(persistent, "unlocked_locations", [])
 
             $ mini_x = int(loc_pos[0] * mini_scale)
             $ mini_y = int(loc_pos[1] * mini_scale)
 
-            if is_visited or is_current:
-                button:
+            imagebutton:
+                pos (mini_x - 8, mini_y - 8)
+                idle Transform(MAP_IMAGES["marker_pink"] if is_revealed else MAP_IMAGES["marker_blue"], zoom=mini_scale)
+                hover Transform(MAP_IMAGES["marker_pink"] if is_revealed else MAP_IMAGES["marker_blue"], zoom=mini_scale * 1.2)
+                action SetVariable("notebook_selected_item", loc)
+                hovered [
+                    SetVariable("map_hover_label", loc["display_name"]),
+                    SetVariable("map_hover_pos", loc["pos"])
+                ]
+                unhovered [
+                    SetVariable("map_hover_label", ""),
+                    SetVariable("map_hover_pos", None)
+                ]
+
+            if is_current:
+                add MAP_IMAGES["marker_current"]:
                     pos (mini_x - 8, mini_y - 8)
-                    action SetVariable("notebook_selected_item", loc)
-                    if is_current:
-                        add Solid("#ffd700"):
-                            size (16, 16)
-                    else:
-                        add Solid("#8bc34a"):
-                            size (12, 12)
+                    zoom mini_scale * 0.8
+
+        ## 悬浮标签
+        if map_hover_label and map_hover_pos:
+            $ hover_pos = map_hover_pos
+            $ hover_x = int(hover_pos[0] * mini_scale)
+            $ hover_y = int(hover_pos[1] * mini_scale)
+            frame:
+                xanchor 0.5
+                yanchor 1.0
+                xpos hover_x
+                ypos hover_y - int(20 * mini_scale)
+                background Solid("#1a1510cc")
+                xpadding 10
+                ypadding 5
+
+                text map_hover_label:
+                    size 18
+                    color "#f5e6c8"
+                    font "fonts/lolita.ttf"
 
         ## 提示文字
         text "点击地点查看详情":

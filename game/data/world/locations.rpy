@@ -13,7 +13,7 @@ init python:
             "description": "小镇中最豪华的居所，联邦政府社区管理负责人的住处。",
             "background": "bg/rolinda_house.jpg",
             "bgm": "bgm_investigation.ogg",
-            "map_pos": (700, 280),
+            "map_pos": (625, 140),
             "map_icon": "building",
             "hotspots": {
                 "书桌": {
@@ -49,7 +49,7 @@ init python:
             "description": "小镇唯一的医疗设施，兼具药房功能。",
             "background": "bg/yedina_clinic.jpg",
             "bgm": "bgm_investigation.ogg",
-            "map_pos": (1150, 520),
+            "map_pos": (1200, 128),
             "map_icon": "building",
             "hotspots": {
                 "药柜": {
@@ -85,7 +85,7 @@ init python:
             "description": "小镇边缘的简陋房屋，Day 3凌晨被火灾焚毁。",
             "background": "bg/andrea_house.jpg",
             "bgm": "bgm_dark.ogg",
-            "map_pos": (250, 450),
+            "map_pos": (240, 830),
             "map_icon": "house",
             "hotspots": {
                 "烧毁的床铺": {
@@ -118,13 +118,13 @@ init python:
         },
 
         "教堂": {
-            "name": "圣母升天教堂",
+            "name": "莫洛拉瓦的家",
             "display_order": 4,
             "label_suffix": "church",
-            "description": "小镇的东正教教堂，莫洛拉瓦神父工作的地方。",
+            "description": "莫洛拉瓦在小镇的居所，平日里也在此接待来访者。",
             "background": "bg/church.jpg",
             "bgm": "bgm_church.ogg",
-            "map_pos": (420, 220),
+            "map_pos": (460, 900),
             "map_icon": "church",
             "hotspots": {
                 "祈祷室": {
@@ -152,13 +152,13 @@ init python:
         },
 
         "社区中心": {
-            "name": "社区管理中心",
+            "name": "特莉娜的家",
             "display_order": 5,
             "label_suffix": "community_center",
-            "description": "特莉娜的办公场所，处理小镇日常事务。",
+            "description": "特莉娜在小镇的居所，平时也会在这里处理事务。",
             "background": "bg/community_center.jpg",
             "bgm": "bgm_investigation.ogg",
-            "map_pos": (1050, 380),
+            "map_pos": (911, 561),
             "map_icon": "building",
             "hotspots": {
                 "档案柜": {
@@ -191,7 +191,7 @@ init python:
             "description": "退休警员的住所，整洁而朴素。",
             "background": "bg/badebiete_house.jpg",
             "bgm": "bgm_investigation.ogg",
-            "map_pos": (520, 620),
+            "map_pos": (1214, 765),
             "map_icon": "house",
             "hotspots": {
                 "书架": {
@@ -224,7 +224,7 @@ init python:
             "description": "堆满电力设备和工具的工作间。",
             "background": "bg/hafu_workshop.jpg",
             "bgm": "bgm_investigation.ogg",
-            "map_pos": (1380, 320),
+            "map_pos": (800, 330),
             "map_icon": "workshop",
             "hotspots": {
                 "工具台": {
@@ -256,7 +256,7 @@ init python:
             "description": "简单的居所，靠近地下管道入口。",
             "background": "bg/bolai_house.jpg",
             "bgm": "bgm_investigation.ogg",
-            "map_pos": (320, 700),
+            "map_pos": (980, 120),
             "map_icon": "house",
             "hotspots": {
                 "管道图纸": {
@@ -284,7 +284,7 @@ init python:
             "description": "租金低廉的小公寓，陈设简单。",
             "background": "bg/ileina_apartment.jpg",
             "bgm": "bgm_investigation.ogg",
-            "map_pos": (1320, 650),
+            "map_pos": (1350, 460),
             "map_icon": "house",
             "hotspots": {
                 "窗户": {
@@ -312,7 +312,7 @@ init python:
             "description": "小镇的中心区域，居民们的聚集地。",
             "background": "bg/town_square.jpg",
             "bgm": "bgm_town.ogg",
-            "map_pos": (850, 480),
+            "map_pos": None,
             "map_icon": "square",
             "hotspots": {
                 "长椅": {
