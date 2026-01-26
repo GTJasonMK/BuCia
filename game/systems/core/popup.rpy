@@ -131,8 +131,8 @@ init python:
         show_popup("新地点已解锁", location_name, "location")
 
     def popup_character(char_name):
-        """角色遇见弹窗"""
-        show_popup("遇见新角色", char_name, "character")
+        """角色遇见弹窗（已禁用）"""
+        pass  # 弹窗功能已移除
 
     def popup_event(event_name):
         """剧情事件弹窗"""

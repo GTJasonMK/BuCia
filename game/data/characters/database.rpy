@@ -339,11 +339,7 @@ init python:
             ## 更新角色认知（初次见面）
             if hasattr(renpy.store, "set_impression"):
                 renpy.store.set_impression(char_name, "met", reason="meet", silent=True)
-            ## 显示弹窗通知
-            if hasattr(renpy.store, "popup_character"):
-                renpy.store.popup_character(char_name)
-            else:
-                renpy.notify("遇见了 " + char_name)
+            ## 弹窗通知已移除
             return True
         ## 已经在持久化记录中，但当前周目印象仍未知时同步为初识
         if hasattr(renpy.store, "get_impression"):

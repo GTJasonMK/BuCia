@@ -27,31 +27,30 @@ screen file_slots(title):
 
                 $ slot = i + 1
 
-                button:
-                    xsize 520
-                    ysize 280
-                    action FileAction(slot)
-                    key "save_delete" action FileDelete(slot)
+                vbox:
+                    spacing 8  # 存档框和文字之间的间距
 
-                    background Frame(Solid("#6f6f6f"), 10, 10)
-                    hover_background Frame(Solid("#7a7a7a"), 10, 10)
-
-                    fixed:
+                    ## 存档框（只包含图片）
+                    button:
                         xsize 520
                         ysize 280
+                        action FileAction(slot)
+                        key "save_delete" action FileDelete(slot)
+
+                        background Frame(Solid("#6f6f6f"), 10, 10)
+                        hover_background Frame(Solid("#7a7a7a"), 10, 10)
 
                         add FileScreenshot(slot):
                             xalign 0.5
-                            yalign 0.0
+                            yalign 0.5
                             xsize 520
-                            ysize 230
+                            ysize 280  # 图片占满整个框
 
-                        text FileTime(slot, format=_("{#file_time}%Y-%m-%d %H:%M"), empty=_("空存档位")):
-                            xalign 0.5
-                            yalign 1.0
-                            yoffset -8
-                            size 20
-                            color "#4d4d4d"
+                    ## 存档时间/空存档位文字（在框外正下方）
+                    text FileTime(slot, format=_("{#file_time}%Y-%m-%d %H:%M"), empty=_("空存档位")):
+                        xalign 0.5
+                        size 20
+                        color "#4d4d4d"
 
         ## 翻页按钮
         hbox:

@@ -199,21 +199,18 @@ screen quick_menu():
 
     if quick_menu:
 
-        vbox:
+        hbox:
             style_prefix "quick"
             style "quick_menu"
-
-            hbox:
-                spacing gui.quick_button_spacing
-                textbutton _("回退") action Rollback()
-                textbutton _("快进") action Skip() alternate Skip(fast=True, confirm=True)
-                textbutton _("自动") action Preference("auto-forward", "toggle")
-
-            hbox:
-                spacing gui.quick_button_spacing
-                textbutton _("历史") action ShowMenu('history')
-                textbutton _("保存") action ShowMenu('save')
-                textbutton _("设置") action ShowMenu('preferences')
+            spacing gui.quick_button_spacing
+            xalign 0.5  # 居中对齐
+            yalign 1.0  # 底部对齐
+            
+            textbutton _("回退") action Rollback()
+            textbutton _("快进") action Skip() alternate Skip(fast=True, confirm=True)
+            textbutton _("历史") action ShowMenu('history')
+            textbutton _("保存") action ShowMenu('save')
+            textbutton _("设置") action ShowMenu('preferences')
 
 
 ## 此代码确保只要用户没有主动隐藏界面，就会在游戏中显示相关屏幕。
@@ -234,14 +231,27 @@ style quick_button is default
 style quick_button_text is button_text
 
 style quick_menu:
-    xalign 0.5
-    yalign 1.0
+    xalign 0.5  # 水平居中
+    yalign 1.0  # 垂直底部对齐
 
 style quick_button:
     properties gui.button_properties("quick_button")
 
 style quick_button_text:
     properties gui.text_properties("quick_button")
+
+## 自动按钮样式（更小的尺寸）
+style quick_auto_button is quick_button
+style quick_auto_button_text is quick_button_text
+
+style quick_auto_button:
+    properties gui.button_properties("quick_button")
+    xpadding 8  # 减小水平内边距（原为15）
+    ypadding 3  # 减小垂直内边距（原为6）
+
+style quick_auto_button_text:
+    properties gui.text_properties("quick_button")
+    size 16  # 减小文字大小（原为21）
 
 
 ################################################################################

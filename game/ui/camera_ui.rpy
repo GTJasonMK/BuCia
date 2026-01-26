@@ -51,7 +51,7 @@ init python:
         ## 详见 screens/dialogue.rpy 中的实现
         "rec": {
             "image": "camera_ui/红点REC.png",
-            "pos": (2292, 69),
+            "pos": (2400, 69),  # 向右移动约108像素（原始设计坐标）
             "zorder": 3,
             "description": "录制指示灯"
         },
@@ -191,8 +191,8 @@ init python:
 ## 每个元素的可见性状态（默认全部显示）
 ## 注意：dialogue_box 已移至对话系统，不在此处控制
 default camera_ui_visibility = {
-    "day": True,
-    "time": True,
+    "day": False,  # 天数图标已隐藏
+    "time": False,  # 时间图标已隐藏
     "rec": True,
     "auto": True,
     "slash": True,
@@ -255,8 +255,10 @@ screen camera_ui():
             if name not in _auto_control_elements and camera_ui_visibility.get(name, True):
                 $ elem = CAMERA_UI_ELEMENTS[name]
                 $ scaled_x, scaled_y = camera_ui_scale_pos(elem["pos"][0], elem["pos"][1])
+                ## REC图片使用更小的缩放比例
+                $ rec_scale = CAMERA_UI_SCALE * 0.7 if name == "rec" else CAMERA_UI_SCALE
 
-                add Transform(elem["image"], zoom=CAMERA_UI_SCALE):
+                add Transform(elem["image"], zoom=rec_scale):
                     pos (scaled_x, scaled_y)
 
         ## ========== 自动播放控制区 ==========
@@ -286,10 +288,10 @@ screen camera_ui():
                     action Preference("auto-forward", "disable")
                     pos (off_x, off_y)
             else:
-                ## 自动播放开启时，OFF 变暗
+                ## 自动播放开启时，OFF 变暗，但悬浮时应该放大
                 imagebutton:
                     idle Transform(off_elem["image"], zoom=CAMERA_UI_SCALE, alpha=0.4)
-                    hover Transform(off_elem["image"], zoom=CAMERA_UI_SCALE)
+                    hover Transform(off_elem["image"], zoom=CAMERA_UI_SCALE * 1.1, alpha=1.0)
                     action Preference("auto-forward", "disable")
                     pos (off_x, off_y)
 
@@ -305,10 +307,10 @@ screen camera_ui():
                     action Preference("auto-forward", "enable")
                     pos (on_x, on_y)
             else:
-                ## 自动播放关闭时，ON 变暗
+                ## 自动播放关闭时，ON 变暗，但悬浮时应该放大
                 imagebutton:
                     idle Transform(on_elem["image"], zoom=CAMERA_UI_SCALE, alpha=0.4)
-                    hover Transform(on_elem["image"], zoom=CAMERA_UI_SCALE)
+                    hover Transform(on_elem["image"], zoom=CAMERA_UI_SCALE * 1.1, alpha=1.0)
                     action Preference("auto-forward", "enable")
                     pos (on_x, on_y)
 
