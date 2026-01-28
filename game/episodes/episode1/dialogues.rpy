@@ -7,7 +7,7 @@ label talk_to_rolinda_scene1:
     第一次与罗琳达对话
     """
 
-    show rolinda neutral at character_center with dissolve
+    show rolinda neutral at character_left_active with dissolve
 
     if is_first_meet("罗琳达"):
         $ set_character_met("罗琳达")
@@ -45,7 +45,7 @@ label talk_to_yedina_scene1:
     与叶蒂娜讨论药品问题
     """
 
-    show yedina neutral at character_center with dissolve
+    show yedina neutral at character_left_active with dissolve
 
     yedina "你好，需要什么医疗帮助吗？"
     $ apply_impression_event("ep1_meet_yedina")
@@ -74,7 +74,7 @@ label talk_to_badebiete_scene1:
     与巴德别特交谈，了解他的过去
     """
 
-    show badebiete serious at character_center with dissolve
+    show badebiete serious at character_left_active with dissolve
 
     badebiete "年轻人，有什么事吗？"
 
@@ -104,7 +104,7 @@ label talk_to_telina_scene1:
     与特莉娜交谈，了解社区情况
     """
 
-    show telina neutral at character_center with dissolve
+    show telina neutral at character_left_active with dissolve
 
     if is_first_meet("特莉娜"):
         $ set_character_met("特莉娜")
@@ -139,7 +139,7 @@ label talk_to_hafu_scene1:
     与电工哈夫交谈
     """
 
-    show hafu neutral at character_center with dissolve
+    show hafu neutral at character_left_active with dissolve
 
     if is_first_meet("哈夫"):
         $ set_character_met("哈夫")
@@ -175,7 +175,7 @@ label talk_to_bolai_scene1:
     与管道工博莱斯交谈
     """
 
-    show bolai neutral at character_center with dissolve
+    show bolai neutral at character_left_active with dissolve
 
     if is_first_meet("博莱斯"):
         $ set_character_met("博莱斯")
@@ -213,7 +213,7 @@ label talk_to_ileina_scene1:
     与伊蕾娜交谈
     """
 
-    show ileina neutral at character_center with dissolve
+    show ileina neutral at character_left_active with dissolve
 
     if is_first_meet("伊蕾娜"):
         $ set_character_met("伊蕾娜")

@@ -5,6 +5,8 @@
 default auto_sprite_enabled = True
 default auto_sprite_suppress_next = False
 default auto_sprite_suppress_next_tag = None
+default auto_sprite_pair = []
+default auto_sprite_active = None
 default auto_sprite_tag_enabled = {
     "andrea": True,
     "tsibela": True,
@@ -29,6 +31,48 @@ init -2:
         yalign 1.0
         xanchor 0.5
         yanchor 1.0
+
+    ## 双人对话立绘位置（以屏幕中线为对称轴）
+    $ _character_pair_offset = 0.18
+    $ _character_dim_alpha = 0.6
+    $ _character_dim_scale = 0.9
+    $ _character_active_scale = 1.05
+
+    ## 左侧-高亮
+    transform character_left_active:
+        xalign (0.5 - _character_pair_offset)
+        yalign 1.0
+        xanchor 0.5
+        yanchor 1.0
+        zoom _character_active_scale
+        alpha 1.0
+
+    ## 左侧-变暗缩小
+    transform character_left_dim:
+        xalign (0.5 - _character_pair_offset)
+        yalign 1.0
+        xanchor 0.5
+        yanchor 1.0
+        zoom _character_dim_scale
+        alpha _character_dim_alpha
+
+    ## 右侧-高亮
+    transform character_right_active:
+        xalign (0.5 + _character_pair_offset)
+        yalign 1.0
+        xanchor 0.5
+        yanchor 1.0
+        zoom _character_active_scale
+        alpha 1.0
+
+    ## 右侧-变暗缩小
+    transform character_right_dim:
+        xalign (0.5 + _character_pair_offset)
+        yalign 1.0
+        xanchor 0.5
+        yanchor 1.0
+        zoom _character_dim_scale
+        alpha _character_dim_alpha
 
     ## 安德莉娅（文件名来源：1.png）
     image andrea = im.FactorScale("characters/andrea.png", _character_sprite_scale)
@@ -98,6 +142,8 @@ init -2 python:
             for tag in _auto_sprite_tags:
                 if renpy.showing(tag):
                     renpy.hide(tag)
+            store.auto_sprite_pair = []
+            store.auto_sprite_active = None
 
     def suppress_auto_sprite_once():
         """
@@ -118,22 +164,62 @@ init -2 python:
         store.auto_sprite_tag_enabled[tag] = enabled
         if hide and not enabled and renpy.showing(tag):
             renpy.hide(tag)
+        if not enabled and tag in store.auto_sprite_pair:
+            store.auto_sprite_pair = [t for t in store.auto_sprite_pair if t != tag]
+            if store.auto_sprite_active == tag:
+                store.auto_sprite_active = store.auto_sprite_pair[0] if store.auto_sprite_pair else None
 
-    def _show_character_tag(tag):
+    def _get_sprite_image(tag):
         """
-        显示指定角色立绘，并隐藏其他角色。
+        获取角色立绘名称，优先 neutral。
+        """
+        if renpy.has_image(f"{tag} neutral"):
+            return f"{tag} neutral"
+        return tag
+
+    def _refresh_auto_sprite_pair():
+        """
+        刷新双人立绘显示：非说话角色变暗缩小。
+        """
+        pair = list(getattr(store, "auto_sprite_pair", []))
+        active = getattr(store, "auto_sprite_active", None)
+
+        if pair and active not in pair:
+            active = pair[-1]
+            store.auto_sprite_active = active
+
+        for other_tag in _auto_sprite_tags:
+            if other_tag not in pair and renpy.showing(other_tag):
+                renpy.hide(other_tag)
+
+        if len(pair) >= 1:
+            left_tag = pair[0]
+            left_transform = character_left_active if left_tag == active else character_left_dim
+            renpy.show(_get_sprite_image(left_tag), at_list=[left_transform])
+
+        if len(pair) >= 2:
+            right_tag = pair[1]
+            right_transform = character_right_active if right_tag == active else character_right_dim
+            renpy.show(_get_sprite_image(right_tag), at_list=[right_transform])
+
+    def _set_auto_sprite_active(tag):
+        """
+        设置当前说话者并更新左右位置。
         """
         if tag not in _auto_sprite_tags:
             return
 
-        for other_tag in _auto_sprite_tags:
-            if other_tag != tag and renpy.showing(other_tag):
-                renpy.hide(other_tag)
+        pair = [t for t in list(getattr(store, "auto_sprite_pair", [])) if renpy.showing(t)]
 
-        if renpy.has_image(f"{tag} neutral"):
-            renpy.show(f"{tag} neutral", at_list=[character_center])
-        else:
-            renpy.show(tag, at_list=[character_center])
+        if tag not in pair:
+            if len(pair) >= 2:
+                pair = [tag]
+            else:
+                pair.append(tag)
+
+        store.auto_sprite_pair = pair
+        store.auto_sprite_active = tag
+        _refresh_auto_sprite_pair()
 
     def make_character_callback(tag):
         """
@@ -158,5 +244,5 @@ init -2 python:
             if not store.auto_sprite_tag_enabled.get(tag, True):
                 return
             if event in ("begin", "show"):
-                _show_character_tag(tag)
+                _set_auto_sprite_active(tag)
         return _cb

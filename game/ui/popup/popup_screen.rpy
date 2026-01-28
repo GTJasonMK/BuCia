@@ -30,6 +30,10 @@ transform popup_pulse:
     linear 0.5 alpha 1.0
     repeat
 
+## 弹窗缩放（整体缩小一半，保持居中锚点）
+transform popup_scale:
+    zoom 0.5
+
 ## ============================================================================
 ## 弹窗通知屏幕
 ## ============================================================================
@@ -48,7 +52,7 @@ screen popup_notification():
 
     ## 弹窗背景框（屏幕正上方居中）
     frame:
-        at popup_enter
+        at popup_enter, popup_scale
         anchor (0.5, 0.0)
         xpos 960
         ypos 80
@@ -106,7 +110,7 @@ screen popup_simple(message, popup_type="info"):
     timer 2.0 action Hide("popup_simple")
 
     frame:
-        at popup_enter
+        at popup_enter, popup_scale
         anchor (0.5, 0.0)
         xpos 960
         ypos 80
@@ -141,7 +145,7 @@ screen popup_unlock(title, content, icon_type="info"):
         background None
 
         frame:
-            at popup_enter
+            at popup_enter, popup_scale
             xalign 0.5
             yalign 0.15
             background "popup_bg"

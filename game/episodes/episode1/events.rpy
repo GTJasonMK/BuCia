@@ -85,7 +85,7 @@ label event_trial_start:
     scene bg trial_hall with dissolve
     play music "bgm_trial.ogg" fadein 1.0
 
-    show azov stern at character_center
+    show azov stern at character_left_active
 
     azov "现在开始审判。"
     azov "根据你收集的证据，指出真正的凶手。"
@@ -103,7 +103,7 @@ label trial_phase:
     玩家根据线索指认凶手
     """
 
-    show azov stern at character_center
+    show azov stern at character_left_active
 
     azov "你认为凶手是谁？"
 
@@ -127,7 +127,7 @@ label trial_accuse_molorava:
     指认莫洛拉瓦为凶手
     """
 
-    show azov stern at character_center
+    show azov stern at character_left_active
 
     "你列举了打火机、隐瞒过去等证据..."
 
@@ -148,7 +148,7 @@ label trial_accuse_hafu:
     指认哈夫为凶手
     """
 
-    show azov stern at character_center
+    show azov stern at character_left_active
 
     "你列举了停电记录、电力线路图等证据..."
 

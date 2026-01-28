@@ -161,7 +161,7 @@ label episode1_day1:
 
     """就在这时，一个温和的女声在她身后响起。"""
 
-    show telina neutral at character_center with dissolve
+    show telina neutral at character_left_active with dissolve
     $ meet_character("特莉娜")
     telina "你好，请问你是外来的吗？"
 
