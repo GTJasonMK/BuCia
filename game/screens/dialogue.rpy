@@ -154,7 +154,7 @@ init python:
         if text is None:
             return
         speaker = getattr(store, "choice_dialogue_speaker", None)
-        renpy.say(speaker, text)
+        renpy.invoke_in_new_context(renpy.say, speaker, text)
 
 
 ## 输入屏幕 ########################################################################

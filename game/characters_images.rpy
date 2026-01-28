@@ -7,6 +7,8 @@ default auto_sprite_suppress_next = False
 default auto_sprite_suppress_next_tag = None
 default auto_sprite_pair = []
 default auto_sprite_active = None
+default auto_sprite_force_side = {}
+default auto_sprite_last_side = None
 default auto_sprite_tag_enabled = {
     "andrea": True,
     "tsibela": True,
@@ -26,18 +28,18 @@ init -2:
     $ _character_sprite_scale = 0.45  # 从0.2增加到0.35，使角色更大
     $ _character_sprite_crop_ratio = 0.5  # 裁剪上半部分（50%高度），显示半身
 
-    ## 统一角色显示位置（对话框左侧）
-    transform character_center:
-        xalign 0.2
-        yalign 1.0
-        xanchor 0.5
-        yanchor 1.0
-
     ## 双人对话立绘位置（以屏幕中线为对称轴）
     $ _character_pair_offset = 0.18
     $ _character_dim_alpha = 0.6
     $ _character_dim_scale = 0.9
     $ _character_active_scale = 1.05
+
+    ## 统一角色显示位置（对话框左侧，与左侧高亮一致）
+    transform character_center:
+        xalign (0.5 - _character_pair_offset)
+        yalign 1.0
+        xanchor 0.5
+        yanchor 1.0
 
     ## 左侧-高亮
     transform character_left_active:
@@ -179,6 +181,27 @@ init -2 python:
             store.auto_sprite_pair = [t for t in store.auto_sprite_pair if t != tag]
             if store.auto_sprite_active == tag:
                 store.auto_sprite_active = store.auto_sprite_pair[0] if store.auto_sprite_pair else None
+        if not enabled and tag in store.auto_sprite_force_side:
+            store.auto_sprite_force_side.pop(tag, None)
+
+    def force_auto_sprite_side(tag, side):
+        """
+        强制指定角色显示在左/右侧（用于手动 show 的预定位）。
+        side: "left" 或 "right"
+        """
+        if side not in ("left", "right"):
+            return
+        store.auto_sprite_force_side[tag] = side
+
+    def clear_auto_sprite_force_side(tag=None):
+        """
+        清除强制侧边设置。
+        tag=None 时清空所有。
+        """
+        if tag is None:
+            store.auto_sprite_force_side = {}
+            return
+        store.auto_sprite_force_side.pop(tag, None)
 
     def _get_sprite_image(tag):
         """
@@ -205,8 +228,17 @@ init -2 python:
 
         if len(pair) >= 1:
             left_tag = pair[0]
-            left_transform = character_left_active if left_tag == active else character_left_dim
-            renpy.show(_get_sprite_image(left_tag), at_list=[left_transform])
+            if len(pair) == 1:
+                forced = store.auto_sprite_force_side.get(left_tag, "left")
+                if forced == "right":
+                    right_transform = character_right_active if left_tag == active else character_right_dim
+                    renpy.show(_get_sprite_image(left_tag), at_list=[right_transform])
+                else:
+                    left_transform = character_left_active if left_tag == active else character_left_dim
+                    renpy.show(_get_sprite_image(left_tag), at_list=[left_transform])
+            else:
+                left_transform = character_left_active if left_tag == active else character_left_dim
+                renpy.show(_get_sprite_image(left_tag), at_list=[left_transform])
 
         if len(pair) >= 2:
             right_tag = pair[1]
@@ -221,15 +253,35 @@ init -2 python:
             return
 
         pair = [t for t in list(getattr(store, "auto_sprite_pair", [])) if renpy.showing(t)]
+        last_side = getattr(store, "auto_sprite_last_side", None)
 
-        if tag not in pair:
+        # 角色已在屏幕上：保持原侧并更新说话者
+        if tag in pair:
+            store.auto_sprite_active = tag
             if len(pair) >= 2:
-                pair = [tag]
+                store.auto_sprite_last_side = "left" if pair[0] == tag else "right"
             else:
-                pair.append(tag)
+                store.auto_sprite_last_side = store.auto_sprite_force_side.get(tag, "left")
+            _refresh_auto_sprite_pair()
+            return
+
+        # 新说话者：根据上一句说话方决定落位
+        if len(pair) >= 2:
+            pair = [pair[0], tag] if last_side == "left" else [tag, pair[1]]
+        elif len(pair) == 1:
+            if last_side == "left":
+                pair = [pair[0], tag]
+            else:
+                pair = [tag, pair[0]]
+        else:
+            forced = store.auto_sprite_force_side.get(tag, "left")
+            pair = [tag]
+            store.auto_sprite_last_side = forced
 
         store.auto_sprite_pair = pair
         store.auto_sprite_active = tag
+        if len(pair) >= 2:
+            store.auto_sprite_last_side = "left" if pair[0] == tag else "right"
         _refresh_auto_sprite_pair()
 
     def make_character_callback(tag):

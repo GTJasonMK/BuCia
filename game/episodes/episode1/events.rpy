@@ -22,9 +22,6 @@ label event_fire:
 
     "居民们聚集在广场上..."
 
-    show yedina sad at left
-    show rolinda serious at right
-
     rolinda "是安德莉娅的房子...快叫人灭火！"
 
     "等火势扑灭时，一切都太迟了..."

@@ -89,7 +89,6 @@ label episode1_day1:
 
     "就在这时，一个温和的女声自身后响起。"
 
-    show telina neutral at character_left_active with dissolve
     $ meet_character("特莉娜")
     telina "你好，请问你是外来的吗？"
 
@@ -113,7 +112,7 @@ label episode1_day1:
 
     "茨贝拉简单的洗了个澡，随后被邀请到餐桌边，便厚着脸皮开始大快朵颐。"
 
-    "奶油蘑菇浓汤醇厚的香味顺着喉咙滑进胃里，像一团暖火缓缓化开，顺着血管淌遍全身——在"劫后余生"的宽慰中，茨贝拉知道自己又活了过来。"
+    "奶油蘑菇浓汤醇厚的香味顺着喉咙滑进胃里，像一团暖火缓缓化开，顺着血管淌遍全身——在“劫后余生”的宽慰中，茨贝拉知道自己又活了过来。"
 
     tsibela "呼……" # 舒适地长叹
 
@@ -121,7 +120,6 @@ label episode1_day1:
     "（不论谁把我扔到那个地窖里，我敢肯定那人没有跟过来。）"
     tsibela "（但愿能回到正轨）"
 
-    show telina neutral at character_center with dissolve
     "特莉娜从厨房出来，推开门，把身上的围裙解下，挂在一边。"
 
     "特莉娜慵懒的靠在桌上，双手托腮看着茨贝拉。"
@@ -182,7 +180,6 @@ label episode1_day1:
 
     scene bg night with fade
 
-    show telina neutral at character_center with dissolve
     "社区规模不大，阡陌交通，往来方便；灯火通明，生活气息倒也浓重。"
 
     tsibela "（老实说，这件大衣蓬松温暖，染着淡淡的薰衣草香——比那件沾湿了雪的军服舒服不少。但特莉娜的那句话…依旧盘旋在我脑海中挥之不去。）"
@@ -237,7 +234,6 @@ label episode1_day1:
 
     "男人惊魂未定的看着我，又转头看向特莉娜，眼神中的惊惧渐渐消褪。"
 
-    show hafu neutral at character_center with dissolve
     $ meet_character("哈夫")
     hafu "靠，你...我还以为是梯子滑了，吓我一跳。"
 
@@ -267,18 +263,16 @@ label episode1_day1:
 
     scene bg rolinda_house with fade
 
-    show telina neutral at character_center with dissolve
     telina "哼，哼哼～" # 哼唱
 
     "特莉娜礼貌的敲了敲门。"
 
     telina "罗琳达，我来啦~"
 
-    "女声："进。""
+    "女声：“进。”"
 
     "特莉娜推开社区办公室的门"
 
-    show rolinda neutral at character_center with dissolve
     $ meet_character("罗琳达")
     "桌前的女人身着西装，身材匀停，金色的狼尾发甩在身后显得很是干练，此刻她正伏于案前，似乎写着什么。"
 
@@ -344,7 +338,6 @@ label episode1_day1:
 
     scene bg night with fade
 
-    show telina neutral at character_center with dissolve
     "……"
 
     "茨贝拉她们走了很长一段路，直到大多数还亮着灯光的房屋都已淡出视线，特莉娜才停下脚步。"
@@ -397,23 +390,22 @@ label episode1_day1:
 
     "半小时后，屋子里的陈设变得井然有序；茨贝拉擦了擦额头的汗，靠在墙边喘气。"
 
-    "低沉的女声："拿着，茨贝拉。""
+    "低沉的女声：“拿着，茨贝拉。”"
 
     tsibela "谢谢……" # 擦汗
 
     tsibela "等等，你是谁？你什么时候在这的！" # 回过神，惊恐
 
-    "低沉的女声："我是谁？""
+    "低沉的女声：“我是谁？”"
 
     "这个问题似乎超出了女人的预料——她刚刚自阴影中浮现身影便楞在原地，一时哑言。"
 
     tsibela "等等，我想起来了。"
 
-    "女人："什么？""
+    "女人：“什么？”"
 
     tsibela "你应该就是安德莉亚了吧，特莉娜提起过你。"
 
-    show andrea neutral at character_center with dissolve
     $ meet_character("安德莉娅")
     andrea "你…不认识我？"
 
@@ -477,7 +469,6 @@ label episode1_day1:
 
     tsibela "特莉娜？" # 冻得神志不清
 
-    show andrea neutral at character_center with dissolve
     andrea "……" # 沉默，转头就走
 
     "眼见对方正要离去，茨贝拉连滚带爬下了床，紧接着裹着被子追了上去。"
@@ -508,7 +499,6 @@ label episode1_day1:
 
     scene bg andrea_house with fade
 
-    show andrea neutral at character_center with dissolve
     "……"
 
     "安德莉亚的屋子很质朴，完全没有花里胡哨的装饰。"
@@ -573,7 +563,6 @@ label episode1_day2:
 
     scene bg andrea_house with fade
 
-    show andrea neutral at character_center with dissolve
     "用过早餐后，茨贝拉推门准备离开，转身向安德莉亚致谢。"
 
     tsibela "昨晚谢谢你了，安德莉亚。"
@@ -582,7 +571,6 @@ label episode1_day2:
 
     tsibela "如果没有你，我都不知道要怎么过……"
 
-    show telina neutral at character_center with dissolve
     telina "所以说没有些准备，冬天确实不好熬啊。"
 
     "背后响起熟悉的声音，茨贝拉向着声源看去——是特莉娜。"
@@ -605,7 +593,6 @@ label episode1_day2:
 
     scene bg night with fade
 
-    show telina neutral at character_center with dissolve
     "二人踩着雪，正在前往社区超市"
 
     tsibela "呼……"
@@ -654,7 +641,6 @@ label episode1_day2:
 
     scene bg room with fade
 
-    show telina neutral at character_center with dissolve
     "紧跟着特莉娜，茨贝拉进入了超市内。"
 
     "奇怪的是灯光有些昏暗，并没有全部开启；货架倒是整齐划一，一路蔓延到最深处的柜台，这一点倒是很符合其"应急物资仓库"的定位。"
@@ -681,7 +667,6 @@ label episode1_day2:
 
     telina "来吧，我带你先领些日用品——没有这些东西，这个冬天可不好过——"
 
-    show molorava neutral at character_center with dissolve
     $ meet_character("莫洛拉瓦")
     "身后的声音打断了二人的交谈——茨贝拉转身看去：来人身着修女服，手上正拎着一袋面包，她粉色的长发披到肩上，看起来似乎不怎么符合教义的要求。"
 
@@ -723,7 +708,6 @@ label episode1_day2:
 
     molorava "特莉娜，现在食物都要限量供应，你比我们任何人都清楚，我们不可能再——"
 
-    show andrea neutral at character_center with dissolve
     andrea "所以呢？换做是你，你会见死不救吗？"
 
     "安德莉亚不知何时出现在了三人背后，目光冷峻。"
@@ -783,7 +767,7 @@ label episode1_day2:
     hide molorava with dissolve
     hide andrea with dissolve
 
-    "茨贝拉："诶？灯怎么突然变亮了？""
+    tsibela "诶？灯怎么突然变亮了？"
 
     "电流声撕裂了货柜间的寂静，茨贝拉也从盯着天花板转而看向身侧的特莉娜。"
 
@@ -791,7 +775,6 @@ label episode1_day2:
 
     telina "喂喂，听得到吗？这里是特莉娜。"
 
-    show hafu neutral at character_center with dissolve
     hafu "听得到，女士。这里是哈夫。"
 
     hafu "超市的电路已经接入镇子的电力系统了，不需要再使用柴油发电机应急了。"
@@ -852,7 +835,6 @@ label episode1_day2:
 
     telina "喂喂，博莱斯，听得到吗？" # 掏出对讲机
 
-    show bolai neutral at character_center with dissolve
     $ meet_character("博莱斯")
     bolai "喂喂，这里是博莱斯。"
 
@@ -924,8 +906,6 @@ label episode1_day2:
 
     scene bg rolinda_house with fade
 
-    show telina neutral at character_center with dissolve
-    show yedina neutral at character_center with dissolve
     $ meet_character("叶蒂娜")
     tsibela "哦哦！这味道——难以想象！"
 
@@ -1011,9 +991,7 @@ label episode1_day2:
 
     scene bg badebiete_house with fade
 
-    show telina neutral at character_center with dissolve
-    show yedina neutral at character_center with dissolve
-    "茨贝拉："这里是？""
+    tsibela "这里是？"
 
     telina "巴德别特的住处。"
 
@@ -1055,14 +1033,12 @@ label episode1_day2:
 
     scene bg andrea_house with fade
 
-    show yedina neutral at character_center with dissolve
     "……"
 
     "嗒嗒——"
 
     andrea "谁？"
 
-    show andrea neutral at character_center with dissolve
     tsibela "是我，茨贝拉。" # 隔门
 
     andrea "你来做什么？"
@@ -1318,10 +1294,8 @@ label episode1_day2:
 
     scene bg night with fade
 
-    show yedina neutral at character_center with dissolve
-    show badebiete neutral at character_center with dissolve
     $ meet_character("巴德别特")
-    "巴德别特："年轻人，跑得这么急，是要去哪？""
+    badebiete "年轻人，跑得这么急，是要去哪？"
 
     tsibela "巴德别特先生？"
 
@@ -1385,9 +1359,6 @@ label episode1_day2:
 
     scene bg rolinda_house with fade
 
-    show telina neutral at character_center with dissolve
-    show yedina neutral at character_center with dissolve
-    show rolinda neutral at character_center with dissolve
     rolinda "所以，怎么说？"
 
     tsibela "安德莉亚还是不肯松口，她执意认为所有人都要害她……"
@@ -1448,10 +1419,6 @@ label episode1_day2:
 
     scene bg rolinda_house with fade
 
-    show telina neutral at character_center with dissolve
-    show yedina neutral at character_center with dissolve
-    show hafu neutral at character_center with dissolve
-    show bolai neutral at character_center with dissolve
     telina "好了，菜上齐了，用餐吧。"
 
     tsibela "哦哦！特莉娜亲手烹饪的罐焖牛肉！"
