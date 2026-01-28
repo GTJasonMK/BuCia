@@ -22,8 +22,9 @@ default auto_sprite_tag_enabled = {
 
 init -2:
     ## 立绘尺寸较大（约 2813x5000），直接显示会超出常见纹理上限
-    ## 统一缩放到 20%，接近 1080p 下常规立绘高度（约 1000px）
-    $ _character_sprite_scale = 0.2
+    ## 显示半身立绘，统一缩放到 35%，使角色形象更大
+    $ _character_sprite_scale = 0.45  # 从0.2增加到0.35，使角色更大
+    $ _character_sprite_crop_ratio = 0.5  # 裁剪上半部分（50%高度），显示半身
 
     ## 统一角色显示位置（对话框左侧）
     transform character_center:
@@ -74,48 +75,58 @@ init -2:
         zoom _character_dim_scale
         alpha _character_dim_alpha
 
+    ## 创建半身立绘的辅助函数（先裁剪上半部分，再缩放）
+    python:
+        def create_half_body_sprite(image_path, scale):
+            """创建半身立绘：裁剪上半部分并缩放"""
+            # 立绘原始尺寸约 2813x5000，裁剪上半部分（高度2500）
+            # im.Crop语法: (x, y, width, height)
+            cropped = im.Crop(image_path, (0, 0, 2813, 2500))
+            # 缩放
+            return im.FactorScale(cropped, scale)
+
     ## 安德莉娅（文件名来源：1.png）
-    image andrea = im.FactorScale("characters/andrea.png", _character_sprite_scale)
-    image andrea neutral = im.FactorScale("characters/andrea.png", _character_sprite_scale)
+    image andrea = create_half_body_sprite("characters/andrea.png", _character_sprite_scale)
+    image andrea neutral = create_half_body_sprite("characters/andrea.png", _character_sprite_scale)
 
     ## 茨贝拉（2.png）
-    image tsibela = im.FactorScale("characters/tsibela.png", _character_sprite_scale)
-    image tsibela neutral = im.FactorScale("characters/tsibela.png", _character_sprite_scale)
+    image tsibela = create_half_body_sprite("characters/tsibela.png", _character_sprite_scale)
+    image tsibela neutral = create_half_body_sprite("characters/tsibela.png", _character_sprite_scale)
 
     ## 特莉娜（3.png）
-    image telina = im.FactorScale("characters/telina.png", _character_sprite_scale)
-    image telina neutral = im.FactorScale("characters/telina.png", _character_sprite_scale)
+    image telina = create_half_body_sprite("characters/telina.png", _character_sprite_scale)
+    image telina neutral = create_half_body_sprite("characters/telina.png", _character_sprite_scale)
 
     ## 莫洛拉瓦（4.png）
-    image molorava = im.FactorScale("characters/molorava.png", _character_sprite_scale)
-    image molorava neutral = im.FactorScale("characters/molorava.png", _character_sprite_scale)
+    image molorava = create_half_body_sprite("characters/molorava.png", _character_sprite_scale)
+    image molorava neutral = create_half_body_sprite("characters/molorava.png", _character_sprite_scale)
 
     ## 巴德别特（5.png）
-    image badebiete = im.FactorScale("characters/badebiete.png", _character_sprite_scale)
-    image badebiete neutral = im.FactorScale("characters/badebiete.png", _character_sprite_scale)
-    image badebiete serious = im.FactorScale("characters/badebiete.png", _character_sprite_scale)
+    image badebiete = create_half_body_sprite("characters/badebiete.png", _character_sprite_scale)
+    image badebiete neutral = create_half_body_sprite("characters/badebiete.png", _character_sprite_scale)
+    image badebiete serious = create_half_body_sprite("characters/badebiete.png", _character_sprite_scale)
 
     ## 哈夫（6.png）
-    image hafu = im.FactorScale("characters/hafu.png", _character_sprite_scale)
-    image hafu neutral = im.FactorScale("characters/hafu.png", _character_sprite_scale)
+    image hafu = create_half_body_sprite("characters/hafu.png", _character_sprite_scale)
+    image hafu neutral = create_half_body_sprite("characters/hafu.png", _character_sprite_scale)
 
     ## 博莱斯（7.png）
-    image bolai = im.FactorScale("characters/bolai.png", _character_sprite_scale)
-    image bolai neutral = im.FactorScale("characters/bolai.png", _character_sprite_scale)
+    image bolai = create_half_body_sprite("characters/bolai.png", _character_sprite_scale)
+    image bolai neutral = create_half_body_sprite("characters/bolai.png", _character_sprite_scale)
 
     ## 伊蕾娜（8.png）
-    image ileina = im.FactorScale("characters/ileina.png", _character_sprite_scale)
-    image ileina neutral = im.FactorScale("characters/ileina.png", _character_sprite_scale)
+    image ileina = create_half_body_sprite("characters/ileina.png", _character_sprite_scale)
+    image ileina neutral = create_half_body_sprite("characters/ileina.png", _character_sprite_scale)
 
     ## 罗琳达（9.png）
-    image rolinda = im.FactorScale("characters/rolinda.png", _character_sprite_scale)
-    image rolinda neutral = im.FactorScale("characters/rolinda.png", _character_sprite_scale)
-    image rolinda serious = im.FactorScale("characters/rolinda.png", _character_sprite_scale)
+    image rolinda = create_half_body_sprite("characters/rolinda.png", _character_sprite_scale)
+    image rolinda neutral = create_half_body_sprite("characters/rolinda.png", _character_sprite_scale)
+    image rolinda serious = create_half_body_sprite("characters/rolinda.png", _character_sprite_scale)
 
     ## 叶蒂娜（10.png）
-    image yedina = im.FactorScale("characters/yedina.png", _character_sprite_scale)
-    image yedina neutral = im.FactorScale("characters/yedina.png", _character_sprite_scale)
-    image yedina sad = im.FactorScale("characters/yedina.png", _character_sprite_scale)
+    image yedina = create_half_body_sprite("characters/yedina.png", _character_sprite_scale)
+    image yedina neutral = create_half_body_sprite("characters/yedina.png", _character_sprite_scale)
+    image yedina sad = create_half_body_sprite("characters/yedina.png", _character_sprite_scale)
 
 init -2 python:
     ## 自动显示立绘的角色标签（与 Character.image 对应）

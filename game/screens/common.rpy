@@ -543,11 +543,15 @@ screen quick_menu():
         hbox:
             style "quick_menu"
             style_prefix "quick"
+            spacing gui.quick_button_spacing
+            xalign 0.5  # 居中对齐
+            yalign 1.0  # 底部对齐
 
             textbutton _("回退") action Rollback()
             textbutton _("快进") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("自动") action Preference("auto-forward", "toggle")
-            textbutton _("菜单") action ShowMenu()
+            textbutton _("历史") action ShowMenu('history')
+            textbutton _("保存") action ShowMenu('save')
+            textbutton _("设置") action ShowMenu('preferences')
 
 
 style window:

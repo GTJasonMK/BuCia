@@ -204,7 +204,7 @@ style menu_header_close_text is gui_button_text
 style menu_header_title:
     xalign 0.03
     yalign 0.03
-    xoffset -4
+    xoffset -15  # 向左平移约11像素（从-4改为-15）
     yoffset -8
     size 46
     color "#111111"

@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 ## 初始化
 ################################################################################
 
@@ -9,6 +9,16 @@ default show_episodes = False
 
 ## 左下文本框提示信息
 default button_hint_text = ""
+
+## 按钮提示文字变量（方便后续编辑）
+define hint_start = "Start\n故事的回想从这里开始\n"
+define hint_config = "调整游戏设置，显示，音频，和偏好"
+define hint_official_web = "访问我们的官方网站获取更多信息和更新"
+define hint_exit = "退出游戏"
+define hint_episode1 = "第一次回想：\n纯氧对生物有害，毫无保留的真相，只会把人的精神击溃。一比五的氧与氮，才是可供呼吸的空气。\n同样，呼吸着以戏言稀释的少量真实，人才能维持健全的心"
+define hint_episode2 = "第二次回想：\n冲突进入全新的阶段，从此，正义只属于更邪恶的一方。"
+define hint_episode3 = "第三次回想：\n当身体的疼痛被利用，也许社会的疼痛才是根源。"
+define hint_load_game = "载入以前的记忆节点"
 
 ## 按钮悬停状态变量（用于相邻按钮退避）
 default start_hovered = False
@@ -347,7 +357,9 @@ screen main_menu():
             xpos 120
             ypos 580
             xmaximum 750
-            properties TEXT_STYLES["hint"]
+            size 32
+            color "#ffffff"
+            font "fonts/lolita.ttf" # 使用lolita字体
             text_align 0.0
             line_spacing 8
 
@@ -358,7 +370,7 @@ screen main_menu():
             idle "gui/button_bar.png"
             hover "gui/button_bar.png"
             action ToggleVariable("show_episodes")
-            hovered [SetVariable("button_hint_text", "Choose an episode to begin your journey in the town of Bucha"), SetVariable("start_hovered", True)]
+            hovered [SetVariable("button_hint_text", hint_start), SetVariable("start_hovered", True)]
             unhovered [SetVariable("button_hint_text", ""), SetVariable("start_hovered", False)]
             xpos 1250
             ypos 381
@@ -379,7 +391,7 @@ screen main_menu():
                 idle "gui/button_bar.png"
                 hover "gui/button_bar.png"
                 action ShowMenu("preferences")
-                hovered [SetVariable("button_hint_text", "Adjust game settings, display, audio, and preferences"), SetVariable("config_hovered", True)]
+                hovered [SetVariable("button_hint_text", hint_config), SetVariable("config_hovered", True)]
                 unhovered [SetVariable("button_hint_text", ""), SetVariable("config_hovered", False)]
                 xpos 1250
                 ypos 513
@@ -398,7 +410,7 @@ screen main_menu():
                 idle "gui/button_bar.png"
                 hover "gui/button_bar.png"
                 action OpenURL("https://your-official-website.com")
-                hovered [SetVariable("button_hint_text", "Visit our official website for more information and updates"), SetVariable("official_hovered", True)]
+                hovered [SetVariable("button_hint_text", hint_official_web), SetVariable("official_hovered", True)]
                 unhovered [SetVariable("button_hint_text", ""), SetVariable("official_hovered", False)]
                 xpos 1250
                 ypos 645
@@ -417,7 +429,7 @@ screen main_menu():
                 idle "gui/button_bar.png"
                 hover "gui/button_bar.png"
                 action Quit(confirm=True)
-                hovered [SetVariable("button_hint_text", "Exit the game and return to desktop"), SetVariable("exit_hovered", True)]
+                hovered [SetVariable("button_hint_text", hint_exit), SetVariable("exit_hovered", True)]
                 unhovered [SetVariable("button_hint_text", ""), SetVariable("exit_hovered", False)]
                 xpos 1250
                 ypos 777
@@ -438,7 +450,7 @@ screen main_menu():
                 idle "gui/button_bar.png"
                 hover "gui/button_bar.png"
                 action [SetVariable("show_episodes", False), Start("episode_1")]
-                hovered [SetVariable("button_hint_text", "Episode 1: The Beginning\nExperience the first chapter of mysteries in Bucha. Uncover hidden secrets and make crucial choices that will shape your journey."), SetVariable("episode1_hovered", True)]
+                hovered [SetVariable("button_hint_text", hint_episode1), SetVariable("episode1_hovered", True)]
                 unhovered [SetVariable("button_hint_text", ""), SetVariable("episode1_hovered", False)]
                 sensitive persistent.episode_1_unlocked
                 xpos 1436
@@ -468,7 +480,7 @@ screen main_menu():
                 idle "gui/button_bar.png"
                 hover "gui/button_bar.png"
                 action [SetVariable("show_episodes", False), Start("episode_2")]
-                hovered [SetVariable("button_hint_text", "Episode 2: Deeper Into Darkness\nContinue your investigation as the mystery deepens. New challenges await as you delve further into the town's secrets."), SetVariable("episode2_hovered", True)]
+                hovered [SetVariable("button_hint_text", hint_episode2), SetVariable("episode2_hovered", True)]
                 unhovered [SetVariable("button_hint_text", ""), SetVariable("episode2_hovered", False)]
                 sensitive persistent.episode_2_unlocked
                 xpos 1436
@@ -498,7 +510,7 @@ screen main_menu():
                 idle "gui/button_bar.png"
                 hover "gui/button_bar.png"
                 action [SetVariable("show_episodes", False), Start("episode_3")]
-                hovered [SetVariable("button_hint_text", "Episode 3: The Final Truth\nFace the ultimate revelation in the concluding chapter. All mysteries converge as you discover the shocking truth behind Bucha."), SetVariable("episode3_hovered", True)]
+                hovered [SetVariable("button_hint_text", hint_episode3), SetVariable("episode3_hovered", True)]
                 unhovered [SetVariable("button_hint_text", ""), SetVariable("episode3_hovered", False)]
                 sensitive persistent.episode_3_unlocked
                 xpos 1436
@@ -528,7 +540,7 @@ screen main_menu():
                 idle "gui/button_bar.png"
                 hover "gui/button_bar.png"
                 action ShowMenu("load")
-                hovered [SetVariable("button_hint_text", "Continue your adventure from a previously saved game"), SetVariable("load_hovered", True)]
+                hovered [SetVariable("button_hint_text", hint_load_game), SetVariable("load_hovered", True)]
                 unhovered [SetVariable("button_hint_text", ""), SetVariable("load_hovered", False)]
                 xpos 1436
                 ypos 753
