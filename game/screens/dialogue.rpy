@@ -122,6 +122,41 @@ style say_dialogue:
     adjust_spacing False
 
 
+## 选项回显控制 ####################################################################
+##
+## 选择项被点击时，将内容作为对话显示在对话框中。
+##
+
+default choice_dialogue_enabled = True
+default choice_dialogue_suppress_next = False
+default choice_dialogue_speaker = None  ## None 表示旁白
+
+init python:
+    def set_choice_dialogue_enabled(enabled=True):
+        """设置选择项是否回显为对话。"""
+        store.choice_dialogue_enabled = enabled
+
+    def suppress_choice_dialogue_once():
+        """仅抑制下一次选择项回显。"""
+        store.choice_dialogue_suppress_next = True
+
+    def set_choice_dialogue_speaker(speaker=None):
+        """设置选择项回显的说话者（None=旁白）。"""
+        store.choice_dialogue_speaker = speaker
+
+    def show_choice_dialogue(text):
+        """将选择项内容回显到对话框。"""
+        if not getattr(store, "choice_dialogue_enabled", True):
+            return
+        if getattr(store, "choice_dialogue_suppress_next", False):
+            store.choice_dialogue_suppress_next = False
+            return
+        if text is None:
+            return
+        speaker = getattr(store, "choice_dialogue_speaker", None)
+        renpy.say(speaker, text)
+
+
 ## 输入屏幕 ########################################################################
 ##
 ## 此屏幕用于显示 renpy.input。prompt 参数用于传递文本提示。
@@ -167,7 +202,10 @@ screen choice(items):
 
     vbox:
         for i in items:
-            textbutton i.caption action i.action
+            $ _choice_action = i.action
+            if choice_dialogue_enabled:
+                $ _choice_action = [Function(show_choice_dialogue, i.caption), _choice_action]
+            textbutton i.caption action _choice_action
 
 
 style choice_vbox is vbox
