@@ -366,8 +366,8 @@ screen notebook_map_view():
     $ mini_scale = 0.45
 
     fixed:
-        xsize int(1920 * mini_scale)
-        ysize int(1080 * mini_scale)
+        xsize int(config.screen_width * mini_scale)
+        ysize int(config.screen_height * mini_scale)
 
         ## 地图背景层（与主地图一致）
         add MAP_IMAGES["background"]:

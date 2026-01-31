@@ -329,230 +329,235 @@ screen main_menu():
     key "K_F1" action Function(show_persistent_status)
     key "K_F2" action Function(force_reset_episodes)
 
-    ## 背景图（缩放到1920x1080）
-    add "ui/main_menu_bg.png":
-        size (1920, 1080)
+    ## 主菜单布局以 1920×1080 为设计基准；当前项目基准分辨率已切到 1366×768。
+    ## 为了保持主菜单视觉不变，这里把整套主菜单按屏幕比例整体缩放。
+    $ _main_menu_scale = float(config.screen_width) / 1920.0
 
-    ## 标题logo（坐标：12, 262）
-    add "ui/title_logo.png":
-        xpos 4
-        ypos 88
-        zoom 0.346
+    fixed at Transform(zoom=_main_menu_scale):
+        ## 背景图（缩放到1920x1080）
+        add "ui/main_menu_bg.png":
+            size (1920, 1080)
 
-    ## 角色图（坐标：1617, 186）
-    add "ui/title_character.png":
-        xpos 560
-        ypos 62
-        zoom 0.346
-
-    ## 左下文本框（坐标：208, 1533）- 只在有提示文字时显示
-    if button_hint_text:
-        add "gui/text_frame.png":
-            xpos 72
-            ypos 513
+        ## 标题logo（坐标：12, 262）
+        add "ui/title_logo.png":
+            xpos 4
+            ypos 88
             zoom 0.346
 
-        ## 左下文本框内的提示文字
-        text button_hint_text:
-            xpos 120
-            ypos 580
-            xmaximum 750
-            size 32
-            color "#ffffff"
-            font "fonts/lolita.ttf" # 使用lolita字体
-            text_align 0.0
-            line_spacing 8
+        ## 角色图（坐标：1617, 186）
+        add "ui/title_character.png":
+            xpos 560
+            ypos 62
+            zoom 0.346
 
-    ## 右侧按钮区域（x坐标：3610 → 1250）
-    fixed:
-        ## Start按钮（y坐标：1138 → 381）
-        imagebutton:
-            idle "gui/button_bar.png"
-            hover "gui/button_bar.png"
-            action ToggleVariable("show_episodes")
-            hovered [SetVariable("button_hint_text", hint_start), SetVariable("start_hovered", True)]
-            unhovered [SetVariable("button_hint_text", ""), SetVariable("start_hovered", False)]
-            xpos 1250
-            ypos 381
-            at main_button_hover
-
-        text "Start":
-            xpos 1584
-            ypos 433
-            properties TEXT_STYLES["main_button"]
-            xanchor 0.5
-            yanchor 0.5
-            at start_text_zoom
-
-        ## 初始状态：显示Config、Exit、Official Web
-        if not show_episodes:
-            ## Config按钮（y坐标：1533 → 513）
-            imagebutton:
-                idle "gui/button_bar.png"
-                hover "gui/button_bar.png"
-                action ShowMenu("preferences")
-                hovered [SetVariable("button_hint_text", hint_config), SetVariable("config_hovered", True)]
-                unhovered [SetVariable("button_hint_text", ""), SetVariable("config_hovered", False)]
-                xpos 1250
+        ## 左下文本框（坐标：208, 1533）- 只在有提示文字时显示
+        if button_hint_text:
+            add "gui/text_frame.png":
+                xpos 72
                 ypos 513
-                at [main_button_hover, main_slide_in_1, config_offset]
+                zoom 0.346
 
-            text "Config":
-                xpos 1584
-                ypos 565
-                properties TEXT_STYLES["main_button"]
-                xanchor 0.5
-                yanchor 0.5
-                at [main_slide_in_1, config_text_zoom, config_offset]
+            ## 左下文本框内的提示文字
+            text button_hint_text:
+                xpos 120
+                ypos 580
+                xmaximum 750
+                size 32
+                color "#ffffff"
+                font "fonts/lolita.ttf" # 使用lolita字体
+                text_align 0.0
+                line_spacing 8
 
-            ## Official Web按钮（y坐标：1928 → 645）
+        ## 右侧按钮区域（x坐标：3610 → 1250）
+        fixed:
+            ## Start按钮（y坐标：1138 → 381）
             imagebutton:
                 idle "gui/button_bar.png"
                 hover "gui/button_bar.png"
-                action OpenURL("https://your-official-website.com")
-                hovered [SetVariable("button_hint_text", hint_official_web), SetVariable("official_hovered", True)]
-                unhovered [SetVariable("button_hint_text", ""), SetVariable("official_hovered", False)]
+                action ToggleVariable("show_episodes")
+                hovered [SetVariable("button_hint_text", hint_start), SetVariable("start_hovered", True)]
+                unhovered [SetVariable("button_hint_text", ""), SetVariable("start_hovered", False)]
                 xpos 1250
-                ypos 645
-                at [main_button_hover, main_slide_in_2, official_offset]
+                ypos 381
+                at main_button_hover
 
-            text "Official Web":
+            text "Start":
                 xpos 1584
-                ypos 697
+                ypos 433
                 properties TEXT_STYLES["main_button"]
                 xanchor 0.5
                 yanchor 0.5
-                at [main_slide_in_2, official_text_zoom, official_offset]
+                at start_text_zoom
 
-            ## Exit按钮（y坐标：2323 → 777）
-            imagebutton:
-                idle "gui/button_bar.png"
-                hover "gui/button_bar.png"
-                action Quit(confirm=True)
-                hovered [SetVariable("button_hint_text", hint_exit), SetVariable("exit_hovered", True)]
-                unhovered [SetVariable("button_hint_text", ""), SetVariable("exit_hovered", False)]
-                xpos 1250
-                ypos 777
-                at [main_button_hover, main_slide_in_3, exit_offset]
+            ## 初始状态：显示Config、Exit、Official Web
+            if not show_episodes:
+                ## Config按钮（y坐标：1533 → 513）
+                imagebutton:
+                    idle "gui/button_bar.png"
+                    hover "gui/button_bar.png"
+                    action ShowMenu("preferences")
+                    hovered [SetVariable("button_hint_text", hint_config), SetVariable("config_hovered", True)]
+                    unhovered [SetVariable("button_hint_text", ""), SetVariable("config_hovered", False)]
+                    xpos 1250
+                    ypos 513
+                    at [main_button_hover, main_slide_in_1, config_offset]
 
-            text "Exit":
-                xpos 1584
-                ypos 829
-                properties TEXT_STYLES["main_button"]
-                xanchor 0.5
-                yanchor 0.5
-                at [main_slide_in_3, exit_text_zoom, exit_offset]
+                text "Config":
+                    xpos 1584
+                    ypos 565
+                    properties TEXT_STYLES["main_button"]
+                    xanchor 0.5
+                    yanchor 0.5
+                    at [main_slide_in_1, config_text_zoom, config_offset]
 
-        ## 展开状态：显示周目选择
-        if show_episodes:
-            ## Episode 1按钮（zoom=0.25，右对齐，间隔80px，无延迟）
-            imagebutton:
-                idle "gui/button_bar.png"
-                hover "gui/button_bar.png"
-                action [SetVariable("show_episodes", False), Start("episode_1")]
-                hovered [SetVariable("button_hint_text", hint_episode1), SetVariable("episode1_hovered", True)]
-                unhovered [SetVariable("button_hint_text", ""), SetVariable("episode1_hovered", False)]
-                sensitive persistent.episode_1_unlocked
-                xpos 1436
-                ypos 513
-                at [episode_button_hover, slide_in_1]
+                ## Official Web按钮（y坐标：1928 → 645）
+                imagebutton:
+                    idle "gui/button_bar.png"
+                    hover "gui/button_bar.png"
+                    action OpenURL("https://your-official-website.com")
+                    hovered [SetVariable("button_hint_text", hint_official_web), SetVariable("official_hovered", True)]
+                    unhovered [SetVariable("button_hint_text", ""), SetVariable("official_hovered", False)]
+                    xpos 1250
+                    ypos 645
+                    at [main_button_hover, main_slide_in_2, official_offset]
 
-            # Episode 1 - 左侧状态文字
-            text ("" if persistent.episode_1_unlocked else "(Locked)"):
-                xpos 1450
-                ypos 551
-                properties TEXT_STYLES["episode_status"]
-                yanchor 0.5
-                at [slide_in_1, episode1_text_zoom]
+                text "Official Web":
+                    xpos 1584
+                    ypos 697
+                    properties TEXT_STYLES["main_button"]
+                    xanchor 0.5
+                    yanchor 0.5
+                    at [main_slide_in_2, official_text_zoom, official_offset]
 
-            # Episode 1 - 右侧主文字
-            text "Episode 1":
-                xpos 1905
-                ypos 551
-                properties TEXT_STYLES["episode_button"]
-                color ("#ffffff" if persistent.episode_1_unlocked else "#888888")
-                xanchor 1.0
-                yanchor 0.5
-                at [slide_in_1, episode1_text_zoom]
+                ## Exit按钮（y坐标：2323 → 777）
+                imagebutton:
+                    idle "gui/button_bar.png"
+                    hover "gui/button_bar.png"
+                    action Quit(confirm=True)
+                    hovered [SetVariable("button_hint_text", hint_exit), SetVariable("exit_hovered", True)]
+                    unhovered [SetVariable("button_hint_text", ""), SetVariable("exit_hovered", False)]
+                    xpos 1250
+                    ypos 777
+                    at [main_button_hover, main_slide_in_3, exit_offset]
 
-            ## Episode 2按钮（zoom=0.25，右对齐，间隔80px，延迟0.3s）
-            imagebutton:
-                idle "gui/button_bar.png"
-                hover "gui/button_bar.png"
-                action [SetVariable("show_episodes", False), Start("episode_2")]
-                hovered [SetVariable("button_hint_text", hint_episode2), SetVariable("episode2_hovered", True)]
-                unhovered [SetVariable("button_hint_text", ""), SetVariable("episode2_hovered", False)]
-                sensitive persistent.episode_2_unlocked
-                xpos 1436
-                ypos 593
-                at [episode_button_hover, slide_in_2, episode2_offset]
+                text "Exit":
+                    xpos 1584
+                    ypos 829
+                    properties TEXT_STYLES["main_button"]
+                    xanchor 0.5
+                    yanchor 0.5
+                    at [main_slide_in_3, exit_text_zoom, exit_offset]
 
-            # Episode 2 - 左侧状态文字
-            text ("" if persistent.episode_2_unlocked else "(Locked)"):
-                xpos 1450
-                ypos 631
-                properties TEXT_STYLES["episode_status"]
-                yanchor 0.5
-                at [slide_in_2, episode2_text_zoom, episode2_offset]
+            ## 展开状态：显示周目选择
+            if show_episodes:
+                ## Episode 1按钮（zoom=0.25，右对齐，间隔80px，无延迟）
+                imagebutton:
+                    idle "gui/button_bar.png"
+                    hover "gui/button_bar.png"
+                    action [SetVariable("show_episodes", False), Start("episode_1")]
+                    hovered [SetVariable("button_hint_text", hint_episode1), SetVariable("episode1_hovered", True)]
+                    unhovered [SetVariable("button_hint_text", ""), SetVariable("episode1_hovered", False)]
+                    sensitive persistent.episode_1_unlocked
+                    xpos 1436
+                    ypos 513
+                    at [episode_button_hover, slide_in_1]
 
-            # Episode 2 - 右侧主文字
-            text "Episode 2":
-                xpos 1905
-                ypos 631
-                properties TEXT_STYLES["episode_button"]
-                color ("#ffffff" if persistent.episode_2_unlocked else "#888888")
-                xanchor 1.0
-                yanchor 0.5
-                at [slide_in_2, episode2_text_zoom, episode2_offset]
+                # Episode 1 - 左侧状态文字
+                text ("" if persistent.episode_1_unlocked else "(Locked)"):
+                    xpos 1450
+                    ypos 551
+                    properties TEXT_STYLES["episode_status"]
+                    yanchor 0.5
+                    at [slide_in_1, episode1_text_zoom]
 
-            ## Episode 3按钮（zoom=0.25，右对齐，间隔80px，延迟0.6s）
-            imagebutton:
-                idle "gui/button_bar.png"
-                hover "gui/button_bar.png"
-                action [SetVariable("show_episodes", False), Start("episode_3")]
-                hovered [SetVariable("button_hint_text", hint_episode3), SetVariable("episode3_hovered", True)]
-                unhovered [SetVariable("button_hint_text", ""), SetVariable("episode3_hovered", False)]
-                sensitive persistent.episode_3_unlocked
-                xpos 1436
-                ypos 673
-                at [episode_button_hover, slide_in_3, episode3_offset]
+                # Episode 1 - 右侧主文字
+                text "Episode 1":
+                    xpos 1905
+                    ypos 551
+                    properties TEXT_STYLES["episode_button"]
+                    color ("#ffffff" if persistent.episode_1_unlocked else "#888888")
+                    xanchor 1.0
+                    yanchor 0.5
+                    at [slide_in_1, episode1_text_zoom]
 
-            # Episode 3 - 左侧状态文字
-            text ("" if persistent.episode_3_unlocked else "(Locked)"):
-                xpos 1450
-                ypos 711
-                properties TEXT_STYLES["episode_status"]
-                yanchor 0.5
-                at [slide_in_3, episode3_text_zoom, episode3_offset]
+                ## Episode 2按钮（zoom=0.25，右对齐，间隔80px，延迟0.3s）
+                imagebutton:
+                    idle "gui/button_bar.png"
+                    hover "gui/button_bar.png"
+                    action [SetVariable("show_episodes", False), Start("episode_2")]
+                    hovered [SetVariable("button_hint_text", hint_episode2), SetVariable("episode2_hovered", True)]
+                    unhovered [SetVariable("button_hint_text", ""), SetVariable("episode2_hovered", False)]
+                    sensitive persistent.episode_2_unlocked
+                    xpos 1436
+                    ypos 593
+                    at [episode_button_hover, slide_in_2, episode2_offset]
 
-            # Episode 3 - 右侧主文字
-            text "Episode 3":
-                xpos 1905
-                ypos 711
-                properties TEXT_STYLES["episode_button"]
-                color ("#ffffff" if persistent.episode_3_unlocked else "#888888")
-                xanchor 1.0
-                yanchor 0.5
-                at [slide_in_3, episode3_text_zoom, episode3_offset]
+                # Episode 2 - 左侧状态文字
+                text ("" if persistent.episode_2_unlocked else "(Locked)"):
+                    xpos 1450
+                    ypos 631
+                    properties TEXT_STYLES["episode_status"]
+                    yanchor 0.5
+                    at [slide_in_2, episode2_text_zoom, episode2_offset]
 
-            ## Load Game按钮（zoom=0.25，右对齐，间隔80px，延迟0.9s）
-            imagebutton:
-                idle "gui/button_bar.png"
-                hover "gui/button_bar.png"
-                action ShowMenu("load")
-                hovered [SetVariable("button_hint_text", hint_load_game), SetVariable("load_hovered", True)]
-                unhovered [SetVariable("button_hint_text", ""), SetVariable("load_hovered", False)]
-                xpos 1436
-                ypos 753
-                at [episode_button_hover, slide_in_4, load_offset]
+                # Episode 2 - 右侧主文字
+                text "Episode 2":
+                    xpos 1905
+                    ypos 631
+                    properties TEXT_STYLES["episode_button"]
+                    color ("#ffffff" if persistent.episode_2_unlocked else "#888888")
+                    xanchor 1.0
+                    yanchor 0.5
+                    at [slide_in_2, episode2_text_zoom, episode2_offset]
 
-            text "Load Game":
-                xpos 1677
-                ypos 791
-                properties TEXT_STYLES["episode_button"]
-                xanchor 0.5
-                yanchor 0.5
-                at [slide_in_4, load_text_zoom, load_offset]
+                ## Episode 3按钮（zoom=0.25，右对齐，间隔80px，延迟0.6s）
+                imagebutton:
+                    idle "gui/button_bar.png"
+                    hover "gui/button_bar.png"
+                    action [SetVariable("show_episodes", False), Start("episode_3")]
+                    hovered [SetVariable("button_hint_text", hint_episode3), SetVariable("episode3_hovered", True)]
+                    unhovered [SetVariable("button_hint_text", ""), SetVariable("episode3_hovered", False)]
+                    sensitive persistent.episode_3_unlocked
+                    xpos 1436
+                    ypos 673
+                    at [episode_button_hover, slide_in_3, episode3_offset]
+
+                # Episode 3 - 左侧状态文字
+                text ("" if persistent.episode_3_unlocked else "(Locked)"):
+                    xpos 1450
+                    ypos 711
+                    properties TEXT_STYLES["episode_status"]
+                    yanchor 0.5
+                    at [slide_in_3, episode3_text_zoom, episode3_offset]
+
+                # Episode 3 - 右侧主文字
+                text "Episode 3":
+                    xpos 1905
+                    ypos 711
+                    properties TEXT_STYLES["episode_button"]
+                    color ("#ffffff" if persistent.episode_3_unlocked else "#888888")
+                    xanchor 1.0
+                    yanchor 0.5
+                    at [slide_in_3, episode3_text_zoom, episode3_offset]
+
+                ## Load Game按钮（zoom=0.25，右对齐，间隔80px，延迟0.9s）
+                imagebutton:
+                    idle "gui/button_bar.png"
+                    hover "gui/button_bar.png"
+                    action ShowMenu("load")
+                    hovered [SetVariable("button_hint_text", hint_load_game), SetVariable("load_hovered", True)]
+                    unhovered [SetVariable("button_hint_text", ""), SetVariable("load_hovered", False)]
+                    xpos 1436
+                    ypos 753
+                    at [episode_button_hover, slide_in_4, load_offset]
+
+                text "Load Game":
+                    xpos 1677
+                    ypos 791
+                    properties TEXT_STYLES["episode_button"]
+                    xanchor 0.5
+                    yanchor 0.5
+                    at [slide_in_4, load_text_zoom, load_offset]
 
 
 style main_menu_frame is empty

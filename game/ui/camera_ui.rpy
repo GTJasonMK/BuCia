@@ -6,16 +6,22 @@
 ## 设计参数
 ## ============================================================================
 
-## 原始设计尺寸（UI素材的设计基准）
-define CAMERA_UI_DESIGN_WIDTH = 2729
-define CAMERA_UI_DESIGN_HEIGHT = 1535
-
 ## 游戏目标尺寸
-define CAMERA_UI_GAME_WIDTH = 1920
-define CAMERA_UI_GAME_HEIGHT = 1080
+## 说明：项目基准分辨率已在 gui.init 中设置，这里跟随 config.screen_width/height 自动适配。
+##
+## 注意：不要用 define 来声明这些常量后再在 init -1 里读取，因为 define 的初始化顺序
+## 可能晚于 init -1，导致 NameError。
+init -1 python:
+    ## 原始设计尺寸（UI素材的设计基准）
+    CAMERA_UI_DESIGN_WIDTH = 2729
+    CAMERA_UI_DESIGN_HEIGHT = 1535
 
-## 自动计算缩放比例
-define CAMERA_UI_SCALE = 1920.0 / 2729.0  # ≈ 0.7036
+    ## 游戏目标尺寸（跟随当前基准分辨率）
+    CAMERA_UI_GAME_WIDTH = int(config.screen_width)
+    CAMERA_UI_GAME_HEIGHT = int(config.screen_height)
+
+    ## 自动计算缩放比例（按宽度缩放，保持与旧版“1920→1366 全局缩放”后的视觉一致）
+    CAMERA_UI_SCALE = float(CAMERA_UI_GAME_WIDTH) / float(CAMERA_UI_DESIGN_WIDTH)
 
 ## ============================================================================
 ## UI元素配置

@@ -115,8 +115,8 @@ screen sanity_display():
         $ _camera_mode = getattr(store, 'camera_ui_enabled', True)
         ## 摄像机模式：与 REC 平行，设计坐标 (79, 69) → 缩放后约 (55, 48)
         ## 调整 Y 位置让眼睛和 REC 在同一水平线
-        $ sanity_xpos = 55 if _camera_mode else int(1920 * 0.02)
-        $ sanity_ypos = 35 if _camera_mode else int(1080 * 0.02)
+        $ sanity_xpos = 55 if _camera_mode else int(config.screen_width * 0.02)
+        $ sanity_ypos = 35 if _camera_mode else int(config.screen_height * 0.02)
 
         ## 眼睛显示尺寸（使用放大后的基础尺寸，即原来的1.1倍）
         $ base_eye_zoom = SANITY_ZOOM * 1.1  # 常态大小改为原来的悬浮大小

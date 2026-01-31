@@ -142,7 +142,7 @@ define config.window_hide_transition = Dissolve(.2)
 
 ## 控制默认的文字显示速度。默认的 0 为瞬间，而其他数字则是每秒显示出的字符数。
 
-default preferences.text_cps = 0
+default preferences.text_cps = 25
 
 
 ## 默认的自动前进延迟。数字越大，等待时间越长，有效范围为 0 - 30。
@@ -170,6 +170,18 @@ define config.save_directory = "HaiTangYiGuZhiShi-1763360452"
 ## 在任务栏或 Dock 上显示的图标。
 
 define config.window_icon = "gui/window_icon.png"
+
+
+## 渲染质量 ########################################################################
+##
+## 说明：
+## - 角色动画贴片存在大量半透明边缘像素，若启用 mipmap，在缩放时可能更容易出现“光晕/缝合边缘”。
+## - 为了让游戏内效果更接近离线 GUI（Pillow）预览，这里禁用 mipmap。
+## - 如需性能优化，可改回 "auto" 或 True，但请先确认边缘效果可接受。
+##
+## 参考（Ren'Py 配置项）：https://www.renpy.org/doc/html/config.html#var-config.mipmap
+
+define config.mipmap = False
 
 
 ## 构建配置 ########################################################################

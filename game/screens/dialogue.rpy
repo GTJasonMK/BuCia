@@ -1,8 +1,15 @@
 ## 摄像机对话框缩放比例
-define CAMERA_DIALOGUE_SCALE = 0.7036
-define CAMERA_TEXTBOX_HEIGHT = 339
+## 说明：旧基准为 1920×1080，实际运行在 1366×768 上会产生全局缩放（≈0.711）。
+## 这里按当前基准分辨率动态计算，使摄像机对话框在新基准下保持与旧运行效果一致。
+init -1 python:
+    CAMERA_DIALOGUE_SCALE = float(config.screen_width) / 2729.0
+    CAMERA_TEXTBOX_HEIGHT = int(round(339 * (float(config.screen_height) / 1080.0)))
 
 screen say(who, what):
+
+    ## 记录最近一次对白文本（供立绘说话动画使用）
+    $ store.last_say_what = what
+    $ store.last_say_who = who
 
     ## 根据 camera_ui 状态选择对话框样式
     $ _use_camera_style = getattr(store, 'camera_ui_enabled', True)
@@ -257,10 +264,9 @@ screen quick_menu():
 ## quick_menu: 快捷菜单
 ## sanity_display: 精神值显示
 init python:
-    config.overlay_screens.append("default_background")
-    config.overlay_screens.append("camera_ui")
-    config.overlay_screens.append("quick_menu")
-    config.overlay_screens.append("sanity_display")
+    for _name in ("default_background", "camera_ui", "quick_menu", "sanity_display", "render_debug_info"):
+        if _name not in config.overlay_screens:
+            config.overlay_screens.append(_name)
 
 default quick_menu = True
 
