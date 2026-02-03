@@ -20,6 +20,11 @@ screen render_debug_info():
         $ _pw, _ph = renpy.get_physical_size()
         $ _sx = (float(_pw) / float(_vw)) if _vw else 0.0
         $ _sy = (float(_ph) / float(_vh)) if _vh else 0.0
+        python:
+            try:
+                _mipmap_str = str(config.mipmap)
+            except Exception:
+                _mipmap_str = "N/A (8.5+)"
 
         frame:
             xalign 0.0
@@ -34,5 +39,5 @@ screen render_debug_info():
                 text "virtual: %dx%d" % (_vw, _vh) size 16 color "#ffffff"
                 text "physical: %dx%d" % (int(_pw), int(_ph)) size 16 color "#ffffff"
                 text "scale: %.3f x %.3f" % (_sx, _sy) size 16 color "#ffffff"
-                text "mipmap: %s" % (str(config.mipmap),) size 16 color "#ffffff"
+                text "mipmap: %s" % _mipmap_str size 16 color "#ffffff"
 

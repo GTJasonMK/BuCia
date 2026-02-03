@@ -24,6 +24,7 @@ default auto_sprite_tag_enabled = {
 default auto_sprite_talk_start = {}
 default auto_sprite_talk_until = {}
 default auto_sprite_talk_cycles = {}
+default auto_sprite_appear_time = {}  # 角色登场时间（首帧渲染时记录，用于自然眨眼）
 
 init -2:
     ## 立绘尺寸较大（约 2813x5000），直接显示会超出常见纹理上限
@@ -36,8 +37,10 @@ init -2:
     ## 说话动画控制（按句子时长计算循环次数）
     $ _character_talk_min_duration = 0.3
     $ _character_talk_max_duration = 12.0
-    ## 眨眼周期：1.0 秒完成一个眨眼循环（25字以上的句子会有眨眼）
-    $ _character_eye_cycle_seconds = 0.8
+    ## 自然眨眼：登场即开始计时，每 7 秒眨眼一次（与是否说话无关）
+    $ _character_blink_interval_seconds = 7.0   # 两次眨眼之间的间隔（秒）
+    $ _character_blink_duration_seconds = 0.25   # 单次眨眼动作时长（秒）
+    $ _character_eye_cycle_seconds = 0.8         # 仅用于 start_sprite_talk 口型时长计算等
     ## 嘴巴周期：说话时嘴巴快速开合，0.3 秒一个循环（约 3.3 次/秒）
     $ _character_mouth_cycle_seconds = 0.3
 
@@ -106,6 +109,21 @@ init -2:
             if remainder >= (safe_cycle * 0.5):
                 base_cycles += 1
             return max(0, base_cycles)
+
+        def _natural_blink_eye_index(elapsed, eye_count):
+            """按登场后经过时间计算自然眨眼眼帧索引（每7秒眨眼一次，眨眼动作约0.25秒）"""
+            ec = max(1, int(eye_count))
+            interval = float(_character_blink_interval_seconds)
+            duration = float(_character_blink_duration_seconds)
+            cycle_len = interval + duration
+            pos = elapsed % cycle_len
+            if pos < interval:
+                return 0  # 睁眼
+            sub = (pos - interval) / max(0.001, duration)  # 0~1 眨眼过程
+            steps = max(1, 2 * ec - 1)  # 0,1,...,ec-1,ec-2,...,0
+            seq = list(range(ec)) + list(range(ec - 2, -1, -1)) if ec >= 2 else [0]
+            idx = min(len(seq) - 1, int(sub * len(seq)))
+            return seq[idx]
 
         def _get_text_cps():
             """获取当前文本流式输出速度（每秒字符数）"""
@@ -210,36 +228,33 @@ init -2:
                     frames.append(create_half_body_sprite(f"{baked_dir}/e{ei}_m{mi}.png", 1.0))
 
             def _combo_anim(st, at):
+                now = _get_now()
+                # 登场即记录时间（首帧渲染时），自然眨眼从此刻开始，与说话无关
+                if tag not in store.auto_sprite_appear_time:
+                    store.auto_sprite_appear_time[tag] = now
+                appear_time = store.auto_sprite_appear_time[tag]
+                elapsed = now - appear_time
+
+                # 眼帧：自然眨眼，每 7 秒一次，与是否说话无关（idle/active/dim 共用同一计时，缩放无影响）
+                ei = _natural_blink_eye_index(elapsed, int(eye_count)) if int(eye_count) > 0 else 0
+
+                # 口型：仅说话时按进度播，否则闭嘴 m0
                 end_time = store.auto_sprite_talk_until.get(tag, 0.0)
                 start_time = store.auto_sprite_talk_start.get(tag, 0.0)
-                now = _get_now()
-                if (end_time <= start_time) or (now >= end_time) or not frames:
-                    return idle_frame, 0.1
-
-                duration = max(0.001, end_time - start_time)
-                progress = (now - start_time) / duration
-                progress = max(0.0, min(1.0, progress))
-
-                eye_cycles = store.auto_sprite_talk_cycles.get(tag, {}).get("eye", 0)
-                mouth_cycles = store.auto_sprite_talk_cycles.get(tag, {}).get("mouth", 0)
-
-                # 两个分量都不播放时：直接停在 idle
-                if (eye_cycles <= 0) and (mouth_cycles <= 0):
-                    return idle_frame, 0.1
-
-                ei = 0
-                mi = 0
-                if eye_cycles > 0 and int(eye_count) > 0:
-                    phase = progress * eye_cycles
-                    ei = int(phase * int(eye_count)) % int(eye_count)
-                if mouth_cycles > 0 and int(mouth_count) > 0:
+                is_speaking = (end_time > start_time) and (now < end_time) and (int(mouth_count) > 0)
+                if is_speaking:
+                    duration = max(0.001, end_time - start_time)
+                    progress = max(0.0, min(1.0, (now - start_time) / duration))
+                    mouth_cycles = store.auto_sprite_talk_cycles.get(tag, {}).get("mouth", 0)
                     phase = progress * mouth_cycles
                     mi = int(phase * int(mouth_count)) % int(mouth_count)
+                else:
+                    mi = 0
 
                 idx = ei * int(mouth_count) + mi
                 if idx < 0 or idx >= len(frames):
-                    return idle_frame, 0.1
-                return frames[idx], 0
+                    return idle_frame, 0.033
+                return frames[idx], 0.033  # 约 30fps 刷新，保证眨眼与说话时缩放切换流畅
 
             return DynamicDisplayable(_combo_anim)
 

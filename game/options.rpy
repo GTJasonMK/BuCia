@@ -1,4 +1,4 @@
-﻿## 此文件包含有可自定义您游戏的设置。
+## 此文件包含有可自定义您游戏的设置。
 ##
 ## 以“##”开头的语句是注释，您不应该对其取消注释。以“#”开头的语句是注释掉的代码，
 ## 在适用的时候您可能需要对其取消注释。
@@ -179,9 +179,9 @@ define config.window_icon = "gui/window_icon.png"
 ## - 为了让游戏内效果更接近离线 GUI（Pillow）预览，这里禁用 mipmap。
 ## - 如需性能优化，可改回 "auto" 或 True，但请先确认边缘效果可接受。
 ##
-## 参考（Ren'Py 配置项）：https://www.renpy.org/doc/html/config.html#var-config.mipmap
-
-define config.mipmap = False
+## 参考（Ren'Py 8.5+ 配置项）：https://www.renpy.org/doc/html/config.html#var-config.mipmap
+## 仅 Ren'Py 8.5+ 支持；8.3.x 无此变量，设置会报错，故注释。若使用 8.5+ 可取消下行注释。
+# define config.mipmap = False
 
 
 ## 构建配置 ########################################################################
