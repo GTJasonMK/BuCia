@@ -54,19 +54,6 @@ label episode_4:
     # 当前尚未开发，显示提示信息
     jump episode4_placeholder
 
-## Episodes 5-8（第二部，开发中）
-label episodes_5_8:
-    if not persistent.episodes_5_8_unlocked:
-        "此章节尚未解锁。"
-        "请先完成第四周目。"
-        return
-
-    scene bg room with dissolve
-
-    "Episodes 5-8: 开发中"
-    "敬请期待..."
-
-    return
 
 ## 周目占位符（待开发）
 label episode2_placeholder:

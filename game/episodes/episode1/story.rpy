@@ -11,8 +11,6 @@ label episode1_start:
     # 设置当前周目
     $ start_episode(1)
 
-    ## 开局耳机提示
-    call screen headphone_tip
 
     ## 默认背景由 default_background screen 自动提供
     ## 如需切换到其他背景，使用: scene 背景名 with fade
@@ -21,7 +19,7 @@ label episode1_start:
 label episode1_day1:
     # 第一天的主线流程
 
-    scene bg room with fade
+    scene bg bg1 with fade
 
     "本故事所发生的一切都是幻想剧"
     "不以任何现实元素作为创作来源"
@@ -63,7 +61,7 @@ label episode1_day1:
 
     "寒冷扑面而来，等眼睛适应了光线后，我终于看清眼前的景象——"
 
-    scene bg snowfield with dissolve
+    scene bg bg2 with dissolve
 
     "那是连在一起的灰白色——无边无际的雪原延伸到天际，树枝枯瘦而光秃，目光所及之处毫无生气，唯有寒风裹挟着雪粒呼啸划过，割得皮肤生疼。"
 
@@ -80,6 +78,7 @@ label episode1_day1:
     tsibela "得救了..."
 
     "我咬紧牙关，用尽最后一丝力气朝着社区走去。"
+    scene bg bg3 with dissolve
 
     "越靠近社区，烟火气就越浓郁。"
 
@@ -106,9 +105,9 @@ label episode1_day1:
         "不展示军牌":
             tsibela "我叫茨贝拉。"
 
-    telina "布哈查镇很少有外来人，你大概是迷路了吧。这天气这么冷，你先跟我来暖和一下，喝点热水，有什么事我们慢慢说。"
+    telina "社区很少有外来人，你大概是迷路了吧。这天气这么冷，你先跟我来暖和一下，喝点热水，有什么事我们慢慢说。"
 
-    scene bg room with fade
+    scene bg bg4 with fade
 
     "茨贝拉简单的洗了个澡，随后被邀请到餐桌边，便厚着脸皮开始大快朵颐。"
 
@@ -117,7 +116,7 @@ label episode1_day1:
     tsibela "呼……" # 舒适地长叹
 
     tsibela "（忽然觉得一切都没那么困难了呢。）"
-    "（不论谁把我扔到那个地窖里，我敢肯定那人没有跟过来。）"
+    tsibela "（不论谁把我扔到那个地窖里，我敢肯定那人没有跟过来。）"
     tsibela "（但愿能回到正轨）"
 
     "特莉娜从厨房出来，推开门，把身上的围裙解下，挂在一边。"
@@ -172,17 +171,17 @@ label episode1_day1:
 
     tsibela "（不能穿军装吗？）"
 
-    "特莉娜从衣柜里翻出一件大衣，不由分说的披在茨贝拉的身上，最后为她戴起围巾，拿过桌上的纸盒。"
+    "特莉娜从衣柜里翻出好几件不成套的衣服，最后挑出两件交给茨贝拉，接着带上桌上的礼品盒。"
 
     telina "走吧。"
 
     tsibela "好。"
 
-    scene bg night with fade
+    scene bg bg5 with fade
 
     "社区规模不大，阡陌交通，往来方便；灯火通明，生活气息倒也浓重。"
 
-    tsibela "（老实说，这件大衣蓬松温暖，染着淡淡的薰衣草香——比那件沾湿了雪的军服舒服不少。但特莉娜的那句话…依旧盘旋在我脑海中挥之不去。）"
+    tsibela "（老实说，新衣服染着淡淡的薰衣草香——比那件沾湿了雪的军服舒服不少。但特莉娜的那句话…依旧盘旋在我脑海中挥之不去。）"
 
     tsibela "（为什么要换衣服？）"
 
@@ -261,7 +260,7 @@ label episode1_day1:
 
     "他显然相当敏感，脸色发青。真是个奇怪的人。"
 
-    scene bg rolinda_house with fade
+    scene bg bg6 with fade
 
     telina "哼，哼哼～" # 哼唱
 
@@ -336,7 +335,7 @@ label episode1_day1:
 
     hide rolinda with dissolve
 
-    scene bg night with fade
+    scene bg bg7 with fade
 
     "……"
 
@@ -348,7 +347,7 @@ label episode1_day1:
 
     telina "进来吧。"
 
-    scene bg room with fade
+    scene bg bg8 with fade
 
     tsibela "（安德莉亚，总觉得这个名字有点耳熟，总感觉在哪听过）"
 
@@ -457,7 +456,7 @@ label episode1_day1:
 
     "茨贝拉裹着被子瑟瑟发抖，黑夜还很长，雪片相互摩擦的沙沙声愈发扰人"
 
-    tsibela "Сука…" # 低声骂道
+    tsibela "草了…" # 低声骂道
 
     tsibela "太轻视特莉娜说的话了，要是多要一床被子就好了。"
 
@@ -497,7 +496,7 @@ label episode1_day1:
 
     tsibela "等等我！"
 
-    scene bg andrea_house with fade
+    scene bg bg9 with fade
 
     "……"
 

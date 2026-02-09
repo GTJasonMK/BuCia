@@ -73,7 +73,24 @@ init python:
         "undiscovered_3": "notebook/未发现 3.png",
         "undiscovered_4": "notebook/未发现 4.png",
         "undiscovered_5": "notebook/未发现 5.png",
-        "undiscovered_6": "notebook/未发现 6.png"
+        "undiscovered_6": "notebook/未发现 6.png",
+    }
+    MAP_IMAGES = {
+        ## 地图元素
+        "background":"map/背景.png",
+        "dirt":"map/泥地.png",
+        "fill":"map/填充.png",
+        "road":"map/路.png",
+        "outline":"map/描边.png",
+        "marker_pink":"map/粉色碎片.png",
+        "marker_blue":"map/蓝色碎片.png",
+        "marker_current":"map/现在.png",
+        "marker_current_label":"map/现在标签.png",
+        "marker_location":"map/我的位置.png",
+        "marker_location_label":"map/我的位置标签.png",
+        "btn_return":"map/返回.png",
+        "btn_return_label":"map/返回标签.png",
+
     }
 
     ## UI元素坐标（基于坐标.txt，已按游戏分辨率1920x1080设计）
@@ -553,9 +570,9 @@ screen notebook_map_content():
                         zoom map_scale * 0.8
             else:
                 imagebutton:
-                    pos (map_x - 15, map_y - 15)
-                    idle Transform(MAP_IMAGES["marker_pink"] if is_revealed else MAP_IMAGES["marker_blue"], zoom=map_scale)
-                    hover Transform(MAP_IMAGES["marker_pink"] if is_revealed else MAP_IMAGES["marker_blue"], zoom=map_scale * 1.2)
+                    pos (map_x - 5, map_y - 5)
+                    idle Transform(MAP_IMAGES["marker_pink"] if is_revealed else MAP_IMAGES["marker_blue"], zoom=map_scale * 0.4)
+                    hover Transform(MAP_IMAGES["marker_pink"] if is_revealed else MAP_IMAGES["marker_blue"], zoom=map_scale * 0.4 * 1.2)
                     action SetVariable("notebook_selected_item", loc)
                     hovered [
                         SetVariable("map_hover_label", loc["display_name"]),
@@ -682,15 +699,18 @@ screen notebook_map_content():
 
     ## ========== 返回笔记本 ==========
     fixed:
+        add MAP_IMAGES["btn_return_label"]:
+            pos (int(792 * map_scale), int(870 * map_scale))
+            zoom map_scale * 0.8 
+               
         imagebutton:
-            pos (int(792 * map_scale), int(900 * map_scale))
-            idle Transform(MAP_IMAGES["btn_return"], zoom=map_scale)
-            hover Transform(MAP_IMAGES["btn_return"], zoom=map_scale * 1.1)
+            pos (int(845 * map_scale), int(870 * map_scale))
+            idle Transform(MAP_IMAGES["btn_return"], zoom=map_scale * 0.8)
+            hover Transform(MAP_IMAGES["btn_return"], zoom=map_scale * 0.8 * 1.1)
             action Function(switch_notebook_tab, NOTEBOOK_TAB_EVIDENCE)
 
-        add MAP_IMAGES["btn_return_label"]:
-            pos (int(724 * map_scale), int(870 * map_scale))
-            zoom map_scale * 0.8
+
+
 
 ## ============================================================================
 ## 详情面板

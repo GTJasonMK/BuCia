@@ -30,6 +30,7 @@
 ##   包含内容：
 ##   - screen say: 对话显示屏幕
 ##   - screen input: 文本输入屏幕
+##    --下属有对话与名字对齐（第36行的dialogue_x_offset）
 ##   - screen choice: 选项选择屏幕
 ##   - screen quick_menu: 快捷菜单（自动前进、快进、历史等）
 ##   - screen bubble: 气泡对话（可选）
@@ -147,4 +148,4 @@
 ##                             add "locked.png"
 ##                             text "未解锁"
 ##
-## 最后更新：2025-11-23
+## 最后更新：2026/2/7
