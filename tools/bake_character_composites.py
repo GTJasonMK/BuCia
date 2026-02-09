@@ -177,8 +177,8 @@ def main() -> int:
     parser.add_argument("--out-dir", default="game/images/characters_baked", help="输出目录")
     parser.add_argument("--crop", default="0,0,2813,2500", help="裁剪区域：x,y,w,h（默认取上半身）")
     parser.add_argument("--scale", type=float, default=0.32, help="缩放倍率（LANCZOS）")
-    parser.add_argument("--active-zoom", type=float, default=1.05, help="说话角色额外放大倍率（相对 --scale）")
-    parser.add_argument("--dim-zoom", type=float, default=0.9, help="非说话角色额外缩小倍率（相对 --scale）")
+    parser.add_argument("--active-zoom", type=float, default=1.05, help="（已弃用，不再使用缩放）说话角色额外放大倍率（相对 --scale）")
+    parser.add_argument("--dim-zoom", type=float, default=0.9, help="（已弃用，不再使用缩放）非说话角色额外缩小倍率（相对 --scale）")
     parser.add_argument("--dim-brightness", type=float, default=0.75, help="非说话角色亮度倍率（0-1，越小越暗）")
     parser.add_argument("--skip-existing", action="store_true", help="跳过已存在文件（断点续跑）")
     args = parser.parse_args()
@@ -300,10 +300,10 @@ def main() -> int:
                     # normal：直接缩放到画布尺寸
                     normal = _scale(composed, normal_factor)
 
-                    # active/dim：缩放内容但保持画布尺寸不变
-                    active = _scale_centered(composed, canvas_size, normal_factor * active_zoom)
+                    # active/dim：与 normal 相同尺寸，不缩放（只改变亮度）
+                    active = _scale(composed, normal_factor)  # active 版本与 normal 相同大小
                     dim = _apply_dim_brightness(
-                        _scale_centered(composed, canvas_size, normal_factor * dim_zoom)
+                        _scale(composed, normal_factor)  # dim 版本与 normal 相同大小，只应用亮度调整
                     )
 
                     dst = out_tag_dir / f"e{ei}_m{mi}.png"
@@ -327,9 +327,9 @@ def main() -> int:
             # 生成 idle.png（等同 e0_m0）
             if idle_out is None:
                 idle_out = _scale(base_half, normal_factor)
-                idle_active = _scale_centered(base_half, canvas_size, normal_factor * active_zoom)
+                idle_active = _scale(base_half, normal_factor)  # active 版本与 normal 相同大小
                 idle_dim = _apply_dim_brightness(
-                    _scale_centered(base_half, canvas_size, normal_factor * dim_zoom)
+                    _scale(base_half, normal_factor)  # dim 版本与 normal 相同大小，只应用亮度调整
                 )
 
             idle_path = out_tag_dir / "idle.png"
@@ -367,9 +367,9 @@ def main() -> int:
             composed = _standard_composite(base_half, overlay_half)
 
             normal = _scale(composed, normal_factor)
-            active = _scale_centered(composed, canvas_size, normal_factor * active_zoom)
+            active = _scale(composed, normal_factor)  # active 版本与 normal 相同大小
             dim = _apply_dim_brightness(
-                _scale_centered(composed, canvas_size, normal_factor * dim_zoom)
+                _scale(composed, normal_factor)  # dim 版本与 normal 相同大小，只应用亮度调整
             )
 
             dst = out_tag_dir / p.name
@@ -393,9 +393,9 @@ def main() -> int:
         idle_path = out_tag_dir / "idle.png"
         if first_out is None:
             first_out = _scale(base_half, normal_factor)
-            first_active = _scale_centered(base_half, canvas_size, normal_factor * active_zoom)
+            first_active = _scale(base_half, normal_factor)  # active 版本与 normal 相同大小
             first_dim = _apply_dim_brightness(
-                _scale_centered(base_half, canvas_size, normal_factor * dim_zoom)
+                _scale(base_half, normal_factor)  # dim 版本与 normal 相同大小，只应用亮度调整
             )
 
         if not (args.skip_existing and idle_path.exists()):

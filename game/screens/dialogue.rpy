@@ -2,14 +2,40 @@
 ## 说明：旧基准为 1920×1080，实际运行在 1366×768 上会产生全局缩放（≈0.711）。
 ## 这里按当前基准分辨率动态计算，使摄像机对话框在新基准下保持与旧运行效果一致。
 init -1 python:
+
     CAMERA_DIALOGUE_SCALE = float(config.screen_width) / 2729.0
     CAMERA_TEXTBOX_HEIGHT = int(round(339 * (float(config.screen_height) / 1080.0)))
+    import re
+    # 核心动画函数：必须放在 init 块中
+    def dynamic_shrinking_text(st, at, full_text, max_f, min_f, s_start, s_limit):
+        #获取当前打字机进度
+        cps = preferences.text_cps if preferences.text_cps != 0 else 50
+        curr_len = min(int(st * cps), len(full_text))
+        
+        #处理30字强制换行
+        visible_text = full_text[:curr_len]
+        processed_text = "\n".join(re.findall(r'.{1,30}', visible_text))
+        
+        #实时计算字号
+        if curr_len <= s_start:
+            curr_size = max_f
+        elif curr_len >= s_limit:
+            curr_size = min_f
+        else:
+            ratio = float(curr_len - s_start) / (s_limit - s_start)
+            curr_size = int(max_f - (max_f - min_f) * ratio)
+            
+        # 返回文字控件，1.0/60 表示每秒刷新60次保证动画平滑
+        return Text(processed_text, font="fonts/lolita.ttf", size=curr_size, xalign=0.0, line_leading=2), 1.0/60
 
 screen say(who, what):
 
     ## 记录最近一次对白文本（供立绘说话动画使用）
     $ store.last_say_what = what
     $ store.last_say_who = who
+    $ dialogue_x_offset = 400
+    # 名字以及对话位置，往左调要减小此值，反之亦然
+    $ _use_camera_style = getattr(store, 'camera_ui_enabled', True)
 
     ## 根据 camera_ui 状态选择对话框样式
     $ _use_camera_style = getattr(store, 'camera_ui_enabled', True)
@@ -28,6 +54,7 @@ screen say(who, what):
                 window:
                     id "namebox"
                     style "namebox"
+                    xpos dialogue_x_offset
                     $ _who_text = renpy.filter_text_tags(who, allow=[])
                     $ _resolved_name = resolve_character_name(_who_text)
                     $ _impression_label = get_impression_display(_who_text)
@@ -40,35 +67,32 @@ screen say(who, what):
                         if _show_impression:
                             text _impression_text style "say_impression":
                                 font "fonts/lolita.ttf"
+   
+            fixed:
+                xpos dialogue_x_offset
+                ypos 100               # 确保在名字下方
+                yanchor 0.0            # 顶部对齐，防止文字上升
+                
+                text what:
+                    id "what"
+                    # 使用 at transform 彻底移除可见性，且不占用物理空间
+                    at transform:
+                        alpha 0.0
+                    # 强行设置极小字号和行高，确保它不干扰布局
+                    size 1
+                    line_leading -100 
 
-            text what id "what":
-                style "say_dialogue"
-                font "fonts/lolita.ttf"
-                ypos 85
+                # 实际渲染“会动”的文字
+                # 参数含义：(函数名, 内容, 最大字号, 最小字号, 开始缩小字数, 缩完字数)
+                add DynamicDisplayable(dynamic_shrinking_text, what, 50, 34, 10, 30)
 
     else:
-        ## 默认对话框样式
         window:
             id "window"
-
-            if who is not None:
-
-                window:
-                    id "namebox"
-                    style "namebox"
-                    $ _who_text = renpy.filter_text_tags(who, allow=[])
-                    $ _resolved_name = resolve_character_name(_who_text)
-                    $ _impression_label = get_impression_display(_who_text)
-                    $ _impression_text = f"（{_impression_label}）"
-                    $ _show_impression = _resolved_name != "茨贝拉"
-                    hbox:
-                        spacing 8
-                        text who id "who"
-                        if _show_impression:
-                            text _impression_text style "say_impression"
-
-            text what id "what"
-
+            # 默认样式建议也保持这个 ID 以防报错
+            text what id "what":
+                font "fonts/lolita.ttf"
+                size 34
 
     ## 如果有对话框头像，会将其显示在文本之上。请不要在手机界面下显示这个，因为
     ## 没有空间。
@@ -264,7 +288,7 @@ screen quick_menu():
 ## quick_menu: 快捷菜单
 ## sanity_display: 精神值显示
 init python:
-    for _name in ("default_background", "camera_ui", "quick_menu", "sanity_display", "render_debug_info"):
+    for _name in ("default_background", "camera_ui", "quick_menu", "sanity_display"):
         if _name not in config.overlay_screens:
             config.overlay_screens.append(_name)
 

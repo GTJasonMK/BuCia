@@ -27,9 +27,6 @@ init python:
         if episode_num == 1 and reset_met_characters_on_start:
             persistent.met_characters = []
 
-        # 重置时间系统
-        reset_time()
-
         # 重置地点访问状态(可选)
         for loc_name in locations_database:
             locations_database[loc_name]["visited"] = False

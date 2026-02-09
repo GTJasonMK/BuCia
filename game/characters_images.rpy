@@ -47,48 +47,77 @@ init -2:
     ## 双人对话立绘位置（以屏幕中线为对称轴）
     $ _character_pair_offset = 0.18
     $ _character_dim_alpha = 0.6
-    $ _character_dim_scale = 0.9
-    $ _character_active_scale = 1.05
+    ## 变暗透明度参考值
+    $ _character_pair_offset = 0.18
+    $ _character_dim_alpha = 0.6 
+    # 定义过渡时间（秒），数值越小动画越快
+    define _sprite_transition_time = 0.2
 
     ## 统一角色显示位置（对话框左侧，与左侧高亮一致）
     transform character_center:
-        subpixel False
+        subpixel True
         xalign (0.5 - _character_pair_offset)
         yalign 1.0
         xanchor 0.5
         yanchor 1.0
 
-    ## 左侧-高亮
+    ## 左侧-高亮 (恢复原状：1.0倍大小，不暗化，位移归零)
     transform character_left_active:
-        subpixel False
+        subpixel True
         xalign (0.5 - _character_pair_offset)
         yalign 1.0
         xanchor 0.5
         yanchor 1.0
+        # 平滑过渡
+        parallel:
+            ease _sprite_transition_time zoom 1.0
+        parallel:
+            ease _sprite_transition_time matrixcolor BrightnessMatrix(0.0)
+        parallel:
+            ease _sprite_transition_time yoffset 0
 
-    ## 左侧-变暗缩小
+    ## 左侧-变暗缩小下移 (非说话状态)
     transform character_left_dim:
-        subpixel False
+        subpixel True
         xalign (0.5 - _character_pair_offset)
         yalign 1.0
         xanchor 0.5
         yanchor 1.0
+        # 同时进行：缩小到0.98，亮度降低20%，并下移10
+        parallel:
+            ease _sprite_transition_time zoom 0.99
+        parallel:
+            ease _sprite_transition_time matrixcolor BrightnessMatrix(-0.1)
+        parallel:
+            ease _sprite_transition_time yoffset 5
 
     ## 右侧-高亮
     transform character_right_active:
-        subpixel False
+        subpixel True
         xalign (0.5 + _character_pair_offset)
         yalign 1.0
         xanchor 0.5
         yanchor 1.0
+        parallel:
+            ease _sprite_transition_time zoom 1.0
+        parallel:
+            ease _sprite_transition_time matrixcolor BrightnessMatrix(0.0)
+        parallel:
+            ease _sprite_transition_time yoffset 0
 
-    ## 右侧-变暗缩小
+    ## 右侧-变暗缩小下移
     transform character_right_dim:
-        subpixel False
+        subpixel True
         xalign (0.5 + _character_pair_offset)
         yalign 1.0
         xanchor 0.5
         yanchor 1.0
+        parallel:
+            ease _sprite_transition_time zoom 0.99
+        parallel:
+            ease _sprite_transition_time matrixcolor BrightnessMatrix(-0.1)
+        parallel:
+            ease _sprite_transition_time yoffset 5
 
     ## 创建半身立绘的辅助函数（裁剪上半部分；缩放在最终 Composite 外层做）
     python:
@@ -521,7 +550,7 @@ init -2 python:
 
     def _refresh_auto_sprite_pair():
         """
-        刷新双人立绘显示：非说话角色变暗缩小。
+        刷新双人立绘显示：非说话角色变暗下移。
         """
         pair = list(getattr(store, "auto_sprite_pair", []))
         active = getattr(store, "auto_sprite_active", None)

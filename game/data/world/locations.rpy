@@ -378,7 +378,6 @@ init python:
 
     ## 解锁条件映射表（新增条件只需添加映射）
     unlock_condition_checks = {
-        "day3_after": lambda: current_day >= 3,
         "molorava_trust_high": lambda: get_character_trust("莫洛拉瓦") >= 60,
         "telina_trust_high": lambda: get_character_trust("特莉娜") >= 60,
         "badebiete_trust_high": lambda: get_character_trust("巴德别特") >= 60,
@@ -415,14 +414,6 @@ init python:
 
         return False
 
-    ## 检查地点在当前时段是否可访问
-    def is_location_available(location_name):
-        location = get_location_info(location_name)
-        if not location:
-            return False
-
-        available_times = location.get("available_times", [])
-        return current_time in available_times
 
     ## 标记地点为已访问（持久化存储）
     def set_location_visited(location_name):
@@ -537,7 +528,6 @@ init python:
                     "pos": loc_data["map_pos"],
                     "icon": loc_data.get("map_icon", "default"),
                     "unlocked": is_location_unlocked(loc_name),
-                    "available": is_location_available(loc_name),
                     "visited": is_location_visited(loc_name)  ## 使用持久化检查
                 })
         return result
@@ -695,7 +685,6 @@ init python:
         ## 关闭相关界面并清理选择状态
         store.map_selected_location = None
         renpy.hide_screen("notebook")
-        renpy.hide_screen("visual_map")
         renpy.hide_screen("map_screen")
 
         ## 跳转到地点场景
