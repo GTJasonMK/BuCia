@@ -15,11 +15,48 @@ label episode1_start:
     ## 默认背景由 default_background screen 自动提供
     ## 如需切换到其他背景，使用: scene 背景名 with fade
 
-## Day 1 流程
+## Day 1 流程 - 已移至 story_day1.rpy
 label episode1_day1:
+    call episode1_day1_content
+    return
+
+
+## Day 2 流程 - 已移至 story_day2.rpy
+label episode1_day2:
+    call episode1_day2_content
+    return
+
+
+## Day 3 流程 - 已移至 story_day3.rpy
+label episode1_day3:
+    call episode1_day3_content
+    return
+
+
+## Day 4 流程 - 已移至 story_day4.rpy
+label episode1_day4:
+    call episode1_day4_content
+    return
+
+
+## Day 5 流程 - 已移至 story_day5.rpy
+label episode1_day5:
+    call episode1_day5_content
+    return
+
+
+## Day 6 流程 - 已移至 story_day6.rpy
+label episode1_day6:
+    call episode1_day6_content
+    return
+
+
+## 以下为旧代码，已移至各 day 文件，保留作为参考
+## Day 1 流程（旧代码，已移至 story_day1.rpy）
+# label episode1_day1_old:
     # 第一天的主线流程
 
-    scene bg bg1 with fade
+    # scene bg bg1 with fade
 
     "本故事所发生的一切都是幻想剧"
     "不以任何现实元素作为创作来源"
@@ -554,13 +591,14 @@ label episode1_day1:
     return
 
 
-## Day 2 流程
-label episode1_day2:
+## 旧代码已移至各 day 文件，以下为保留的引用
+## Day 2 流程（旧代码，已移至 story_day2.rpy）
+# label episode1_day2_old:
     # 第二天的主线流程
 
-    "Day 2 - 清晨"
+    # "Day 2 - 清晨"
 
-    scene bg andrea_house with fade
+    # scene bg andrea_house with fade
 
     "用过早餐后，茨贝拉推门准备离开，转身向安德莉亚致谢。"
 
@@ -1485,19 +1523,19 @@ label episode1_day2:
     return
 
 
-## Day 3 - 安德莉娅火灾事件
-label episode1_day3:
-    """
-    第三天 - 关键事件日
-    """
+## Day 3 流程（旧代码，已移至 story_day3.rpy）
+# label episode1_day3_old:
+    # """
+    # 第三天 - 关键事件日
+    # """
 
-    # 自动触发火灾事件
-    call event_fire
+    # # 自动触发火灾事件
+    # call event_fire
 
-    # 调查开始
-    call screen map_screen
+    # # 调查开始
+    # call screen map_screen
 
-    return
+    # return
 
 
 ## 周目结局
