@@ -1,6 +1,8 @@
 ## 摄像机对话框缩放比例
 ## 说明：旧基准为 1920×1080，实际运行在 1366×768 上会产生全局缩放（≈0.711）。
 ## 这里按当前基准分辨率动态计算，使摄像机对话框在新基准下保持与旧运行效果一致。
+default last_say_what = None  # 记录最近一次对白内容，供立绘说话动画使用 #
+
 init -1 python:
 
     CAMERA_DIALOGUE_SCALE = float(config.screen_width) / 2729.0
@@ -84,7 +86,7 @@ screen say(who, what):
 
                 # 实际渲染“会动”的文字
                 # 参数含义：(函数名, 内容, 最大字号, 最小字号, 开始缩小字数, 缩完字数)
-                add DynamicDisplayable(dynamic_shrinking_text, what, 50, 34, 10, 30)
+                add DynamicDisplayable(dynamic_shrinking_text, what, gui.name_text_size, 34, 10, 30)
 
     else:
         window:
