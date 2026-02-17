@@ -76,20 +76,28 @@ init python:
         "undiscovered_6": "notebook/未发现 6.png",
     }
     MAP_IMAGES = {
-        ## 地图元素
-        "background":"map/背景.png",
-        "dirt":"map/泥地.png",
-        "fill":"map/填充.png",
-        "road":"map/路.png",
-        "outline":"map/描边.png",
-        "marker_pink":"map/粉色碎片.png",
-        "marker_blue":"map/蓝色碎片.png",
-        "marker_current":"map/现在.png",
-        "marker_current_label":"map/现在标签.png",
-        "marker_location":"map/我的位置.png",
-        "marker_location_label":"map/我的位置标签.png",
-        "btn_return":"map/返回.png",
-        "btn_return_label":"map/返回标签.png",
+        ## 地图层级（从下到上）
+        "background": "map/背景.png",
+        "dirt": "map/泥地.png",
+        "fill": "map/填充.png",
+        "road": "map/路.png",
+        "outline": "map/描边.png",
+
+        ## 位置标记
+        "marker_pink": "map/粉色碎片.png",
+        "marker_blue": "map/蓝色碎片.png",
+        "marker_current": "map/现在.png",
+        "marker_current_label": "map/现在标签.png",
+        "marker_location": "map/我的位置.png",
+        "marker_location_label": "map/我的位置标签.png",
+        "marker_residence": "map/住址.png",
+        "marker_residence_label": "map/住址标签.png",
+
+        ## 控制按钮
+        "btn_return": "map/返回.png",
+        "btn_return_label": "map/返回标签.png",
+        "btn_clear": "map/清除.png",
+        "btn_clear_label": "map/清除标签.png"
 
     }
 
@@ -417,18 +425,33 @@ screen notebook_characters_content():
                 pos slot_pos
                 action SetVariable("notebook_selected_item", char)
                 ## 角色头像或默认显示
+                python:
+                    char_sprite_id = char.get("sprite", "unknown")
+                    full_img_path = "{}-h".format(char_sprite_id)
                 add Solid(char.get("color", "#888888")):
                     size (250, 277)
+                # 显示半身像
+                if renpy.loadable("images/{}.png".format(full_img_path)) or renpy.has_image(full_img_path):
+                    add full_img_path:
+                        size (250, 277)
+                        align (0.0006, 0.002) 
+                else:
+                    # 如果找不到图片，显示一个小提示
+                    text "Missing: [full_img_path]":
+                        align (0.0006, 0.002)
+                        size 14
+                        color "#ff0000"
+
                 $ impression_text = renpy.store.get_impression_display(char_name) if hasattr(renpy.store, "get_impression_display") else "未知"
                 text "印象：" + impression_text:
-                    xalign 0.5
-                    yalign 0.78
+                    xalign 0.04
+                    yalign 0.23
                     size 18
                     color "#ffffff"
                     outlines [(2, "#000000", 0, 0)]
                 text char_name:
-                    xalign 0.5
-                    yalign 0.9
+                    xalign 0.045
+                    yalign 0.28
                     size 24
                     color "#ffffff"
                     outlines [(2, "#000000", 0, 0)]
@@ -719,11 +742,11 @@ screen notebook_map_content():
 screen notebook_detail_panel(item, item_type):
     ## 右侧详情面板
     frame:
-        xpos 750
+        xpos 1150
         ypos 100
         xsize 450
         ysize 600
-        background Solid("#f5f0e6")
+        background None
 
         vbox:
             spacing 15
@@ -731,12 +754,6 @@ screen notebook_detail_panel(item, item_type):
             yalign 0.0
             yoffset 20
 
-            ## 返回按钮
-            imagebutton:
-                idle Transform(NOTEBOOK_IMAGES["return_idle"], zoom=0.8)
-                hover Transform(NOTEBOOK_IMAGES["return_selected"], zoom=0.8)
-                action SetVariable("notebook_selected_item", None)
-                xalign 1.0
 
             ## 根据类型显示不同内容
             if item_type == "evidence":
@@ -761,21 +778,21 @@ screen notebook_detail_panel(item, item_type):
                 $ char_name = item.get("full_name", "???")
                 text char_name:
                     size 36
-                    color item.get("color", "#4a3728")
+                    color  "#4a3728"
                     font "fonts/lolita.ttf"
-                    xalign 0.5
+                    xalign 0
 
                 text item.get("role", ""):
                     size 24
                     color "#666666"
                     font "fonts/lolita.ttf"
-                    xalign 0.5
+                    xalign 0
 
                 text "印象: [renpy.store.get_impression_display(char_name) if hasattr(renpy.store, 'get_impression_display') else '未知']":
                     size 22
                     color "#4a3728"
                     font "fonts/lolita.ttf"
-                    xalign 0.5
+                    xalign 0
 
                 null height 10
 
@@ -783,6 +800,7 @@ screen notebook_detail_panel(item, item_type):
                     size 20
                     color "#4a3728"
                     font "fonts/lolita.ttf"
+                    xalign 0
 
                 text item.get("bio", "无信息"):
                     size 20
@@ -793,20 +811,6 @@ screen notebook_detail_panel(item, item_type):
 
                 null height 10
 
-                ## 信任度显示
-                hbox:
-                    spacing 10
-                    text "信任度:":
-                        size 20
-                        color "#4a3728"
-                    $ trust = item.get("trust", 0)
-                    bar:
-                        value trust
-                        range 100
-                        xsize 200
-                        ysize 20
-                        left_bar Solid("#4a9c4a")
-                        right_bar Solid("#cccccc")
 
             elif item_type == "record":
                 ## 记录详情
